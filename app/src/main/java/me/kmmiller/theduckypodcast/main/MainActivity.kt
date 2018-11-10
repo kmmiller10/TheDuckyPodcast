@@ -9,6 +9,9 @@ class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(auth.currentUser == null) {
+            logOut()
+        }
         pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
     }
 
