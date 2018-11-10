@@ -83,6 +83,7 @@ class LoginFragment : BaseFragment() {
                         Log.d(TAG, "Successfully logged in")
                         viewModel?.user = auth?.currentUser
 
+                        (activity as? LoginActivity)?.logIn()
                     } else {
                         Log.d(TAG, "Login failed")
                         binding.loginError.text = getString(R.string.login_error)

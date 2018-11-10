@@ -101,6 +101,8 @@ class SignUpFragment : BaseFragment() {
                 ?.addOnCompleteListener {
                     Log.d(TAG, "Successfully registered")
                     viewModel?.user = auth?.currentUser
+
+                    (activity as? LoginActivity)?.logIn()
                 }
                 ?.addOnFailureListener {
                     it.printStackTrace()

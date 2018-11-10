@@ -16,6 +16,7 @@
     <string name="password_empty_error">Password cannot be empty</string>
     <string name="password_minimum_characters">Password must be at least 7 characters</string>
     <string name="sign_up">Sign Up</string>
+    <string name="log_out">Log Out</string>
     <string name="terms_and_conditions_agree_check">I have read and agree to the Terms and Conditions</string>
     <string name="terms_and_conditions_required">Must agree to Terms and Conditions to register an account</string>
 

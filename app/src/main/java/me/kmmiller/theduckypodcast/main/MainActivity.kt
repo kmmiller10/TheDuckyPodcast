@@ -1,22 +1,22 @@
-package me.kmmiller.theduckypodcast.login
+package me.kmmiller.theduckypodcast.main
 
 import android.content.Intent
 import android.os.Bundle
 import me.kmmiller.theduckypodcast.base.BaseActivity
-import me.kmmiller.theduckypodcast.main.MainActivity
+import me.kmmiller.theduckypodcast.login.LoginActivity
 
-class LoginActivity : BaseActivity() {
+class MainActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(auth.currentUser != null)
-            logIn()
-        else
-            pushFragment(LoginFragment(), true, false, LoginFragment.TAG)
+        pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
     }
 
-    fun logIn() {
-        val intent = Intent(this, MainActivity::class.java)
+    fun logOut() {
+        auth.signOut()
+        viewModel.user = null
+
+        val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
         startActivity(intent)

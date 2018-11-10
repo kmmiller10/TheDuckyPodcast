@@ -100,6 +100,7 @@
                     android:layout_height="wrap_content"
                     android:textAllCaps="true"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     android:text="@string/sign_up"
                     android:textColor="@color/colorPrimaryDark"
                     android:layout_marginTop="40dp"
