@@ -3,12 +3,14 @@
 
     <!-- Login -->
     <string name="email">Email</string>
-    <string name="email_error">Email cannot be empty</string>
+    <string name="email_empty_error">Email cannot be empty</string>
+    <string name="error">Error</string>
+    <string name="error_logging_in_msg">There was an error logging in. Try again in a few minutes</string>
     <string name="login">Login</string>
     <string name="login_error">Email or password is incorrect</string>
     <string name="login_title">The Ducky Podcast</string>
     <string name="password">Password</string>
-    <string name="password_error">Password cannot be empty</string>
+    <string name="password_empty_error">Password cannot be empty</string>
     <string name="sign_up">Sign Up</string>
 
 </resources>
