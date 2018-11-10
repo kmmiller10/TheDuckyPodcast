@@ -19,7 +19,6 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(CoreViewModel::class.java)
         auth = (application as CoreApplication).getFirebaseAuthInstance()
-        viewModel.user = auth.currentUser // Load in user if already logged in
 
         setContentView(R.layout.base_activity)
     }

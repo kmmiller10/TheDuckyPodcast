@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import com.google.android.material.snackbar.Snackbar
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.LoginFragmentBinding
@@ -56,6 +57,10 @@ class LoginFragment : BaseFragment() {
             false
         }
 
+        binding.forgotPassword.setOnClickListener {
+            Snackbar.make(binding.root, "Not implemented yet", Snackbar.LENGTH_LONG)
+        }
+
         binding.signUp.setOnClickListener {
             signUp()
         }
@@ -81,7 +86,6 @@ class LoginFragment : BaseFragment() {
                 ?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         Log.d(TAG, "Successfully logged in")
-                        viewModel?.user = auth?.currentUser
 
                         (activity as? LoginActivity)?.logIn()
                     } else {

@@ -8,6 +8,7 @@
     <string name="error">Error</string>
     <string name="error_logging_in">There was an error logging in. Try again in a few minutes</string>
     <string name="error_signing_up">There was an error signing up. Try again in a few minutes</string>
+    <string name="forgot_password">Forgot Password</string>
     <string name="login">Login</string>
     <string name="login_error">Email or password is incorrect</string>
     <string name="login_title">The Ducky Podcast</string>
