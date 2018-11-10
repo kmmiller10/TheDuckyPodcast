@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "754871731554",
+    "firebase_url": "https://podcast-5dcc2.firebaseio.com",
+    "project_id": "podcast-5dcc2",
+    "storage_bucket": "podcast-5dcc2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:754871731554:android:9ae41fb2267ab54f",
+        "android_client_info": {
+          "package_name": "me.kmmiller.theduckypodcast"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "754871731554-s5ao0tasvnhh28q2clu4h796b2ecmlj0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "me.kmmiller.theduckypodcast",
+            "certificate_hash": "b12681ab8615ae5a0a05c26272ec6aad758741d8"
+          }
+        },
+        {
+          "client_id": "754871731554-m7lu3429d1aa8cq1d716u4cvust0fblg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgh8UYUR3r3QS-IpJ3SMj4MkO2r3GNdLI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "754871731554-m7lu3429d1aa8cq1d716u4cvust0fblg.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
