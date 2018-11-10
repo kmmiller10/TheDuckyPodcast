@@ -24,6 +24,14 @@ abstract class BaseActivity : AppCompatActivity() {
         setContentView(R.layout.base_activity)
     }
 
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount > 1) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
 

@@ -17,7 +17,7 @@ abstract class BaseFragment : Fragment() {
         auth = (activity as BaseActivity).auth
     }
 
-    protected fun pushFragment(frag: Fragment, replace:Boolean, addToBackStack: Boolean, tag: String) {
+    protected fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         (activity as? BaseActivity)?.pushFragment(frag, replace, addToBackStack, tag)
     }
 

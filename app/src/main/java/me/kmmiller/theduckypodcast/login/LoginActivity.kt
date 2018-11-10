@@ -7,6 +7,7 @@ class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        auth.signOut()
         pushFragment(LoginFragment(), true, false, LoginFragment.TAG)
     }
 }

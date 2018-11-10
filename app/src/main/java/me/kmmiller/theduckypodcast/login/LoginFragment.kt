@@ -20,7 +20,6 @@ class LoginFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setUiListeners()
     }
 
@@ -56,6 +55,10 @@ class LoginFragment : BaseFragment() {
             binding.loginError.visibility = View.GONE
             false
         }
+
+        binding.signUp.setOnClickListener {
+            signUp()
+        }
     }
 
     private fun doLogin() {
@@ -65,27 +68,36 @@ class LoginFragment : BaseFragment() {
         val email = binding.email.text.toString()
         val password = binding.password.text.toString()
 
-        if(email.isEmpty()) {
-            binding.loginError.text = getString(R.string.email_empty_error)
-            binding.loginError.visibility = View.VISIBLE
-        } else if(password.isEmpty()) {
-            binding.loginError.text = getString(R.string.password_empty_error)
-            binding.loginError.visibility = View.VISIBLE
-        } else {
-            auth?.signInWithEmailAndPassword(email, password)
+        when {
+            email.isEmpty() -> {
+                binding.loginError.text = getString(R.string.email_empty_error)
+                binding.loginError.visibility = View.VISIBLE
+            }
+            password.isEmpty() -> {
+                binding.loginError.text = getString(R.string.password_empty_error)
+                binding.loginError.visibility = View.VISIBLE
+            }
+            else -> auth?.signInWithEmailAndPassword(email, password)
                 ?.addOnCompleteListener {
                     if (it.isSuccessful) {
-                        viewModel?.user = auth?.currentUser
                         Log.d(TAG, "Successfully logged in")
+                        viewModel?.user = auth?.currentUser
+
                     } else {
+                        Log.d(TAG, "Login failed")
                         binding.loginError.text = getString(R.string.login_error)
                         binding.loginError.visibility = View.VISIBLE
                     }
                 }
                 ?.addOnFailureListener {
-                    showAlert(getString(R.string.error), getString(R.string.error_logging_in_msg))
+                    it.printStackTrace()
+                    showAlert(getString(R.string.error), getString(R.string.error_logging_in))
                 }
         }
+    }
+
+    private fun signUp() {
+        pushFragment(SignUpFragment(), true, true, SignUpFragment.TAG)
     }
 
     companion object {
