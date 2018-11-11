@@ -11,6 +11,7 @@ import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.UserModel
 
 class LoginActivity : BaseActivity() {
+    override var hasBottomNav: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,5 +57,9 @@ class LoginActivity : BaseActivity() {
                 model.toRealmModel(it)
                 onSuccess.invoke(model)
             }
+    }
+
+    override fun navItemSelected(itemId: Int) {
+        // Not applicable for this frag
     }
 }

@@ -2,17 +2,26 @@ package me.kmmiller.theduckypodcast.main
 
 import android.content.Intent
 import android.os.Bundle
+import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.login.LoginActivity
 
 class MainActivity : BaseActivity() {
+    override var hasBottomNav: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(auth.currentUser == null) {
             logOut()
         }
-        pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
+    }
+
+    override fun navItemSelected(itemId: Int) {
+        if(itemId == R.id.nav_home) {
+            pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
+        } else if(itemId == R.id.nav_survey) {
+            // TODO add survey screen
+        }
     }
 
     fun logOut() {

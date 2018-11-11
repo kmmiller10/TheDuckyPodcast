@@ -1,11 +1,17 @@
 <resources>
     <string name="app_name">TheDuckyPodcast</string>
 
+    <!-- General -->
+    <string name="error">Error</string>
+
+    <!-- Navigation -->
+    <string name="home">Home</string>
+    <string name="survey">Survey</string>
+
     <!-- Login & Sign Up -->
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="email_empty_error">Email cannot be empty</string>
-    <string name="error">Error</string>
     <string name="error_logging_in">There was an error logging in. Try again in a few minutes</string>
     <string name="error_signing_up">There was an error signing up. Try again in a few minutes</string>
     <string name="forgot_password">Forgot Password</string>

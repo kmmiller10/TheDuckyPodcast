@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_home"
+        android:checked="true"
+        android:icon="@drawable/ic_home_inactive"
+        android:title="@string/home"/>
+
+    <item android:id="@+id/nav_survey"
+          android:checked="true"
+          android:icon="@drawable/ic_question_answer_inactive"
+          android:title="@string/survey"/>
+</menu>
