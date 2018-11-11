@@ -25,11 +25,7 @@ class BottomNavAdapter(initialItem: Int, private val navItems: ArrayList<BottomN
 
     override fun onBindViewHolder(holder: BottomNavViewHolder, position: Int) {
         val item = navItems[position]
-
-
         holder.setLabel(item.label)
-
-        val imageView = (holder.itemView as ViewGroup).getChildAt(0) as AppCompatImageView
 
         if(item.navId == currentNavId) {
             holder.setIcon(item.iconActive)
@@ -43,10 +39,17 @@ class BottomNavAdapter(initialItem: Int, private val navItems: ArrayList<BottomN
 
         holder.itemView.setOnClickListener {
             if(it.context is BottomNavAdapterListener) {
-                currentNavId = item.navId
-                (it.context as BottomNavAdapterListener).onNavItemSelected(navItems[holder.adapterPosition].navId)
+                if(currentNavId != item.navId) {
+                    currentNavId = item.navId
+                    (it.context as BottomNavAdapterListener).onNavItemSelected(navItems[holder.adapterPosition].navId)
+                }
             }
         }
+    }
+
+    fun updateSelected(listener: BottomNavAdapterListener, navId: Int) {
+        currentNavId = navId
+        listener.onNavItemSelected(navId)
     }
 
     override fun getItemCount(): Int = navItems.size

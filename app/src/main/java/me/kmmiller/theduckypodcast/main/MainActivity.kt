@@ -20,7 +20,15 @@ class MainActivity : BaseActivity() {
         if(itemId == R.id.nav_home) {
             pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
         } else if(itemId == R.id.nav_survey) {
-            // TODO add survey screen
+            pushFragment(SurveyFragment(), true, false, SurveyFragment.TAG)
+        }
+    }
+
+    override fun onBackPressed() {
+        if(currentNavId != R.id.nav_home) {
+            updateSelected(R.id.nav_home)
+        } else {
+            super.onBackPressed()
         }
     }
 

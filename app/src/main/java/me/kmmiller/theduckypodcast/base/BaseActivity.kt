@@ -22,7 +22,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
 
     private lateinit var bottomNavRecyclerView: BottomNavRecyclerView
     abstract var hasBottomNav: Boolean
-    private var currentNavId = 0
+    protected var currentNavId = 0
 
     private val navItems = ArrayList<BottomNavItemModel>()
     private var adapter: BottomNavAdapter? = null
@@ -81,8 +81,13 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     }
 
     override fun onNavItemSelected(itemId: Int) {
+        currentNavId = itemId
         navItemSelected(itemId)
         adapter?.notifyDataSetChanged()
+    }
+
+    protected fun updateSelected(itemId: Int) {
+        adapter?.updateSelected(this, itemId)
     }
 
     protected abstract fun navItemSelected(itemId: Int)
