@@ -12,13 +12,13 @@ open class UserModel : RealmObject() {
     @PrimaryKey
     var id: String = ""
 
-    var age = 0
+    var age = 0L
     var gender = ""
     var state = ""
 
     fun toRealmModel(document: DocumentSnapshot) {
         id = document.id
-        age = document["age"] as? Int ?: 0
+        age = document["age"] as? Long ?: 0L
         gender = document["gender"] as? String ?: ""
         state = document["state"] as? String ?: ""
     }

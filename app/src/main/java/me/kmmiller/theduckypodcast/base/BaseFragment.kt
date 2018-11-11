@@ -11,8 +11,8 @@ abstract class BaseFragment : Fragment() {
     protected var viewModel: CoreViewModel? = null
     protected var auth: FirebaseAuth? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel = (activity as BaseActivity).viewModel
         auth = (activity as BaseActivity).auth
     }
