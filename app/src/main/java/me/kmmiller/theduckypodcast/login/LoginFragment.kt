@@ -7,8 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
+import me.kmmiller.theduckypodcast.BuildConfig
 import me.kmmiller.theduckypodcast.R
+import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
+import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.databinding.LoginFragmentBinding
 
 class LoginFragment : BaseFragment() {
@@ -22,6 +25,11 @@ class LoginFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUiListeners()
+
+        if(BuildConfig.DEBUG) {
+            binding.email.setText("kmille1014+registerTest@gmail.com")
+            binding.password.setText("Mobile1.")
+        }
     }
 
     private fun setUiListeners() {
@@ -67,6 +75,9 @@ class LoginFragment : BaseFragment() {
     }
 
     private fun doLogin() {
+        val progress = Progress(requireActivity() as BaseActivity)
+        progress.progress(getString(R.string.logging_in))
+
         binding.email.clearFocus()
         binding.password.clearFocus()
 
@@ -87,7 +98,7 @@ class LoginFragment : BaseFragment() {
                     if (it.isSuccessful) {
                         Log.d(TAG, "Successfully logged in")
 
-                        (activity as? LoginActivity)?.logIn()
+                        (activity as? LoginActivity)?.logIn(progress)
                     } else {
                         Log.d(TAG, "Login failed")
                         binding.loginError.text = getString(R.string.login_error)

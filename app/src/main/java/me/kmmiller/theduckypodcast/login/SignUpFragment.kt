@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
+import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
+import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.databinding.SignUpFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 
@@ -110,6 +112,9 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun signUp() {
+        val progress = Progress(requireActivity() as BaseActivity)
+        progress.progress(getString(R.string.signing_up))
+
         val email = binding.email.text.toString()
         val password = binding.password.text.toString()
         val confirmPassword = binding.confirmPassword.text.toString()
@@ -144,7 +149,7 @@ class SignUpFragment : BaseFragment() {
                                 .set(user.fromRealmModel())
                                 .addOnSuccessListener {
                                     Log.d(TAG, "Document successfully created")
-                                    (activity as? LoginActivity)?.logIn()
+                                    (activity as? LoginActivity)?.logIn(progress)
                                 }
                                 .addOnFailureListener { e ->
                                     e.printStackTrace()

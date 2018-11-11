@@ -9,13 +9,9 @@ import me.kmmiller.theduckypodcast.core.CoreViewModel
 
 abstract class BaseFragment : Fragment() {
     protected var viewModel: CoreViewModel? = null
+        get() = (activity as BaseActivity).viewModel
     protected var auth: FirebaseAuth? = null
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = (activity as BaseActivity).viewModel
-        auth = (activity as BaseActivity).auth
-    }
+        get() = (activity as BaseActivity).auth
 
     protected fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         (activity as? BaseActivity)?.pushFragment(frag, replace, addToBackStack, tag)

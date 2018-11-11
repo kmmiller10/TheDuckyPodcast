@@ -9,6 +9,7 @@
     <string name="error_logging_in">There was an error logging in. Try again in a few minutes</string>
     <string name="error_signing_up">There was an error signing up. Try again in a few minutes</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="logging_in">Logging in…</string>
     <string name="login">Login</string>
     <string name="login_error">Email or password is incorrect</string>
     <string name="login_title">The Ducky Podcast</string>
@@ -17,6 +18,7 @@
     <string name="password_empty_error">Password cannot be empty</string>
     <string name="password_minimum_characters">Password must be at least 7 characters</string>
     <string name="sign_up">Sign Up</string>
+    <string name="signing_up">Registering Account…</string>
     <string name="log_out">Log Out</string>
     <string name="terms_and_conditions_agree_check">I have read and agree to the Terms and Conditions</string>
     <string name="terms_and_conditions_required">Must agree to Terms and Conditions to register an account</string>
