@@ -64,6 +64,6 @@ class LoginActivity : BaseActivity() {
     }
 
     override fun navItemSelected(itemId: Int) {
-        // Not applicable for this frag
+        // Not applicable for this activity
     }
 }

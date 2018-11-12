@@ -35,6 +35,13 @@ open class UserModel : RealmObject() {
     }
 
     companion object {
+        @JvmField
+        val stateAbbreviationsList = arrayOf("AL","AK", "AZ", "AR", "CA",
+            "CO", "CT", "DE", "FL","GA", "HI", "ID", "IL", "IN", "IA", "KS","KY",
+            "LA", "MA", "ME", "MD", "MI", "MN", "MS", "MO", "MT", "NE", "NV",
+            "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI",
+            "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY")
+
         @JvmStatic
         fun getPositionOfGender(key: String): Int {
             return when(key.toLowerCase()) {

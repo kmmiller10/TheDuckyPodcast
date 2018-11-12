@@ -1,16 +1,22 @@
 package me.kmmiller.theduckypodcast.main
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
+import me.kmmiller.theduckypodcast.R
+import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
+import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.core.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 
-class ProfileFragment : BaseFragment() {
+class ProfileFragment : BaseFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
     private lateinit var realm: Realm
 
@@ -27,10 +33,40 @@ class ProfileFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.gender.isEnabled = false
+        resetProfile()
+
+        binding.usState.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(p0: Editable?) {
+            }
+
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                binding.usStateError.visibility =
+                        if(text != null && (UserModel.stateAbbreviationsList.contains(text.toString().toUpperCase()) || text.isEmpty()))
+                            View.GONE
+                        else
+                            View.VISIBLE
+            }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        (activity as MainActivity).setEditableFragment(true)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm.close()
+    }
+
+    private fun resetProfile() {
         val realm = Realm.getDefaultInstance()
         auth?.currentUser?.let { authUser ->
             val user = realm.findUserById(authUser.uid)
-
             user?.let {
                 binding.email.setText(user.email)
                 binding.age.setText(if(user.age == 0L) "" else user.age.toString())
@@ -38,12 +74,61 @@ class ProfileFragment : BaseFragment() {
                 binding.usState.setText(user.state)
             }
         }
-
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
+    override fun onEdit() {
+        binding.age.isEnabled = true
+        binding.gender.isEnabled = true
+        binding.usState.isEnabled = true
+    }
+
+    override fun onSave() {
+        binding.age.isEnabled = false
+        binding.gender.isEnabled = false
+        binding.usState.isEnabled = false
+
+        // Validate
+        val stateText = binding.usState.text?.toString() ?: ""
+        if(stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase())) {
+            val progress = Progress(requireActivity() as BaseActivity)
+            progress.progress(getString(R.string.saving))
+            auth?.currentUser?.let { authUser ->
+                val realmUser = realm.findUserById(authUser.uid)
+                realmUser?.let {
+                    val detachedUser = realm.copyFromRealm(realmUser) // Create a detached copy to manipulate
+
+                    detachedUser.age = binding.age.text?.toString()?.toLong() ?: 0
+                    detachedUser.gender = binding.gender.selectedItem.toString()
+                    detachedUser.state = binding.usState.text?.toString() ?: ""
+
+                    val fb = FirebaseFirestore.getInstance()
+                    fb.collection("users").document(it.id)
+                        .set(detachedUser.fromRealmModel())
+                        .addOnSuccessListener { response ->
+                            // Update realm model
+                            realm.executeTransaction {
+                                realmUser.age = detachedUser.age
+                                realmUser.gender = detachedUser.gender
+                                realmUser.state = detachedUser.state
+                            }
+
+                            progress.dismiss()
+                            (activity as? MainActivity)?.finishFragment()
+                        }
+                        .addOnFailureListener { e ->
+                            e.printStackTrace()
+                        }
+                }
+            }
+        }
+    }
+
+    override fun onCancel() {
+        resetProfile()
+
+        binding.age.isEnabled = false
+        binding.gender.isEnabled = false
+        binding.usState.isEnabled = false
     }
 
     companion object {

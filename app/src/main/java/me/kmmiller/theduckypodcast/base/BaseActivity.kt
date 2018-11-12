@@ -52,6 +52,19 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putInt(NAV_ID, currentNavId)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount >= 1) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun updateNav() {
         if(hasBottomNav) {
             bottomNavRecyclerView.visibility = View.VISIBLE
@@ -97,17 +110,10 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         transaction.commit()
     }
 
-    override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
+    open fun finishFragment() {
+        supportFragmentManager?.let {
+            if(it.backStackEntryCount >= 1) it.popBackStack()
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        outState.putInt(NAV_ID, currentNavId)
-        super.onSaveInstanceState(outState)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
