@@ -72,14 +72,6 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         navItems.add(survey)
     }
 
-    override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount > 1) {
-            supportFragmentManager.popBackStack()
-        } else {
-            super.onBackPressed()
-        }
-    }
-
     override fun onNavItemSelected(itemId: Int) {
         currentNavId = itemId
         navItemSelected(itemId)
@@ -103,6 +95,14 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         if(addToBackStack) transaction.addToBackStack(tag)
 
         transaction.commit()
+    }
+
+    override fun onBackPressed() {
+        if(supportFragmentManager.backStackEntryCount > 1) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

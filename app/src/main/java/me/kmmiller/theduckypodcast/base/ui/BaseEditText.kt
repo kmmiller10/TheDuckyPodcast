@@ -22,6 +22,7 @@ class BaseEditText(context: Context, attrs: AttributeSet) : AppCompatEditText(co
         val scale = resources.displayMetrics.density
         val dp = (8*scale + 0.5f).toInt()
         setPadding(dp, dp, dp, dp)
+        setSingleLine(true)
     }
 
 

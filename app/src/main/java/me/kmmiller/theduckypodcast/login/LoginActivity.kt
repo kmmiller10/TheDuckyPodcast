@@ -15,6 +15,7 @@ class LoginActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         if(auth.currentUser != null) {
             val progress = Progress(this)
             progress.progress(getString(R.string.logging_in))
