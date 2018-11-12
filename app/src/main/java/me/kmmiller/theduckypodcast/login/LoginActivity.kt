@@ -42,6 +42,9 @@ class LoginActivity : BaseActivity() {
                 val realm = Realm.getDefaultInstance()
                 realm.executeTransaction { rm ->
                     rm.copyToRealmOrUpdate(model)
+                    if(it.email != null && model.email.isBlank()) {
+                        model.email = it.email!!
+                    }
                 }
                 realm.close()
                 onSuccess.invoke()

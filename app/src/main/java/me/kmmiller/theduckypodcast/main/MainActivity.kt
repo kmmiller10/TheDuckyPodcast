@@ -32,6 +32,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
 
     fun logOut() {
         auth.signOut()
+        auth.removeAuthStateListener(this)
 
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK

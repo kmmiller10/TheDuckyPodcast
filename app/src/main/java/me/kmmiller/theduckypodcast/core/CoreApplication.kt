@@ -13,7 +13,7 @@ class CoreApplication : Application() {
         FirebaseApp.initializeApp(this)
         Realm.init(this)
 
-        val realmConfig = RealmConfiguration.Builder().build()
+        val realmConfig = RealmConfiguration.Builder().deleteRealmIfMigrationNeeded().build()
         Realm.setDefaultConfiguration(realmConfig)
     }
 

@@ -5,6 +5,7 @@
     <string name="error">Error</string>
     <string name="age">Age</string>
     <string name="gender">Gender</string>
+    <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="state">U.S. State</string>
     <string name="update_password">Update Password</string>
 

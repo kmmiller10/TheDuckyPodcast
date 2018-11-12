@@ -143,6 +143,7 @@ class SignUpFragment : BaseFragment() {
                         auth?.currentUser?.let { firebaseUser ->
                             val user = UserModel()
                             user.id = firebaseUser.uid
+                            user.email = email
 
                             val fb = FirebaseFirestore.getInstance()
                             fb.collection("users").document(user.id)
