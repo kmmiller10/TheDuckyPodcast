@@ -47,7 +47,7 @@ open class UserModel : RealmObject() {
             return when(key.toLowerCase()) {
                 "male" -> 1
                 "female" -> 2
-                "other" -> 3
+                "non-binary" -> 3
                 else -> 0
             }
         }

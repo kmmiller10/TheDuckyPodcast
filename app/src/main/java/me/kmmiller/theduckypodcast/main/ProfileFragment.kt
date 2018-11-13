@@ -15,6 +15,7 @@ import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.core.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
+import me.kmmiller.theduckypodcast.models.equalTo
 
 class ProfileFragment : BaseFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
@@ -87,39 +88,46 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         binding.gender.isEnabled = false
         binding.usState.isEnabled = false
 
-        // Validate
+        val age = binding.age.text?.toString()?.toLong() ?: 0
+        val gender = binding.gender.selectedItem.toString()
         val stateText = binding.usState.text?.toString() ?: ""
+
+        val authUser = auth?.currentUser ?: return // Get authenticated user from firebase
+        val realmUser = realm.findUserById(authUser.uid)?: return // Get local realm user
+
+        val detachedUser = realm.copyFromRealm(realmUser) // Create a detached copy of realm user to manipulate
+        detachedUser.age = age
+        detachedUser.gender = gender
+        detachedUser.state = stateText
+
+        if(realmUser.equalTo(detachedUser)) {
+            (activity as? MainActivity)?.setEditableFragment(true)
+            resetProfile()
+            return
+        }
+
+        // Validate
         if(stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase())) {
             val progress = Progress(requireActivity() as BaseActivity)
             progress.progress(getString(R.string.saving))
-            auth?.currentUser?.let { authUser ->
-                val realmUser = realm.findUserById(authUser.uid)
-                realmUser?.let {
-                    val detachedUser = realm.copyFromRealm(realmUser) // Create a detached copy to manipulate
 
-                    detachedUser.age = binding.age.text?.toString()?.toLong() ?: 0
-                    detachedUser.gender = binding.gender.selectedItem.toString()
-                    detachedUser.state = binding.usState.text?.toString() ?: ""
+            val fb = FirebaseFirestore.getInstance()
+            fb.collection("users").document(realmUser.id)
+                .set(detachedUser.fromRealmModel())
+                .addOnSuccessListener { response ->
+                    // Update realm model
+                    realm.executeTransaction {
+                        realmUser.age = detachedUser.age
+                        realmUser.gender = detachedUser.gender
+                        realmUser.state = detachedUser.state
+                    }
 
-                    val fb = FirebaseFirestore.getInstance()
-                    fb.collection("users").document(it.id)
-                        .set(detachedUser.fromRealmModel())
-                        .addOnSuccessListener { response ->
-                            // Update realm model
-                            realm.executeTransaction {
-                                realmUser.age = detachedUser.age
-                                realmUser.gender = detachedUser.gender
-                                realmUser.state = detachedUser.state
-                            }
-
-                            progress.dismiss()
-                            (activity as? MainActivity)?.finishFragment()
-                        }
-                        .addOnFailureListener { e ->
-                            e.printStackTrace()
-                        }
+                    progress.dismiss()
+                    (activity as? MainActivity)?.finishFragment()
                 }
-            }
+                .addOnFailureListener { e ->
+                    e.printStackTrace()
+                }
         }
     }
 
