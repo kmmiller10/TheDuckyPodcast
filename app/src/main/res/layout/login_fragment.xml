@@ -19,7 +19,7 @@
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimary"
                     android:text="@string/login_title"
                     android:textSize="32sp"
                     android:textStyle="bold"
@@ -41,7 +41,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textEmailAddress"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="6dp"
                     app:layout_constraintTop_toBottomOf="@+id/email_label"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -52,13 +52,17 @@
                     android:layout_marginTop="16dp"
                     app:layout_constraintTop_toBottomOf="@+id/email"/>
 
-            <me.kmmiller.theduckypodcast.base.ui.BaseEditText
+            <!-- Passwords need inputType="textPassword" which is bugged if singleLine=true. Don't use custom view
+                 since it sets singleLine to true -->
+            <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/bordered_edit_text"
+                    android:padding="8dp"
                     android:imeOptions="actionDone"
                     android:inputType="textPassword"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="6dp"
                     app:layout_constraintTop_toBottomOf="@+id/password_label"/>
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -100,7 +104,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:text="@string/forgot_password"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimaryLight"
                     android:layout_marginTop="24dp"
                     app:layout_constraintTop_toBottomOf="@+id/login_button"
                     app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +118,7 @@
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:text="@string/sign_up"
-                    android:textColor="@color/colorPrimaryDark"
+                    android:textColor="@color/colorPrimaryLight"
                     android:layout_marginTop="24dp"
                     app:layout_constraintTop_toBottomOf="@+id/forgot_password"
                     app:layout_constraintStart_toStartOf="parent"
