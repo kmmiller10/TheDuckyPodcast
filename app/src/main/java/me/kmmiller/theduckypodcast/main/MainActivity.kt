@@ -116,6 +116,14 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         }
     }
 
+    override fun onNavItemSelected(itemId: Int) {
+        setEditableFragment(false)
+        supportFragmentManager?.let {
+            if(it.backStackEntryCount >= 1) it.popBackStack()
+        }
+        super.onNavItemSelected(itemId)
+    }
+
     override fun finishFragment() {
         setEditableFragment(false)
         super.finishFragment()

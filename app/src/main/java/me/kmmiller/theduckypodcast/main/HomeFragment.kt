@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
+import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findSeriesModel
 import me.kmmiller.theduckypodcast.databinding.HomeFragmentBinding
@@ -28,13 +29,16 @@ class HomeFragment : BaseFragment() {
 
         getCurrentSeries {
             series?.let { model ->
-                binding.user.text = model.title
+                setSeriesDetails(model)
             }
         }
+    }
 
-        binding.signOut.setOnClickListener {
-            (activity as MainActivity).logOut()
-        }
+    private fun setSeriesDetails(model: SeriesModel) {
+        binding.title.text = model.title
+        binding.seriesNumber.text = String.format(getString(R.string.series), model.season)
+        binding.description.text = model.description
+        binding.expandedDescription.text = model.expandedDescription
     }
 
     override fun onDestroy() {
@@ -51,8 +55,8 @@ class HomeFragment : BaseFragment() {
             .addOnSuccessListener {
                 val seriesId = it.get("id") as? String ?: ""
                 if(seriesId.isNotEmpty()) {
-
-                    if(realm?.findSeriesModel(seriesId) != null) {
+                    series = realm?.findSeriesModel(seriesId)
+                    if(series != null) {
                         // User already has series loaded, don't need to grab it again
                         onSuccess.invoke()
                     } else {

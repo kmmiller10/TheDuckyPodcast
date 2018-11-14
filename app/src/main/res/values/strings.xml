@@ -6,9 +6,11 @@
     <string name="edit">Edit</string>
     <string name="error">Error</string>
     <string name="gender">Gender</string>
+    <string name="home_title">This month\'s challenge</string>
     <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>
+    <string name="series">Series %d</string>
     <string name="state">U.S. State</string>
     <string name="state_error">Must be a valid U.S. state</string>
     <string name="update_password">Update Password</string>

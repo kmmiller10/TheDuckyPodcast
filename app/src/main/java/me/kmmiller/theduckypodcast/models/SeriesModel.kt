@@ -16,6 +16,7 @@ open class SeriesModel: RealmObject(), RModel {
 
     var title = ""
     var description = ""
+    var expandedDescription = ""
     var podcastLink = ""
     var researchLinks = RealmList<String>()
     var season = 0L
@@ -24,6 +25,7 @@ open class SeriesModel: RealmObject(), RModel {
         id = document.id
         title = document["title"] as? String ?: ""
         description = document["description"] as? String ?: ""
+        expandedDescription = document["expandedDescription"] as? String ?: ""
         podcastLink = document["podcastLink"] as? String ?: ""
         researchLinks.addAll(document.getStringArrayList("researchLinks"))
         season = document["season"] as? Long ?: 0L
@@ -33,6 +35,7 @@ open class SeriesModel: RealmObject(), RModel {
         val map = HashMap<String, Any>()
         map["title"] = title
         map["description"] = description
+        map["expandedDescription"] = expandedDescription
         map["podcastLink"] = podcastLink
         map["researchLinks"] = researchLinks
         map["season"] = season
