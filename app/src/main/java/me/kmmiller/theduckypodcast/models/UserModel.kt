@@ -7,7 +7,7 @@ import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
 
 @RealmClass
-open class UserModel : RealmObject() {
+open class UserModel : RealmObject(), RModel {
     @Required
     @PrimaryKey
     var id: String = ""
@@ -17,7 +17,7 @@ open class UserModel : RealmObject() {
     var gender = ""
     var state = ""
 
-    fun toRealmModel(document: DocumentSnapshot) {
+    override fun toRealmModel(document: DocumentSnapshot) {
         id = document.id
         email = document["email"] as? String ?: ""
         age = document["age"] as? Long ?: 0L
@@ -25,7 +25,7 @@ open class UserModel : RealmObject() {
         state = document["state"] as? String ?: ""
     }
 
-    fun fromRealmModel(): HashMap<String, Any> {
+    override fun fromRealmModel(): HashMap<String, Any> {
         val map = HashMap<String, Any>()
         map["email"] = email
         map["age"] = age

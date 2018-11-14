@@ -11,13 +11,13 @@ import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.UserModel
 
 class LoginActivity : BaseActivity() {
+    val progress = Progress(this)
     override var hasBottomNav: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if(auth.currentUser != null) {
-            val progress = Progress(this)
             progress.progress(getString(R.string.logging_in))
             logIn(progress)
         } else {
@@ -60,6 +60,9 @@ class LoginActivity : BaseActivity() {
                 val model = UserModel()
                 model.toRealmModel(it)
                 onSuccess.invoke(model)
+            }
+            .addOnFailureListener {
+                progress.dismiss()
             }
     }
 
