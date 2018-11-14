@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
@@ -137,8 +138,14 @@ class SignUpFragment : BaseFragment() {
                 binding.signUpError.visibility = View.GONE
 
                 auth?.createUserWithEmailAndPassword(email, password)
-                    ?.addOnCompleteListener {
+                    ?.addOnSuccessListener {
                         Log.d(TAG, "Successfully registered")
+
+                        if(auth?.currentUser == null) {
+                            // Should never reach here, but just in case handle null user so user isn't stuck spinning
+                            progress.dismiss()
+                            showAlert(getString(R.string.error), getString(R.string.error_signing_up))
+                        }
 
                         auth?.currentUser?.let { firebaseUser ->
                             val user = UserModel()
@@ -153,16 +160,31 @@ class SignUpFragment : BaseFragment() {
                                     (activity as? LoginActivity)?.logIn(progress)
                                 }
                                 .addOnFailureListener { e ->
-                                    e.printStackTrace()
                                     Log.e(TAG, "Failed to create document for user")
+                                    progress.dismiss()
+                                    signUpErrorHandler(e)
                                 }
                         }
                     }
                     ?.addOnFailureListener {
-                        it.printStackTrace()
-                        showAlert(getString(R.string.error), getString(R.string.error_signing_up))
+                        progress.dismiss()
+                        signUpErrorHandler(it)
                     }
             }
+        }
+    }
+
+    /**
+     * Sign up has special error cases to handle so instead of calling BaseActivity.handleError(), use this method
+     */
+    private fun signUpErrorHandler(e: Exception) {
+        e.printStackTrace()
+
+        val title = getString(R.string.error)
+        if(e is FirebaseNetworkException) {
+            showAlert(title, getString(R.string.error_no_connection))
+        } else {
+            showAlert(getString(R.string.error), getString(R.string.error_signing_up))
         }
     }
 

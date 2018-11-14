@@ -39,10 +39,8 @@ class BottomNavAdapter(initialItem: Int, private val navItems: ArrayList<BottomN
 
         holder.itemView.setOnClickListener {
             if(it.context is BottomNavAdapterListener) {
-                if(currentNavId != item.navId) {
-                    currentNavId = item.navId
-                    (it.context as BottomNavAdapterListener).onNavItemSelected(navItems[holder.adapterPosition].navId)
-                }
+                currentNavId = item.navId
+                (it.context as BottomNavAdapterListener).onNavItemSelected(navItems[holder.adapterPosition].navId)
             }
         }
     }

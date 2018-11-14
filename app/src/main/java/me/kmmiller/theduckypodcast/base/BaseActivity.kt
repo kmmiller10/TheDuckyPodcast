@@ -1,13 +1,18 @@
 package me.kmmiller.theduckypodcast.base
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
+import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.ui.BottomNavAdapter
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
@@ -86,16 +91,25 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     }
 
     override fun onNavItemSelected(itemId: Int) {
-        currentNavId = itemId
-        navItemSelected(itemId)
-        adapter?.notifyDataSetChanged()
+        if(currentNavId != itemId) {
+            currentNavId = itemId
+            navItemSelected(itemId)
+            adapter?.notifyDataSetChanged()
+        }
     }
+
+    protected abstract fun navItemSelected(itemId: Int)
 
     protected fun updateSelected(itemId: Int) {
         adapter?.updateSelected(this, itemId)
     }
 
-    protected abstract fun navItemSelected(itemId: Int)
+    /**
+     * Override this method if the fragment container to push fragment in is nested or in a custom view.
+     * Otherwise use default container
+     */
+    @IdRes
+    protected fun getFragContainerId(): Int = R.id.fragment_container
 
     fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
@@ -116,6 +130,58 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         }
     }
 
+    fun handleError(e: Exception) {
+        e.printStackTrace()
+
+        val title = getString(R.string.error)
+        if(e is FirebaseNetworkException) {
+            showAlert(title, getString(R.string.error_no_connection))
+        } else if(e is FirebaseAuthInvalidUserException || e is FirebaseAuthInvalidCredentialsException) {
+            showAlert(title, getString(R.string.error_logging_in))
+        }
+    }
+
+    fun showAlert(title: String, message: String) {
+        showAlert(title, message, getString(android.R.string.ok), null)
+    }
+
+    fun showAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
+        showAlert(title, message, getString(android.R.string.ok), positiveListener)
+    }
+
+    fun showAlert(title: String,
+                            message: String,
+                            positiveText: String,
+                            positiveListener: DialogInterface.OnClickListener?) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveText, positiveListener)
+            .show()
+    }
+
+    fun showCancelableAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
+        showCancelableAlert(title, message, getString(android.R.string.ok), positiveListener)
+    }
+
+    fun showCancelableAlert(title: String, message: String, positiveText: String, positiveListener: DialogInterface.OnClickListener) {
+        showCancelableAlert(title, message, positiveText, positiveListener, getString(android.R.string.cancel), null)
+    }
+
+    fun showCancelableAlert(title: String,
+                                      message: String,
+                                      positiveText: String,
+                                      positiveListener: DialogInterface.OnClickListener?,
+                                      cancelText: String,
+                                      cancelListener: DialogInterface.OnClickListener?) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(positiveText, positiveListener)
+            .setNegativeButton(cancelText, cancelListener)
+            .show()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -126,13 +192,6 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             }
         }
     }
-
-    /**
-     * Override this method if the fragment container to push fragment in is nested or in a custom view.
-     * Otherwise use default container
-     */
-    @IdRes
-    protected fun getFragContainerId(): Int = R.id.fragment_container
 
     companion object {
         const val NAV_ID = "nav_id"

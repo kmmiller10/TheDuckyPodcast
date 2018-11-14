@@ -90,8 +90,7 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintTop_toBottomOf="@+id/description"
-                        tools:text="Orci sagittis eu volutpat odio. Sodales neque sodales ut etiam sit ametnisl purus in. Vulputate eu scelerisque felis imperdiet proin fermentum leo. Parturient montes nascetur ridiculus mus mauris. Scelerisque in dictum non consectetur. Bibendum est ultricies integer quis auctor."
-                />
+                        tools:text="Orci sagittis eu volutpat odio. Sodales neque sodales ut etiam sit ametnisl purus in. Vulputate eu scelerisque felis imperdiet proin fermentum leo. Parturient montes nascetur ridiculus mus mauris. Scelerisque in dictum non consectetur. Bibendum est ultricies integer quis auctor."/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </ScrollView>

@@ -27,6 +27,8 @@ class HomeFragment : BaseFragment() {
 
         realm = Realm.getDefaultInstance()
 
+        // TODO: Hook up play button to podcast mp3 using MediaPlayer
+
         getCurrentSeries {
             series?.let { model ->
                 setSeriesDetails(model)
@@ -36,7 +38,7 @@ class HomeFragment : BaseFragment() {
 
     private fun setSeriesDetails(model: SeriesModel) {
         binding.title.text = model.title
-        binding.seriesNumber.text = String.format(getString(R.string.series), model.season)
+        binding.seriesNumber.text = String.format(getString(R.string.series_number), model.season)
         binding.description.text = model.description
         binding.expandedDescription.text = model.expandedDescription
     }
@@ -75,12 +77,14 @@ class HomeFragment : BaseFragment() {
                                 series = realm?.findSeriesModel(model.id)
                                 onSuccess.invoke()
                             }
-                            .addOnFailureListener { }
+                            .addOnFailureListener { e ->
+                                handleError(e)
+                            }
                     }
                 }
             }
             .addOnFailureListener {
-
+                handleError(it)
             }
     }
 

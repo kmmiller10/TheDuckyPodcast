@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import me.kmmiller.theduckypodcast.core.CoreViewModel
+import java.lang.Exception
 
 abstract class BaseFragment : Fragment() {
     protected var viewModel: CoreViewModel? = null
@@ -17,33 +18,31 @@ abstract class BaseFragment : Fragment() {
         (activity as? BaseActivity)?.pushFragment(frag, replace, addToBackStack, tag)
     }
 
+    protected fun handleError(e: Exception) {
+        (activity as BaseActivity).handleError(e)
+    }
+
     protected fun showAlert(title: String, message: String) {
-        showAlert(title, message, getString(android.R.string.ok), null)
+        (activity as BaseActivity).showAlert(title, message)
     }
 
     protected fun showAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
-        showAlert(title, message, getString(android.R.string.ok), positiveListener)
+        (activity as BaseActivity).showAlert(title, message, positiveListener)
     }
 
     protected fun showAlert(title: String,
                             message: String,
                             positiveText: String,
                             positiveListener: DialogInterface.OnClickListener?) {
-        context?.let {
-            AlertDialog.Builder(it)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(positiveText, positiveListener)
-                .show()
-        }
+        (activity as BaseActivity).showAlert(title, message, positiveText, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
-        showCancelableAlert(title, message, getString(android.R.string.ok), positiveListener)
+        (activity as BaseActivity).showCancelableAlert(title, message, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String, message: String, positiveText: String, positiveListener: DialogInterface.OnClickListener) {
-        showCancelableAlert(title, message, positiveText, positiveListener, getString(android.R.string.cancel), null)
+        (activity as BaseActivity).showCancelableAlert(title, message, positiveText, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String,
@@ -52,13 +51,6 @@ abstract class BaseFragment : Fragment() {
                             positiveListener: DialogInterface.OnClickListener?,
                             cancelText: String,
                             cancelListener: DialogInterface.OnClickListener?) {
-        context?.let {
-            AlertDialog.Builder(it)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(positiveText, positiveListener)
-                .setNegativeButton(cancelText, cancelListener)
-                .show()
-        }
+        (activity as BaseActivity).showCancelableAlert(title, message, positiveText, positiveListener, cancelText, cancelListener)
     }
 }

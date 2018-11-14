@@ -126,7 +126,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
                     (activity as? MainActivity)?.finishFragment()
                 }
                 .addOnFailureListener { e ->
-                    e.printStackTrace()
+                    handleError(e)
                 }
         }
     }

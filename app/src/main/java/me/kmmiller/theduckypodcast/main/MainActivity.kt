@@ -31,6 +31,17 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         }
     }
 
+    /**
+     * Overriding from BaseActivity so that editable frag can be set to false and for the back stack to pop if needed
+     */
+    override fun onNavItemSelected(itemId: Int) {
+        setEditableFragment(false)
+        supportFragmentManager?.let {
+            if(it.backStackEntryCount >= 1) it.popBackStack()
+        }
+        super.onNavItemSelected(itemId)
+    }
+
     fun logOut() {
         auth.signOut()
         auth.removeAuthStateListener(this)
@@ -109,19 +120,11 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
                 true
             }
             R.id.log_out -> {
-                Log.d("MainActivity", "Log out clicked")
+                logOut()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun onNavItemSelected(itemId: Int) {
-        setEditableFragment(false)
-        supportFragmentManager?.let {
-            if(it.backStackEntryCount >= 1) it.popBackStack()
-        }
-        super.onNavItemSelected(itemId)
     }
 
     override fun finishFragment() {

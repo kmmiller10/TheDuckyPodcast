@@ -21,6 +21,8 @@ class LoginActivity : BaseActivity() {
             progress.progress(getString(R.string.logging_in))
             logIn(progress)
         } else {
+            // In case the user logged out while not connected to internet, always force logout when pushing the login frag
+            auth.signOut()
             pushFragment(LoginFragment(), true, false, LoginFragment.TAG)
         }
     }
@@ -63,6 +65,7 @@ class LoginActivity : BaseActivity() {
             }
             .addOnFailureListener {
                 progress.dismiss()
+                handleError(it)
             }
     }
 

@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import me.kmmiller.theduckypodcast.BuildConfig
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
@@ -95,19 +97,16 @@ class LoginFragment : BaseFragment() {
             }
             else -> auth?.signInWithEmailAndPassword(email, password)
                 ?.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        Log.d(TAG, "Successfully logged in")
+                    if (it.isSuccessful) (activity as? LoginActivity)?.logIn(progress)
+                }
+                ?.addOnFailureListener {
+                    progress.dismiss()
+                    handleError(it)
 
-                        (activity as? LoginActivity)?.logIn(progress)
-                    } else {
-                        Log.d(TAG, "Login failed")
+                    if(it is FirebaseAuthInvalidUserException || it is FirebaseAuthInvalidCredentialsException) {
                         binding.loginError.text = getString(R.string.login_error)
                         binding.loginError.visibility = View.VISIBLE
                     }
-                }
-                ?.addOnFailureListener {
-                    it.printStackTrace()
-                    showAlert(getString(R.string.error), getString(R.string.error_logging_in))
                 }
         }
     }

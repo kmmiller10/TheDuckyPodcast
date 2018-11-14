@@ -5,12 +5,14 @@
     <string name="age">Age</string>
     <string name="edit">Edit</string>
     <string name="error">Error</string>
+    <string name="error_no_connection">There is no internet connection</string>
     <string name="gender">Gender</string>
     <string name="home_title">This month\'s challenge</string>
     <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>
-    <string name="series">Series %d</string>
+    <string name="series">Series</string>
+    <string name="series_number">Series %d</string>
     <string name="state">U.S. State</string>
     <string name="state_error">Must be a valid U.S. state</string>
     <string name="update_password">Update Password</string>
@@ -25,7 +27,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
     <string name="email_empty_error">Email cannot be empty</string>
-    <string name="error_logging_in">There was an error logging in. Try again in a few minutes</string>
+    <string name="error_logging_in">There was an error logging in. Check that your credentials are correct or try again in a few minutes</string>
     <string name="error_signing_up">There was an error signing up. Try again in a few minutes</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="logging_in">Logging in…</string>
