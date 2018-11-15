@@ -5,8 +5,13 @@
         android:icon="@drawable/ic_home_inactive"
         android:title="@string/home"/>
 
-    <item android:id="@+id/nav_survey"
+    <item android:id="@+id/nav_dailies"
           android:checked="true"
-          android:icon="@drawable/ic_question_answer_inactive"
-          android:title="@string/survey"/>
+          android:icon="@drawable/ic_dailies_inactive"
+          android:title="@string/dailies"/>
+
+    <item android:id="@+id/nav_weeklies"
+          android:checked="true"
+          android:icon="@drawable/ic_weeklies_inactive"
+          android:title="@string/weeklies"/>
 </menu>

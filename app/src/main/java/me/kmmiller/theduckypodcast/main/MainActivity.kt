@@ -26,7 +26,9 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override fun navItemSelected(itemId: Int) {
         if(itemId == R.id.nav_home) {
             pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
-        } else if(itemId == R.id.nav_survey) {
+        } else if(itemId == R.id.nav_dailies) {
+            pushFragment(SurveyFragment(), true, false, SurveyFragment.TAG)
+        } else if(itemId == R.id.nav_weeklies) {
             pushFragment(SurveyFragment(), true, false, SurveyFragment.TAG)
         }
     }

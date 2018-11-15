@@ -89,8 +89,10 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     private fun setupItems() {
         val home = BottomNavItemModel(R.id.nav_home, R.drawable.ic_home_active, R.drawable.ic_home_inactive, R.string.home)
         navItems.add(home)
-        val survey = BottomNavItemModel(R.id.nav_survey, R.drawable.ic_question_answer_active,  R.drawable.ic_question_answer_inactive, R.string.survey)
-        navItems.add(survey)
+        val dailies = BottomNavItemModel(R.id.nav_dailies, R.drawable.ic_dailies_active,  R.drawable.ic_dailies_inactive, R.string.dailies)
+        navItems.add(dailies)
+        val weeklies = BottomNavItemModel(R.id.nav_weeklies, R.drawable.ic_weeklies_active,  R.drawable.ic_weeklies_inactive, R.string.weeklies)
+        navItems.add(weeklies)
     }
 
     override fun onNavItemSelected(itemId: Int) {
@@ -105,6 +107,13 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
 
     protected fun updateSelected(itemId: Int) {
         adapter?.updateSelected(this, itemId)
+    }
+
+    fun hideKeyboard() {
+        //https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = currentFocus ?: View(this)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     /**
@@ -183,13 +192,6 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             .setPositiveButton(positiveText, positiveListener)
             .setNegativeButton(cancelText, cancelListener)
             .show()
-    }
-
-    fun hideKeyboard() {
-        //https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
-        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        val view = currentFocus ?: View(this)
-        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
