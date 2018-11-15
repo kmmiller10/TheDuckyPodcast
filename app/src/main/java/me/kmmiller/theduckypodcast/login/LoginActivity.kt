@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
-import me.kmmiller.theduckypodcast.core.Progress
+import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.UserModel
 

@@ -1,7 +1,6 @@
 package me.kmmiller.theduckypodcast.login
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +12,9 @@ import me.kmmiller.theduckypodcast.BuildConfig
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.databinding.LoginFragmentBinding
+import me.kmmiller.theduckypodcast.utils.Progress
+import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class LoginFragment : BaseFragment() {
     private lateinit var binding: LoginFragmentBinding
@@ -48,9 +48,8 @@ class LoginFragment : BaseFragment() {
             false
         }
 
-        binding.email.setOnKeyListener { _, _, _ ->
+        binding.email.onTextChangedListener {
             binding.loginError.visibility = View.GONE
-            false
         }
 
         binding.password.setOnEditorActionListener { _, action, _ ->
@@ -62,9 +61,8 @@ class LoginFragment : BaseFragment() {
             false
         }
 
-        binding.password.setOnKeyListener { _, _, _ ->
+        binding.password.onTextChangedListener {
             binding.loginError.visibility = View.GONE
-            false
         }
 
         binding.forgotPassword.setOnClickListener {
@@ -77,11 +75,10 @@ class LoginFragment : BaseFragment() {
     }
 
     private fun doLogin() {
+        (activity as BaseActivity).hideKeyboard()
+
         val progress = Progress(requireActivity() as BaseActivity)
         progress.progress(getString(R.string.logging_in))
-
-        binding.email.clearFocus()
-        binding.password.clearFocus()
 
         val email = binding.email.text.toString()
         val password = binding.password.text.toString()

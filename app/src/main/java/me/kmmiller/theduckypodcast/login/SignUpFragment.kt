@@ -1,21 +1,21 @@
 package me.kmmiller.theduckypodcast.login
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.databinding.SignUpFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
+import me.kmmiller.theduckypodcast.utils.Progress
+import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class SignUpFragment : BaseFragment() {
     private lateinit var binding: SignUpFragmentBinding
@@ -31,7 +31,6 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun setUiListeners() {
-
         binding.email.setOnEditorActionListener { _, action, _ ->
             if(action == EditorInfo.IME_ACTION_NEXT) {
                 // Hitting next should go straight to password edit text
@@ -41,9 +40,8 @@ class SignUpFragment : BaseFragment() {
             false
         }
 
-        binding.email.setOnKeyListener { _, _, _ ->
+        binding.email.onTextChangedListener {
             binding.signUpError.visibility = View.GONE
-            false
         }
 
         binding.password.setOnEditorActionListener { _, action, _ ->
@@ -55,80 +53,105 @@ class SignUpFragment : BaseFragment() {
             false
         }
 
-        binding.password.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                binding.signUpError.visibility = View.GONE
-
-                if(binding.password.text.toString() == binding.confirmPassword.text.toString()) {
-                    binding.passwordsDoNotMatch.visibility = View.GONE
-                }
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-        })
-        binding.password.setOnKeyListener { _, _, _ ->
+        binding.password.onTextChangedListener {
             binding.signUpError.visibility = View.GONE
-            false
+
+            if(binding.password.text.toString() == binding.confirmPassword.text.toString()) {
+                binding.passwordsDoNotMatch.visibility = View.GONE
+            } else if(!binding.confirmPassword.text?.toString().isNullOrEmpty()) {
+                // Show error if confirm password field is not empty
+                binding.passwordsDoNotMatch.visibility = View.VISIBLE
+            }
         }
 
         binding.confirmPassword.setOnEditorActionListener { _, action, _ ->
             if(action == EditorInfo.IME_ACTION_DONE) {
                 // Hitting done should attempt sign up if T&C is accepted
-                if(binding.termsAndConditionsCheckbox.isChecked)
+                if(binding.termsAndConditionsCheckbox.isChecked) {
+                    clearFocus()
                     signUp()
-                else
-                    binding.termsAndConditionsCheckbox.clearFocus()
+                } else {
+                    clearFocus()
+                }
                 return@setOnEditorActionListener true
             }
             false
         }
 
-        binding.confirmPassword.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-                binding.signUpError.visibility = View.GONE
+        binding.confirmPassword.onTextChangedListener {
+            binding.signUpError.visibility = View.GONE
 
-                if(binding.password.text.toString() != binding.confirmPassword.text.toString()) {
-                    binding.passwordsDoNotMatch.visibility = View.VISIBLE
-                } else {
-                    binding.passwordsDoNotMatch.visibility = View.GONE
-                }
+            if(binding.password.text.toString() != binding.confirmPassword.text.toString()) {
+                binding.passwordsDoNotMatch.visibility = View.VISIBLE
+            } else {
+                binding.passwordsDoNotMatch.visibility = View.GONE
             }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-        })
+        }
 
         binding.signUpButton.setOnClickListener {
             signUp()
         }
     }
 
-    private fun signUp() {
-        val progress = Progress(requireActivity() as BaseActivity)
-        progress.progress(getString(R.string.signing_up))
+    private fun clearFocus() {
+        (activity as BaseActivity).hideKeyboard()
+    }
 
+    private fun validateEmail(): Boolean {
         val email = binding.email.text.toString()
-        val password = binding.password.text.toString()
-        val confirmPassword = binding.confirmPassword.text.toString()
-
-        when {
+        return when {
             email.isEmpty() -> {
                 binding.signUpError.text = getString(R.string.email_empty_error)
                 binding.signUpError.visibility = View.VISIBLE
+                false
             }
-            password != confirmPassword -> binding.passwordsDoNotMatch.visibility = View.VISIBLE
+            !email.contains(Regex(".+[@].+")) -> {
+                binding.signUpError.text = getString(R.string.email_invalid_error)
+                binding.signUpError.visibility = View.VISIBLE
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun validatePassword(): Boolean {
+        val password = binding.password.text.toString()
+        val confirmPassword = binding.confirmPassword.text.toString()
+
+        return when {
+            password != confirmPassword -> {
+                binding.passwordsDoNotMatch.visibility = View.VISIBLE
+                false
+            }
             password.length < 7 -> {
                 binding.signUpError.text = getString(R.string.password_minimum_characters)
                 binding.signUpError.visibility = View.VISIBLE
+                false
+            }
+            password.toLowerCase() == password -> {
+                binding.signUpError.text = getString(R.string.password_one_capital)
+                binding.signUpError.visibility = View.VISIBLE
+                false
+            }
+            !password.contains(Regex(".*\\d+.*")) -> {
+                binding.signUpError.text = getString(R.string.password_one_number)
+                binding.signUpError.visibility = View.VISIBLE
+                false
+            }
+            else -> true
+        }
+    }
+
+    private fun signUp() {
+        val email = binding.email.text.toString()
+        val password = binding.password.text.toString()
+
+        when {
+            !validateEmail() -> {
+                // Error text handled in validateEmail(). Don't need to do anything other than catch validation failure
+            }
+            !validatePassword() -> {
+                // Error text handled in validatePassword(). Don't need to do anything other than catch validation failure
             }
             !binding.termsAndConditionsCheckbox.isChecked -> {
                 binding.signUpError.text = getString(R.string.terms_and_conditions_required)
@@ -136,6 +159,9 @@ class SignUpFragment : BaseFragment() {
             }
             else -> {
                 binding.signUpError.visibility = View.GONE
+
+                val progress = Progress(requireActivity() as BaseActivity)
+                progress.progress(getString(R.string.signing_up))
 
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnSuccessListener {
@@ -183,8 +209,10 @@ class SignUpFragment : BaseFragment() {
         val title = getString(R.string.error)
         if(e is FirebaseNetworkException) {
             showAlert(title, getString(R.string.error_no_connection))
+        } else if(e is FirebaseAuthUserCollisionException) {
+            showAlert(title, getString(R.string.email_already_exists))
         } else {
-            showAlert(getString(R.string.error), getString(R.string.error_signing_up))
+            showAlert(title, getString(R.string.error_signing_up))
         }
     }
 

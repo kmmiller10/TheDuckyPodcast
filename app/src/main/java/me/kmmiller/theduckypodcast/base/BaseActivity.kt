@@ -20,6 +20,9 @@ import me.kmmiller.theduckypodcast.base.ui.BottomNavRecyclerView
 import me.kmmiller.theduckypodcast.core.CoreApplication
 import me.kmmiller.theduckypodcast.core.CoreViewModel
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import android.app.Activity
+import android.view.inputmethod.InputMethodManager
+
 
 abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAdapterListener {
     lateinit var viewModel: CoreViewModel
@@ -180,6 +183,13 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             .setPositiveButton(positiveText, positiveListener)
             .setNegativeButton(cancelText, cancelListener)
             .show()
+    }
+
+    fun hideKeyboard() {
+        //https://stackoverflow.com/questions/1109022/close-hide-the-android-soft-keyboard
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val view = currentFocus ?: View(this)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

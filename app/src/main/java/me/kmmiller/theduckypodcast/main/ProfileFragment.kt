@@ -1,8 +1,6 @@
 package me.kmmiller.theduckypodcast.main
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,11 +9,12 @@ import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.core.Progress
 import me.kmmiller.theduckypodcast.core.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.models.equalTo
+import me.kmmiller.theduckypodcast.utils.Progress
+import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class ProfileFragment : BaseFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
@@ -37,21 +36,14 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         binding.gender.isEnabled = false
         resetProfile()
 
-        binding.usState.addTextChangedListener(object: TextWatcher {
-            override fun afterTextChanged(p0: Editable?) {
-            }
-
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-            }
-
-            override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                binding.usStateError.visibility =
-                        if(text != null && (UserModel.stateAbbreviationsList.contains(text.toString().toUpperCase()) || text.isEmpty()))
-                            View.GONE
-                        else
-                            View.VISIBLE
-            }
-        })
+        binding.usState.onTextChangedListener {
+            val text = binding.usState.text?.toString() ?: ""
+            binding.usStateError.visibility =
+                    if(UserModel.stateAbbreviationsList.contains(text.toUpperCase()) || text.isEmpty())
+                        View.GONE
+                    else
+                        View.VISIBLE
+        }
     }
 
     override fun onResume() {
@@ -123,9 +115,11 @@ class ProfileFragment : BaseFragment(), EditableFragment {
                     }
 
                     progress.dismiss()
-                    (activity as? MainActivity)?.finishFragment()
+                    resetProfile()
+                    (activity as? MainActivity)?.setEditableFragment(true)
                 }
                 .addOnFailureListener { e ->
+                    progress.dismiss()
                     handleError(e)
                 }
         }

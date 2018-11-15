@@ -6,7 +6,7 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
-import me.kmmiller.theduckypodcast.core.getStringArrayList
+import me.kmmiller.theduckypodcast.utils.getStringArrayList
 
 @RealmClass
 open class SeriesModel: RealmObject(), RModel {
