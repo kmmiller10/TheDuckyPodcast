@@ -76,8 +76,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     private fun updateNav() {
         if(hasBottomNav) {
             bottomNavRecyclerView.visibility = View.VISIBLE
-            setupItems()
-            adapter = BottomNavAdapter(R.id.nav_home, navItems)
+            navItems.addAll(getNavItems())
+            adapter = BottomNavAdapter(firstNavItem(), navItems)
             adapter?.let {
                 bottomNavRecyclerView.setRecyclerViewAdapter(it)
             }
@@ -86,14 +86,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
         }
     }
 
-    private fun setupItems() {
-        val home = BottomNavItemModel(R.id.nav_home, R.drawable.ic_home_active, R.drawable.ic_home_inactive, R.string.home)
-        navItems.add(home)
-        val dailies = BottomNavItemModel(R.id.nav_dailies, R.drawable.ic_dailies_active,  R.drawable.ic_dailies_inactive, R.string.dailies)
-        navItems.add(dailies)
-        val weeklies = BottomNavItemModel(R.id.nav_weeklies, R.drawable.ic_weeklies_active,  R.drawable.ic_weeklies_inactive, R.string.weeklies)
-        navItems.add(weeklies)
-    }
+    abstract fun firstNavItem(): Int
+    abstract fun getNavItems(): ArrayList<BottomNavItemModel>
 
     override fun onNavItemSelected(itemId: Int) {
         if(currentNavId != itemId) {

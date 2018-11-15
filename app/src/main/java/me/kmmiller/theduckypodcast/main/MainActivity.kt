@@ -8,6 +8,7 @@ import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
+import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
@@ -21,6 +22,19 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         } else {
             auth.addAuthStateListener(this)
         }
+    }
+
+    override fun firstNavItem(): Int = R.id.nav_home
+
+    override fun getNavItems(): ArrayList<BottomNavItemModel> {
+        val navItems = ArrayList<BottomNavItemModel>()
+        val home = BottomNavItemModel(R.id.nav_home, R.drawable.ic_home_active, R.drawable.ic_home_inactive, R.string.home)
+        navItems.add(home)
+        val dailies = BottomNavItemModel(R.id.nav_dailies, R.drawable.ic_dailies_active,  R.drawable.ic_dailies_inactive, R.string.dailies)
+        navItems.add(dailies)
+        val weeklies = BottomNavItemModel(R.id.nav_weeklies, R.drawable.ic_weeklies_active,  R.drawable.ic_weeklies_inactive, R.string.weeklies)
+        navItems.add(weeklies)
+        return navItems
     }
 
     override fun navItemSelected(itemId: Int) {
