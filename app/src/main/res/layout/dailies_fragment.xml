@@ -79,11 +79,12 @@
             <me.kmmiller.theduckypodcast.base.ui.BaseEditText
                     android:id="@+id/additional_comments"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="60dp"
                     android:imeOptions="actionDone"
                     android:hint="@string/additional_comments_hint"
                     android:inputType="textMultiLine|textCapSentences"
                     android:textSize="14sp"
+                    android:gravity="top|start"
                     android:lines="4"
                     android:minLines="4"
                     android:maxLength="2000"

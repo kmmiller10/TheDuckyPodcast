@@ -46,7 +46,7 @@ class DailiesFragment : BaseFragment() {
 
         val fb = FirebaseFirestore.getInstance()
         getDailyId(progress, fb) {
-           // if(it != viewModel?.dailyId.nonNullString()) {
+            if(it != viewModel?.dailyId.nonNullString()) {
                 viewModel?.dailyId = it
 
                 progress.progress(getString(R.string.loading))
@@ -65,9 +65,9 @@ class DailiesFragment : BaseFragment() {
                         handleError(e)
                         progress.dismiss()
                     }
-            //} else {
-            //    progress.dismiss()
-            //}
+            } else {
+                progress.dismiss()
+            }
         }
     }
 

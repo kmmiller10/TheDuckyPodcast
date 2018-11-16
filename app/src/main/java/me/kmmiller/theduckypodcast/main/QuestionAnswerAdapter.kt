@@ -49,15 +49,10 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
         }
 
         fun addRadioAnswers(answers: ArrayList<String>) {
-            // Adjust padding ints to density pixels
-            val scale = context.resources.displayMetrics.density
-            val dp = (12*scale + 0.5f).toInt()
-
             answers.forEach {
                 val radioButton = AppCompatRadioButton(context)
                 radioButton.id = answers.indexOf(it)
                 radioButton.text = it
-                radioButton.setPadding(0, 0, dp, 0)
                 binding.radioAnswers.addView(radioButton)
             }
         }

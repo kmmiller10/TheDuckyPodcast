@@ -38,12 +38,10 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     }
 
     override fun navItemSelected(itemId: Int) {
-        if(itemId == R.id.nav_home) {
-            pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
-        } else if(itemId == R.id.nav_dailies) {
-            pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
-        } else if(itemId == R.id.nav_weeklies) {
-            pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
+        when (itemId) {
+            R.id.nav_home -> pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
+            R.id.nav_dailies -> pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
+            R.id.nav_weeklies -> pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
         }
     }
 
