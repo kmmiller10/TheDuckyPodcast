@@ -5,6 +5,8 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
+import me.kmmiller.theduckypodcast.utils.nonNullLong
+import me.kmmiller.theduckypodcast.utils.nonNullString
 
 @RealmClass
 open class UserModel : RealmObject(), RModel {
@@ -19,10 +21,10 @@ open class UserModel : RealmObject(), RModel {
 
     override fun toRealmModel(document: DocumentSnapshot) {
         id = document.id
-        email = document["email"] as? String ?: ""
-        age = document["age"] as? Long ?: 0L
-        gender = document["gender"] as? String ?: ""
-        state = document["state"] as? String ?: ""
+        email = document["email"].nonNullString()
+        age = document["age"].nonNullLong()
+        gender = document["gender"].nonNullString()
+        state = document["state"].nonNullString()
     }
 
     override fun fromRealmModel(): HashMap<String, Any> {

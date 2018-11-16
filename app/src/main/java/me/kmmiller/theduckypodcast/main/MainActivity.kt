@@ -41,9 +41,9 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         if(itemId == R.id.nav_home) {
             pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
         } else if(itemId == R.id.nav_dailies) {
-            pushFragment(SurveyFragment(), true, false, SurveyFragment.TAG)
+            pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
         } else if(itemId == R.id.nav_weeklies) {
-            pushFragment(SurveyFragment(), true, false, SurveyFragment.TAG)
+            pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
         }
     }
 

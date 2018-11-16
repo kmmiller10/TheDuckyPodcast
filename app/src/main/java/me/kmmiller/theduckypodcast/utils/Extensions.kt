@@ -37,3 +37,23 @@ fun AppCompatEditText.onTextChangedListener(onTextChanged: (e: Editable?) -> Uni
         }
     })
 }
+
+fun Any?.nonNullString(): String {
+    if(this == null) return ""
+
+    return try {
+        (this as? String) ?: ""
+    } catch (e: Exception) {
+        ""
+    }
+}
+
+fun Any?.nonNullLong(): Long {
+    if(this == null) return 0L
+
+    return try {
+        (this as? Long) ?: 0L
+    } catch (e: Exception) {
+        0L
+    }
+}

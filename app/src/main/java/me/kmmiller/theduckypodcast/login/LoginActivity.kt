@@ -6,6 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
+import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.UserModel
@@ -69,7 +70,10 @@ class LoginActivity : BaseActivity() {
             }
     }
 
-    override fun navItemSelected(itemId: Int) {
-        // Not applicable for this activity
-    }
+    // Not applicable for this activity
+    override fun firstNavItem(): Int = 0
+    // Not applicable for this activity
+    override fun getNavItems(): ArrayList<BottomNavItemModel> = ArrayList()
+    // Not applicable for this activity
+    override fun navItemSelected(itemId: Int) {}
 }

@@ -7,6 +7,8 @@ import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
 import me.kmmiller.theduckypodcast.utils.getStringArrayList
+import me.kmmiller.theduckypodcast.utils.nonNullLong
+import me.kmmiller.theduckypodcast.utils.nonNullString
 
 @RealmClass
 open class SeriesModel: RealmObject(), RModel {
@@ -23,12 +25,12 @@ open class SeriesModel: RealmObject(), RModel {
 
     override fun toRealmModel(document: DocumentSnapshot) {
         id = document.id
-        title = document["title"] as? String ?: ""
-        description = document["description"] as? String ?: ""
-        expandedDescription = document["expandedDescription"] as? String ?: ""
-        podcastLink = document["podcastLink"] as? String ?: ""
+        title = document["title"].nonNullString()
+        description = document["description"].nonNullString()
+        expandedDescription = document["expandedDescription"].nonNullString()
+        podcastLink = document["podcastLink"].nonNullString()
         researchLinks.addAll(document.getStringArrayList("researchLinks"))
-        season = document["season"] as? Long ?: 0L
+        season = document["season"].nonNullLong()
     }
 
     override fun fromRealmModel(): HashMap<String, Any> {

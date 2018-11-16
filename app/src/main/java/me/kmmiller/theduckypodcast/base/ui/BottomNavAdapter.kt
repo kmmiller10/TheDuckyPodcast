@@ -60,7 +60,7 @@ class BottomNavAdapter(initialItem: Int, private val navItems: ArrayList<BottomN
         }
 
         fun setLabel(@StringRes labelRes: Int) {
-            binding.itemLabel.text = context.getString(labelRes)
+            binding.itemLabel.text = context.getString(labelRes).toUpperCase()
         }
 
         fun setTextColor(color: ColorStateList) {

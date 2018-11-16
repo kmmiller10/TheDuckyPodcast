@@ -14,6 +14,7 @@ import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.models.equalTo
 import me.kmmiller.theduckypodcast.utils.Progress
+import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class ProfileFragment : BaseFragment(), EditableFragment {
@@ -37,7 +38,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         resetProfile()
 
         binding.usState.onTextChangedListener {
-            val text = binding.usState.text?.toString() ?: ""
+            val text = binding.usState.text?.toString().nonNullString()
             binding.usStateError.visibility =
                     if(UserModel.stateAbbreviationsList.contains(text.toUpperCase()) || text.isEmpty())
                         View.GONE
@@ -82,7 +83,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
 
         val age = binding.age.text?.toString()?.toLong() ?: 0
         val gender = binding.gender.selectedItem.toString()
-        val stateText = binding.usState.text?.toString() ?: ""
+        val stateText = binding.usState.text?.toString().nonNullString()
 
         val authUser = auth?.currentUser ?: return // Get authenticated user from firebase
         val realmUser = realm.findUserById(authUser.uid)?: return // Get local realm user

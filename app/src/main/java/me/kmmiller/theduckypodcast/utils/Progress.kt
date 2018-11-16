@@ -11,7 +11,7 @@ class Progress(val activity: BaseActivity) {
     }
 
     fun progress(message: String, canceler: ICancel?) {
-        progressBar = BaseProgress(activity)
+        if(progressBar == null) progressBar = BaseProgress(activity)
 
         progressBar?.setCanceledOnTouchOutside(canceler != null)
         progressBar?.setCancelable(canceler != null)
@@ -27,5 +27,6 @@ class Progress(val activity: BaseActivity) {
 
     fun dismiss() {
         progressBar?.dismiss()
+        progressBar = null
     }
 }

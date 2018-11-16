@@ -11,6 +11,7 @@ import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findSeriesModel
 import me.kmmiller.theduckypodcast.databinding.HomeFragmentBinding
 import me.kmmiller.theduckypodcast.models.SeriesModel
+import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class HomeFragment : BaseFragment() {
     private lateinit var binding: HomeFragmentBinding
@@ -55,7 +56,7 @@ class HomeFragment : BaseFragment() {
             .document("current-series")
             .get()
             .addOnSuccessListener {
-                val seriesId = it.get("id") as? String ?: ""
+                val seriesId = it.get("id").nonNullString()
                 if(seriesId.isNotEmpty()) {
                     series = realm?.findSeriesModel(seriesId)
                     if(series != null) {
