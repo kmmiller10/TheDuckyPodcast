@@ -34,7 +34,7 @@ class HomeFragment : BaseFragment() {
 
         viewModel?.let {
             if(it.seriesId.isNotEmpty()) {
-                load(progress, it.dailyId)
+                load(progress, it.seriesId)
             }
         }
 
@@ -42,8 +42,8 @@ class HomeFragment : BaseFragment() {
             progress.progress(getString(R.string.loading))
         }
 
-
         getCurrentSeries(progress) {
+            viewModel?.seriesId = it
             load(progress, it)
         }
     }

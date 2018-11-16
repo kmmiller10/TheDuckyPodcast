@@ -78,7 +78,7 @@ class DailiesFragment : BaseFragment() {
                 val adapter = QuestionAnswerAdapter(ArrayList(it.items))
                 binding.questionAnswerList.adapter = adapter
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())
-                binding.questionAnswerList.setHasFixedSize(true)
+                binding.questionAnswerList.isNestedScrollingEnabled = false
             }
         } catch (e: Exception) {
             e.printStackTrace()

@@ -4,7 +4,7 @@
     <!-- General -->
     <string name="additional_comments">Additional Comments</string>
     <string name="additional_comments_description">If you would like to provide any extra details, or if you feel that there is something the questions did not address, please note it below</string>
-    <string name="additional_comments_hint">Write your additional comments here</string>
+    <string name="additional_comments_hint">Write any additional comments here</string>
     <string name="age">Age</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
     <string name="edit">Edit</string>
