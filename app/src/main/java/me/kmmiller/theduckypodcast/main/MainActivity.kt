@@ -45,33 +45,21 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     }
 
     /**
-     * Overriding from BaseActivity so that editable frag can be set to false and for the back stack to pop if needed
+     * Overriding so nav fragment can be pushed if coming from a non-NavItem fragment
      */
     override fun onNavItemSelected(itemId: Int) {
-        supportFragmentManager?.let {
-            if(it.backStackEntryCount >= 1) it.popBackStackImmediate()
+        val frag = supportFragmentManager.fragments.firstOrNull()
+        if(frag != null && frag !is NavItem && itemId == currentNavId) {
+            navItemSelected(itemId)
         }
         super.onNavItemSelected(itemId)
     }
 
-    fun logOut() {
-        auth.signOut()
-        auth.removeAuthStateListener(this)
-
-        val intent = Intent(this, LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
-        startActivity(intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        auth.removeAuthStateListener(this)
-    }
-
     override fun onBackPressed() {
+        val frag = supportFragmentManager.fragments.firstOrNull()
+        val pushNavFrag = frag != null && frag !is NavItem
         when {
-            supportFragmentManager.backStackEntryCount >= 1 -> supportFragmentManager.popBackStack()
+            pushNavFrag -> navItemSelected(currentNavId)
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
             else -> super.onBackPressed()
         }
@@ -85,7 +73,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.profile -> {
-                pushFragment(ProfileFragment(), true, true, ProfileFragment.TAG)
+                pushFragmentSynchronous(ProfileFragment(), true, ProfileFragment.TAG)
                 true
             }
             R.id.settings -> {
@@ -105,5 +93,20 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             // TODO Reauth
             logOut()
         }
+    }
+
+    fun logOut() {
+        auth.signOut()
+        auth.removeAuthStateListener(this)
+
+        val intent = Intent(this, LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )
+        startActivity(intent)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        auth.removeAuthStateListener(this)
     }
 }

@@ -18,6 +18,10 @@ abstract class BaseFragment : Fragment() {
         (activity as? BaseActivity)?.pushFragment(frag, replace, addToBackStack, tag)
     }
 
+    protected fun pushFragmentSynchronous(frag: Fragment, replace: Boolean, tag: String) {
+        (activity as? BaseActivity)?.pushFragmentSynchronous(frag, replace, tag)
+    }
+
     protected fun handleError(e: Exception) {
         (activity as BaseActivity).handleError(e)
     }

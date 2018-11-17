@@ -18,7 +18,7 @@ import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import java.lang.Exception
 
-class DailiesFragment : BaseFragment() {
+class DailiesFragment : BaseFragment(), NavItem {
     private lateinit var binding: DailiesFragmentBinding
     var realm: Realm? = null
 
@@ -107,6 +107,8 @@ class DailiesFragment : BaseFragment() {
         realm?.close()
         realm = null
     }
+
+    override fun getNavId(): Int = R.id.nav_home
 
     companion object {
         const val TAG = "dailies_fragment"

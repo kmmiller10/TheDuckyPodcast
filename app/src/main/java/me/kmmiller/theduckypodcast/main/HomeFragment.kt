@@ -15,7 +15,7 @@ import me.kmmiller.theduckypodcast.models.SeriesModel
 import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(), NavItem {
     private lateinit var binding: HomeFragmentBinding
     var realm: Realm? = null
 
@@ -106,6 +106,8 @@ class HomeFragment : BaseFragment() {
                 handleError(it)
             }
     }
+
+    override fun getNavId(): Int = R.id.nav_home
 
     companion object {
         const val TAG = "home_fragment"

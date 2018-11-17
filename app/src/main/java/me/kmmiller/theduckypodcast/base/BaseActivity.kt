@@ -131,7 +131,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     }
 
     /**
-     * Pushes a fragment immediately - the downside is that the addToBackStack cannot be used
+     * Synchronously pushes a fragment, i.e. the transaction is committed immediately. addToBackStack cannot be use
+     * when committing synchronously
      */
     fun pushFragmentSynchronous(frag: Fragment, replace: Boolean, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
@@ -142,12 +143,6 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             transaction.add(getFragContainerId(), frag, tag)
 
         transaction.commitNow()
-    }
-
-    open fun finishFragment() {
-        supportFragmentManager?.let {
-            if(it.backStackEntryCount >= 1) it.popBackStack()
-        }
     }
 
     fun handleError(e: Exception) {
