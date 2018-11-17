@@ -1,8 +1,8 @@
-package me.kmmiller.theduckypodcast.core
+package me.kmmiller.theduckypodcast.main
 
 import androidx.lifecycle.ViewModel
 
-class CoreViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
     var seriesId = ""
     var dailyId = ""
 }

@@ -18,14 +18,15 @@ import me.kmmiller.theduckypodcast.base.ui.BottomNavAdapter
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.base.ui.BottomNavRecyclerView
 import me.kmmiller.theduckypodcast.core.CoreApplication
-import me.kmmiller.theduckypodcast.core.CoreViewModel
+import me.kmmiller.theduckypodcast.main.MainViewModel
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 import android.app.Activity
 import android.view.inputmethod.InputMethodManager
+import com.google.firebase.firestore.FirebaseFirestoreException
 
 
 abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAdapterListener {
-    lateinit var viewModel: CoreViewModel
+    lateinit var viewModel: MainViewModel
     lateinit var auth: FirebaseAuth
 
     private lateinit var bottomNavRecyclerView: BottomNavRecyclerView
@@ -37,7 +38,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CoreViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
         auth = (application as CoreApplication).getFirebaseAuthInstance()
 
         setContentView(R.layout.base_activity)
@@ -92,8 +93,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     override fun onNavItemSelected(itemId: Int) {
         if(currentNavId != itemId) {
             currentNavId = itemId
-            navItemSelected(itemId)
             adapter?.notifyDataSetChanged()
+            navItemSelected(itemId)
         }
     }
 
@@ -153,6 +154,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             showAlert(title, getString(R.string.error_no_connection))
         } else if(e is FirebaseAuthInvalidUserException || e is FirebaseAuthInvalidCredentialsException) {
             showAlert(title, getString(R.string.error_logging_in))
+        } else if(e is FirebaseFirestoreException && e.code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+            showAlert(title, getString(R.string.error_submission))
         }
     }
 

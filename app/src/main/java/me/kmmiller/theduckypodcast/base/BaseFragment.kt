@@ -1,15 +1,13 @@
 package me.kmmiller.theduckypodcast.base
 
 import android.content.DialogInterface
-import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
-import me.kmmiller.theduckypodcast.core.CoreViewModel
+import me.kmmiller.theduckypodcast.main.MainViewModel
 import java.lang.Exception
 
 abstract class BaseFragment : Fragment() {
-    protected var viewModel: CoreViewModel? = null
+    protected var viewModel: MainViewModel? = null
         get() = (activity as? BaseActivity)?.viewModel
     protected var auth: FirebaseAuth? = null
         get() = (activity as? BaseActivity)?.auth

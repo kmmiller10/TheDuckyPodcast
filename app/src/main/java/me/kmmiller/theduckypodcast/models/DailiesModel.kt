@@ -18,6 +18,7 @@ open class DailiesModel : RealmObject(), RModel {
 
     var title = ""
     var items = RealmList<QuestionAnswerModel>()
+    var isSubmitted = false
 
     override fun toRealmModel(document: DocumentSnapshot) {
         id = document.id
@@ -71,5 +72,28 @@ open class DailiesModel : RealmObject(), RModel {
 
     override fun fromRealmModel(): HashMap<String, Any> {
         return HashMap()
+    }
+
+    companion object {
+        @JvmStatic
+        fun createSubmittableModel(answers: SparseArray<Pair<Int, String?>>, additionalComments: String): HashMap<String, Any> {
+            val map = HashMap<String, Any>()
+            map["additionalComments"] = additionalComments
+
+            val answerPositions = ArrayList<Int>()
+            val inputs = ArrayList<String>()
+            for(i in 0 until answers.size()) {
+                val answer = answers[i]
+                val position = answer.first
+                val input = answer.second.nonNullString()
+
+                answerPositions.add(position)
+                inputs.add(input)
+            }
+
+            map["answers"] = answerPositions
+            map["inputs"] = inputs
+            return map
+        }
     }
 }

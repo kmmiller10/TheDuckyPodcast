@@ -2,9 +2,8 @@ package me.kmmiller.theduckypodcast.main
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.SparseArray
+import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
@@ -18,9 +17,11 @@ import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import java.lang.Exception
 
-class DailiesFragment : BaseFragment(), NavItem {
+class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: DailiesFragmentBinding
     var realm: Realm? = null
+    var menu: Menu? = null
+    var adapter: QuestionAnswerAdapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DailiesFragmentBinding.inflate(inflater, container, false)
@@ -29,6 +30,8 @@ class DailiesFragment : BaseFragment(), NavItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         realm = Realm.getDefaultInstance()
 
@@ -76,7 +79,7 @@ class DailiesFragment : BaseFragment(), NavItem {
             realm?.findDailiesModel(id)?.let {
                 binding.title.text = it.title
 
-                val adapter = QuestionAnswerAdapter(ArrayList(it.items))
+                adapter = QuestionAnswerAdapter(ArrayList(it.items))
                 binding.questionAnswerList.adapter = adapter
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())
                 binding.questionAnswerList.isNestedScrollingEnabled = false
@@ -100,6 +103,78 @@ class DailiesFragment : BaseFragment(), NavItem {
                 progress.dismiss()
                 handleError(it)
             }
+    }
+
+    private fun validateAnswers(answers: SparseArray<Pair<Int, String?>>): Boolean {
+        for(i in 0 until answers.size()) {
+            val answer = answers.get(i)
+
+            val answerPosition = answer.first
+            val otherInput = answer.second
+
+            if(answerPosition == -1) {
+                // -1 indicates that no answer was given for that question
+                binding.scrollView.scrollTo(0, 0) // Scroll to top so error is visible
+                binding.answerError.visibility = View.VISIBLE
+                return false
+            } else if(otherInput != null && otherInput.isEmpty()) {
+                // Empty answer for "other" selection
+                return false
+            }
+        }
+        return true
+    }
+
+    override fun onSave() {
+        val answers = adapter?.getAnswers() ?: return
+        val additionalComments = binding.additionalComments.text?.toString().nonNullString()
+
+        val progress = Progress(requireActivity() as MainActivity)
+        progress.progress(getString(R.string.saving))
+        if(validateAnswers(answers)) {
+            auth?.uid?.let { userId ->
+                val submittableModel = DailiesModel.createSubmittableModel(answers, additionalComments)
+                // Send the data to server after it has been validated, disable save and show results
+                val fb = FirebaseFirestore.getInstance()
+                fb.collection("dailies-responses")
+                    .document(userId)
+                    .set(submittableModel)
+                    .addOnSuccessListener {
+                        val dailiesModel = realm?.findDailiesModel(viewModel?.dailyId)
+                        if(dailiesModel != null) {
+                            realm?.executeTransaction {
+                                dailiesModel.isSubmitted = true
+                            }
+                        }
+                        progress.dismiss()
+                    }
+                    .addOnFailureListener { e ->
+                        handleError(e)
+                        progress.dismiss()
+                    }
+            }
+        } else {
+            progress.dismiss()
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.savable_menu, menu)
+        this.menu = menu
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        menu.findItem(R.id.save).title = getString(R.string.submit).toUpperCase()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if(item != null && item.itemId == R.id.save) {
+            onSave()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onDestroy() {

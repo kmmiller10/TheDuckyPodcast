@@ -155,17 +155,17 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         binding.usState.isEnabled = false
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.editable_menu, menu)
+        this.menu = menu
+    }
+
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
         menu?.findItem(R.id.edit)?.isVisible = !isEditing
         menu?.findItem(R.id.save)?.isVisible = isEditing
         menu?.findItem(R.id.cancel)?.isVisible = isEditing
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.editable_menu, menu)
-        this.menu = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

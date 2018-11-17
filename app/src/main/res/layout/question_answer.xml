@@ -28,17 +28,34 @@
 
         <me.kmmiller.theduckypodcast.base.ui.BaseEditText
                 android:id="@+id/other_answer"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:hint="@string/provide_details"
                 android:singleLine="true"
-                android:imeOptions="actionNext"
+                android:inputType="textCapSentences"
+                android:imeOptions="actionDone"
                 android:maxWidth="100dp"
                 android:textSize="14sp"
                 android:visibility="gone"
                 android:layout_marginTop="6dp"
                 android:layout_marginStart="14dp"
+                android:layout_marginEnd="14dp"
                 app:layout_constraintTop_toBottomOf="@+id/radio_answers"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/other_answer_error"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/error_red"
+                android:text="@string/field_required"
+                android:textStyle="italic"
+                android:visibility="gone"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="4dp"
+                app:layout_constraintTop_toBottomOf="@+id/other_answer"
+                app:layout_constraintStart_toStartOf="@+id/other_answer"/>
 
         <View
                 android:id="@+id/div"
@@ -48,7 +65,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                app:layout_constraintTop_toBottomOf="@+id/other_answer"/>
+                app:layout_constraintTop_toBottomOf="@+id/other_answer_error"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
