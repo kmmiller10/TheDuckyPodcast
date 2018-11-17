@@ -75,6 +75,7 @@ class DailiesFragment : BaseFragment() {
         try {
             realm?.findDailiesModel(id)?.let {
                 binding.title.text = it.title
+
                 val adapter = QuestionAnswerAdapter(ArrayList(it.items))
                 binding.questionAnswerList.adapter = adapter
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())

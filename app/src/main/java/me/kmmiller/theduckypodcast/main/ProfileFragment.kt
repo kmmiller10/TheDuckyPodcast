@@ -1,9 +1,7 @@
 package me.kmmiller.theduckypodcast.main
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
@@ -21,6 +19,9 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
     private lateinit var realm: Realm
 
+    private var isEditing = false
+    private var menu: Menu? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         realm = Realm.getDefaultInstance()
@@ -34,9 +35,6 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.gender.isEnabled = false
-        resetProfile()
-
         binding.usState.onTextChangedListener {
             val text = binding.usState.text?.toString().nonNullString()
             binding.usStateError.visibility =
@@ -45,16 +43,41 @@ class ProfileFragment : BaseFragment(), EditableFragment {
                     else
                         View.VISIBLE
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
-        (activity as MainActivity).setEditableFragment(true)
+        savedInstanceState?.let {
+            isEditing = it.getBoolean(IS_EDITING, false)
+            if(isEditing) {
+                binding.age.setText(it.getString(AGE, ""))
+                binding.gender.setSelection(it.getInt(GENDER,0))
+                binding.usState.setText(it.getString(STATE, ""))
+                // onEdit will enable all fields
+                onEdit()
+            }
+        }
+
+        if(!isEditing) {
+            // onCancel will disable all the fields and reset the profile to the realm model
+            onCancel()
+        }
+
+        setHasOptionsMenu(true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         realm.close()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.apply {
+            putBoolean(IS_EDITING, isEditing)
+            if(isEditing) {
+                putString(AGE, binding.age.text?.toString().nonNullString())
+                putInt(GENDER, binding.gender.selectedItemPosition)
+                putString(STATE, binding.usState.text?.toString().nonNullString())
+            }
+            super.onSaveInstanceState(outState)
+        }
     }
 
     private fun resetProfile() {
@@ -71,16 +94,13 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     }
 
     override fun onEdit() {
+        isEditing = true
         binding.age.isEnabled = true
         binding.gender.isEnabled = true
         binding.usState.isEnabled = true
     }
 
     override fun onSave() {
-        binding.age.isEnabled = false
-        binding.gender.isEnabled = false
-        binding.usState.isEnabled = false
-
         val age = binding.age.text?.toString()?.toLong() ?: 0
         val gender = binding.gender.selectedItem.toString()
         val stateText = binding.usState.text?.toString().nonNullString()
@@ -94,8 +114,8 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         detachedUser.state = stateText
 
         if(realmUser.equalTo(detachedUser)) {
-            (activity as? MainActivity)?.setEditableFragment(true)
-            resetProfile()
+            // No changes made, don't bother saving
+            onCancel()
             return
         }
 
@@ -107,7 +127,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
             val fb = FirebaseFirestore.getInstance()
             fb.collection("users").document(realmUser.id)
                 .set(detachedUser.fromRealmModel())
-                .addOnSuccessListener { response ->
+                .addOnSuccessListener {
                     // Update realm model
                     realm.executeTransaction {
                         realmUser.age = detachedUser.age
@@ -117,7 +137,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
 
                     progress.dismiss()
                     resetProfile()
-                    (activity as? MainActivity)?.setEditableFragment(true)
+                    isEditing = false
                 }
                 .addOnFailureListener { e ->
                     progress.dismiss()
@@ -129,12 +149,63 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     override fun onCancel() {
         resetProfile()
 
+        isEditing = false
         binding.age.isEnabled = false
         binding.gender.isEnabled = false
         binding.usState.isEnabled = false
     }
 
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        menu?.findItem(R.id.edit)?.isVisible = !isEditing
+        menu?.findItem(R.id.save)?.isVisible = isEditing
+        menu?.findItem(R.id.cancel)?.isVisible = isEditing
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.editable_menu, menu)
+        this.menu = menu
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.edit -> {
+                menu?.apply {
+                    findItem(R.id.edit)?.isVisible = false
+                    findItem(R.id.save)?.isVisible = true
+                    findItem(R.id.cancel)?.isVisible = true
+                }
+                onEdit()
+                true
+            }
+            R.id.save -> {
+                menu?.apply {
+                    findItem(R.id.edit)?.isVisible = true
+                    findItem(R.id.save)?.isVisible = false
+                    findItem(R.id.cancel)?.isVisible = false
+                }
+                onSave()
+                true
+            }
+            R.id.cancel -> {
+                menu?.apply {
+                    findItem(R.id.edit)?.isVisible = true
+                    findItem(R.id.save)?.isVisible = false
+                    findItem(R.id.cancel)?.isVisible = false
+                }
+                onCancel()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     companion object {
         const val TAG = "profile_fragment"
+        const val IS_EDITING = "is_editing"
+        const val AGE = "age"
+        const val GENDER = "gender"
+        const val STATE = "state"
     }
 }

@@ -13,7 +13,6 @@ import me.kmmiller.theduckypodcast.login.LoginActivity
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
-    var menu: Menu? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,9 +38,9 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
 
     override fun navItemSelected(itemId: Int) {
         when (itemId) {
-            R.id.nav_home -> pushFragment(HomeFragment(), true, false, HomeFragment.TAG)
-            R.id.nav_dailies -> pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
-            R.id.nav_weeklies -> pushFragment(DailiesFragment(), true, false, DailiesFragment.TAG)
+            R.id.nav_home -> pushFragmentSynchronous(HomeFragment(), true, HomeFragment.TAG)
+            R.id.nav_dailies -> pushFragmentSynchronous(DailiesFragment(), true, DailiesFragment.TAG)
+            R.id.nav_weeklies -> pushFragmentSynchronous(DailiesFragment(), true, DailiesFragment.TAG)
         }
     }
 
@@ -49,9 +48,8 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
      * Overriding from BaseActivity so that editable frag can be set to false and for the back stack to pop if needed
      */
     override fun onNavItemSelected(itemId: Int) {
-        setEditableFragment(false)
         supportFragmentManager?.let {
-            if(it.backStackEntryCount >= 1) it.popBackStack()
+            if(it.backStackEntryCount >= 1) it.popBackStackImmediate()
         }
         super.onNavItemSelected(itemId)
     }
@@ -72,7 +70,6 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     }
 
     override fun onBackPressed() {
-        setEditableFragment(false)
         when {
             supportFragmentManager.backStackEntryCount >= 1 -> supportFragmentManager.popBackStack()
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
@@ -80,51 +77,13 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         }
     }
 
-    /**
-     * Set to true in onResume of editable frags, otherwise MainActivity will set to false whenever possible
-     * i.e. onBackPressed() or finishFragment()
-     */
-    fun setEditableFragment(isEditable: Boolean) {
-        if(isEditable) {
-            menu?.findItem(R.id.edit)?.isVisible = true
-            menu?.findItem(R.id.save)?.isVisible = false
-            menu?.findItem(R.id.cancel)?.isVisible = false
-        } else {
-            menu?.findItem(R.id.edit)?.isVisible = false
-            menu?.findItem(R.id.save)?.isVisible = false
-            menu?.findItem(R.id.cancel)?.isVisible = false
-        }
-    }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
-        this.menu = menu
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
-            R.id.edit -> {
-                menu?.findItem(R.id.edit)?.isVisible = false
-                menu?.findItem(R.id.save)?.isVisible = true
-                menu?.findItem(R.id.cancel)?.isVisible = true
-                supportFragmentManager.fragments.filter { it is EditableFragment }.forEach { (it as EditableFragment).onEdit() }
-                true
-            }
-            R.id.save -> {
-                menu?.findItem(R.id.edit)?.isVisible = true
-                menu?.findItem(R.id.save)?.isVisible = false
-                menu?.findItem(R.id.cancel)?.isVisible = false
-                supportFragmentManager.fragments.filter { it is EditableFragment }.forEach { (it as EditableFragment).onSave() }
-                true
-            }
-            R.id.cancel -> {
-                menu?.findItem(R.id.edit)?.isVisible = true
-                menu?.findItem(R.id.save)?.isVisible = false
-                menu?.findItem(R.id.cancel)?.isVisible = false
-                supportFragmentManager.fragments.filter { it is EditableFragment }.forEach { (it as EditableFragment).onCancel() }
-                true
-            }
             R.id.profile -> {
                 pushFragment(ProfileFragment(), true, true, ProfileFragment.TAG)
                 true
@@ -139,11 +98,6 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    override fun finishFragment() {
-        setEditableFragment(false)
-        super.finishFragment()
     }
 
     override fun onAuthStateChanged(fbAuth: FirebaseAuth) {

@@ -22,7 +22,7 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
             holder.hideDiv()
         }
 
-        if(item.hasOtherField) holder.showOtherField()
+        holder.setOtherField(item.hasOtherField)
 
         holder.addQuestion(item.question)
 
@@ -35,13 +35,14 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
 
     inner class QuestionAnswerViewHolder(private val binding: QuestionAnswerBinding) : RecyclerView.ViewHolder(binding.root) {
         private val context = itemView.context
+        private var hasOtherField = false
 
         fun hideDiv() {
             binding.div.visibility = View.GONE
         }
 
-        fun showOtherField() {
-            binding.otherAnswer.visibility = View.VISIBLE
+        fun setOtherField(hasOtherField: Boolean){
+            this.hasOtherField = hasOtherField
         }
 
         fun addQuestion(question: String) {
@@ -49,12 +50,21 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
         }
 
         fun addRadioAnswers(answers: ArrayList<String>) {
-            answers.forEach {
+            answers.forEach {answer ->
                 val radioButton = AppCompatRadioButton(context)
-                radioButton.id = answers.indexOf(it)
-                radioButton.text = it
+                radioButton.id = answers.indexOf(answer)
+                radioButton.text = answer
+
+                radioButton.setOnClickListener {
+                    binding.otherAnswer.visibility = if(answers.last() == answer && hasOtherField) View.VISIBLE else View.GONE
+                }
+
                 binding.radioAnswers.addView(radioButton)
             }
+        }
+
+        fun getAnswer() {
+            binding.radioAnswers.checkedRadioButtonId
         }
     }
 }
