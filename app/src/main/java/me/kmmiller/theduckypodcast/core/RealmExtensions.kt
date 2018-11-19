@@ -1,6 +1,7 @@
 package me.kmmiller.theduckypodcast.core
 
 import io.realm.Realm
+import io.realm.RealmResults
 import me.kmmiller.theduckypodcast.models.DailiesModel
 import me.kmmiller.theduckypodcast.models.SeriesModel
 import me.kmmiller.theduckypodcast.models.UserModel
@@ -19,4 +20,8 @@ fun Realm.findSeriesModel(id: String?): SeriesModel? {
 fun Realm.findDailiesModel(id: String?): DailiesModel? {
     if(id == null) return null
     return where(DailiesModel::class.java).equalTo("id", id).findFirst()
+}
+
+fun Realm.findAllDailies(): RealmResults<DailiesModel> {
+    return where(DailiesModel::class.java).findAll()
 }

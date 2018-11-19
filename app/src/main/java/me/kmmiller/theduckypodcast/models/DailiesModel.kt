@@ -7,7 +7,7 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
-import me.kmmiller.theduckypodcast.utils.getStringArrayList
+import me.kmmiller.theduckypodcast.utils.getHashMap
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 @RealmClass
@@ -24,22 +24,18 @@ open class DailiesModel : RealmObject(), RModel {
         id = document.id
         title = document.get("title").nonNullString()
 
-        val questions = document.getStringArrayList("questions")
+        val questionAnswers = document.getHashMap("questionAnswers").toSortedMap()
 
-        // Collect answers - each answer array has a key equal to its question's position
-        val answers = SparseArray<ArrayList<String>>()
-        for((index, _) in questions.withIndex()) {
-            val answerList = document.getStringArrayList(index.toString())
-            answers.append(index, answerList)
-        }
-
-        for(i in 0 until questions.size) {
+        var i = 0
+        for(entry in questionAnswers.entries) {
             val model = QuestionAnswerModel()
 
-            model.question = questions[i]
+            model.question = entry.key
+
+            val answers = entry.value
 
             // The first value is always the answer type
-            val firebaseAnswerType = answers[i].firstOrNull() ?: continue
+            val firebaseAnswerType = answers.firstOrNull() ?: continue
             when(AnswerType.fromFirebaseType(firebaseAnswerType)) {
                 AnswerType.RADIO_BUTTON -> {
                     model.setAnswerType(AnswerType.RADIO_BUTTON)
@@ -54,19 +50,20 @@ open class DailiesModel : RealmObject(), RModel {
                     // Should never reach here
                 }
             }
-            answers[i].removeAt(0) // Remove the answer type value since it is no longer needed
+            answers.removeAt(0)
 
             // The last value will be _input if there is an other field
-            val otherField = answers[i].lastOrNull() ?: continue
+            val otherField = answers.lastOrNull() ?: continue
             if(AnswerType.fromFirebaseType(otherField) == AnswerType.EDIT_TEXT) {
                 model.hasOtherField = true
-                answers[i].removeAt(answers[i].size - 1) // Remove the _input field since it is no longer needed
+                answers.removeAt(answers.size - 1) // Remove the _input field since it is no longer needed
             }
 
             // Add the answers (omitting the first and last field (if last field was _input)
-            model.answers.addAll(answers[i])
+            model.answers.addAll(answers)
 
             items.add(model)
+            i++
         }
     }
 

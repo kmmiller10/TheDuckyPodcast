@@ -24,6 +24,23 @@ fun DocumentSnapshot?.getStringArrayList(element: String) : ArrayList<String> {
     return ary
 }
 
+fun DocumentSnapshot?.getHashMap(element: String) : HashMap<String, ArrayList<String>> {
+    var map = HashMap<String, ArrayList<String>>()
+
+    this?.apply {
+        this[element]?.let {
+            return try {
+                map = it as HashMap<String, ArrayList<String>>
+                map
+            } catch(e: Exception) {
+                map
+            }
+        }
+    }
+
+    return map
+}
+
 fun AppCompatEditText.onTextChangedListener(onTextChanged: (e: Editable?) -> Unit) {
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(e: Editable?) {
