@@ -26,7 +26,6 @@ open class DailiesModel : RealmObject(), RModel {
 
         val questionAnswers = document.getHashMap("questionAnswers").toSortedMap()
 
-        var i = 0
         for(entry in questionAnswers.entries) {
             val model = QuestionAnswerModel()
 
@@ -63,7 +62,6 @@ open class DailiesModel : RealmObject(), RModel {
             model.answers.addAll(answers)
 
             items.add(model)
-            i++
         }
     }
 
@@ -73,8 +71,9 @@ open class DailiesModel : RealmObject(), RModel {
 
     companion object {
         @JvmStatic
-        fun createSubmittableModel(answers: SparseArray<Pair<Int, String?>>, additionalComments: String): HashMap<String, Any> {
+        fun createSubmittableModel(dailyId: String, answers: SparseArray<Pair<Int, String?>>, additionalComments: String): HashMap<String, Any> {
             val map = HashMap<String, Any>()
+            map["dailyId"] = dailyId
             map["additionalComments"] = additionalComments
 
             val answerPositions = ArrayList<Int>()

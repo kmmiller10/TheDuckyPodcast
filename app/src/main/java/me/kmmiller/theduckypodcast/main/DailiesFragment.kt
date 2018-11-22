@@ -19,6 +19,7 @@ import java.lang.Exception
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: DailiesFragmentBinding
+    private lateinit var fb: FirebaseFirestore
     var realm: Realm? = null
     var menu: Menu? = null
     var adapter: QuestionAnswerAdapter? = null
@@ -47,7 +48,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
             progress.progress(getString(R.string.loading))
         }
 
-        val fb = FirebaseFirestore.getInstance()
+        fb = FirebaseFirestore.getInstance()
         getDailyId(progress, fb) {
             if(it != viewModel?.dailyId.nonNullString()) {
                 viewModel?.dailyId = it
@@ -91,7 +92,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         progress.dismiss()
     }
 
-    private fun getDailyId(progress: Progress, fb: FirebaseFirestore, onComplete: (String) -> Unit) {
+    private fun getDailyId(progress: Progress?, fb: FirebaseFirestore, onComplete: (String) -> Unit) {
         fb.collection("dailies")
             .document("get-daily-id")
             .get()
@@ -100,7 +101,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                 onComplete.invoke(id)
             }
             .addOnFailureListener {
-                progress.dismiss()
+                progress?.dismiss()
                 handleError(it)
             }
     }
@@ -129,32 +130,43 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         val answers = adapter?.getAnswers() ?: return
         val additionalComments = binding.additionalComments.text?.toString().nonNullString()
 
-        val progress = Progress(requireActivity() as MainActivity)
-        progress.progress(getString(R.string.saving))
-        if(validateAnswers(answers)) {
-            auth?.uid?.let { userId ->
-                val submittableModel = DailiesModel.createSubmittableModel(answers, additionalComments)
-                // Send the data to server after it has been validated, disable save and show results
-                val fb = FirebaseFirestore.getInstance()
-                fb.collection("dailies-responses")
-                    .document(userId)
-                    .set(submittableModel)
-                    .addOnSuccessListener {
-                        val dailiesModel = realm?.findDailiesModel(viewModel?.dailyId)
-                        if(dailiesModel != null) {
-                            realm?.executeTransaction {
-                                dailiesModel.isSubmitted = true
+        fun save(dailyId: String) {
+            val progress = Progress(requireActivity() as MainActivity)
+            progress.progress(getString(R.string.saving))
+            if (validateAnswers(answers)) {
+                auth?.uid?.let { userId ->
+                    val submittableModel = DailiesModel.createSubmittableModel(dailyId, answers, additionalComments)
+                    // Send the data to server after it has been validated, disable save and show results
+                    val fb = FirebaseFirestore.getInstance()
+                    fb.collection("dailies-responses")
+                        .document(userId)
+                        .set(submittableModel)
+                        .addOnSuccessListener {
+                            val dailiesModel = realm?.findDailiesModel(viewModel?.dailyId)
+                            if (dailiesModel != null) {
+                                realm?.executeTransaction {
+                                    dailiesModel.isSubmitted = true
+                                }
                             }
+                            progress.dismiss()
                         }
-                        progress.dismiss()
-                    }
-                    .addOnFailureListener { e ->
-                        handleError(e)
-                        progress.dismiss()
-                    }
+                        .addOnFailureListener { e ->
+                            handleError(e)
+                            progress.dismiss()
+                        }
+                }
+            } else {
+                progress.dismiss()
+            }
+        }
+
+        val dailyId = viewModel?.dailyId
+        if(dailyId == null) {
+            getDailyId(null, fb) {
+                save(it)
             }
         } else {
-            progress.dismiss()
+            save(dailyId)
         }
     }
 
