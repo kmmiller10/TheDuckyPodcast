@@ -2,7 +2,7 @@
 
 Every month, the host of The Ducky Podcast (along with guests) participates in a challenge aimed at improving oneself and/or benefiting the community. In each podcast episode, the host and guest(s) discuss their progress throughout the challenge, as well as difficulties faced, positive and negative outcomes, and an analysis of the results collected from the broader group of participants.
 
-Listeners of the podcast can participate in the challenge along with the host by answering brief questionnaires on a daily and weekly basis in the app. The app also contains a description of the current series challenge, links to scientific research that inspired the series, and upon completion of a questionnaire, a live results dataset collected from all participants. Users can choose to modify their profile to include more detailed information such as age, gender, and location which is used by the host to break down collected results into a more meaningful dataset.
+Listeners of the podcast can participate in the challenge along with the host by answering brief questionnaires on a daily and weekly basis in the app. The app also contains information about the current series challenge, links to scientific research related to the series, and upon completion of a questionnaire, live results collected from all participants. Users can choose to modify their profile to include more detailed information to help identify more interesting results.
    
     The Ducky Podcast is currently in its trial phase, and the app is in development.
    
