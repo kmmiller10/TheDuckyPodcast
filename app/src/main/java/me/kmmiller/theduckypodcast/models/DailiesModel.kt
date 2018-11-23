@@ -58,7 +58,7 @@ open class DailiesModel : RealmObject(), RModel {
                 answers.removeAt(answers.size - 1) // Remove the _input field since it is no longer needed
             }
 
-            // Add the answers (omitting the first and last field (if last field was _input)
+            // Add the answers (omitting the first and last field if last field was _input)
             model.answers.addAll(answers)
 
             items.add(model)

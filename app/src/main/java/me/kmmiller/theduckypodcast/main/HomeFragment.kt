@@ -75,7 +75,7 @@ class HomeFragment : BaseFragment(), NavItem {
             .get()
             .addOnSuccessListener {
                 val seriesId = it.get("id").nonNullString()
-                if(seriesId.isNotEmpty()) {
+                if(seriesId.isNotEmpty() && !isDetached) {
                     val series = realm?.findSeriesModel(seriesId)
                     if(series != null) {
                         // User already has series loaded, don't need to grab it again
