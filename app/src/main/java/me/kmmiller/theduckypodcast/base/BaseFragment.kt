@@ -9,8 +9,16 @@ import java.lang.Exception
 abstract class BaseFragment : Fragment() {
     protected var viewModel: MainViewModel? = null
         get() = (activity as? BaseActivity)?.viewModel
+
     protected var auth: FirebaseAuth? = null
         get() = (activity as? BaseActivity)?.auth
+
+    abstract fun getTitle(): String
+
+    override fun onResume() {
+        super.onResume()
+        activity?.title = getTitle()
+    }
 
     protected fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         (activity as? BaseActivity)?.pushFragment(frag, replace, addToBackStack, tag)

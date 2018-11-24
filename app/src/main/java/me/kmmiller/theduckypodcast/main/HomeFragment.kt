@@ -19,6 +19,8 @@ class HomeFragment : BaseFragment(), NavItem {
     private lateinit var binding: HomeFragmentBinding
     var realm: Realm? = null
 
+    override fun getTitle(): String = getString(R.string.home)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = HomeFragmentBinding.inflate(inflater, container, false)
         return binding.root
@@ -75,7 +77,7 @@ class HomeFragment : BaseFragment(), NavItem {
             .get()
             .addOnSuccessListener {
                 val seriesId = it.get("id").nonNullString()
-                if(seriesId.isNotEmpty() && !isDetached) {
+                if(seriesId.isNotEmpty() && context != null) {
                     val series = realm?.findSeriesModel(seriesId)
                     if(series != null) {
                         // User already has series loaded, don't need to grab it again

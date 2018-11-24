@@ -20,9 +20,13 @@ import java.lang.Exception
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: DailiesFragmentBinding
     private lateinit var fb: FirebaseFirestore
+
     var realm: Realm? = null
     var menu: Menu? = null
-    var adapter: QuestionAnswerAdapter? = null
+
+    private var adapter: QuestionAnswerAdapter? = null
+
+    override fun getTitle(): String = getString(R.string.dailies)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DailiesFragmentBinding.inflate(inflater, container, false)
@@ -50,27 +54,29 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
 
         fb = FirebaseFirestore.getInstance()
         getDailyId(progress, fb) {
-            if(it != viewModel?.dailyId.nonNullString()) {
-                viewModel?.dailyId = it
+            if(context != null) {
+                if (it != viewModel?.dailyId.nonNullString()) {
+                    viewModel?.dailyId = it
 
-                progress.progress(getString(R.string.loading))
-                fb.collection("dailies")
-                    .document(it)
-                    .get()
-                    .addOnSuccessListener { doc ->
-                        val model = DailiesModel()
-                        model.toRealmModel(doc)
-                        realm?.executeTransaction { rm ->
-                            rm.copyToRealmOrUpdate(model)
+                    progress.progress(getString(R.string.loading))
+                    fb.collection("dailies")
+                        .document(it)
+                        .get()
+                        .addOnSuccessListener { doc ->
+                            val model = DailiesModel()
+                            model.toRealmModel(doc)
+                            realm?.executeTransaction { rm ->
+                                rm.copyToRealmOrUpdate(model)
+                            }
+                            load(progress, it)
                         }
-                        load(progress, it)
-                    }
-                    .addOnFailureListener { e ->
-                        handleError(e)
-                        progress.dismiss()
-                    }
-            } else {
-                progress.dismiss()
+                        .addOnFailureListener { e ->
+                            handleError(e)
+                            progress.dismiss()
+                        }
+                } else {
+                    progress.dismiss()
+                }
             }
         }
     }

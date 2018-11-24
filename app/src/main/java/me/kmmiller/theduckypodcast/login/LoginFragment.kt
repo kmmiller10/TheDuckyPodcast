@@ -19,6 +19,8 @@ import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 class LoginFragment : BaseFragment() {
     private lateinit var binding: LoginFragmentBinding
 
+    override fun getTitle(): String = getString(R.string.login)
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = LoginFragmentBinding.inflate(inflater, container, false)
         return binding.root

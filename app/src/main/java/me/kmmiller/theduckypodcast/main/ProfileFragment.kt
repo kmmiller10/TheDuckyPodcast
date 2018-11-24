@@ -22,6 +22,8 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     private var isEditing = false
     private var menu: Menu? = null
 
+    override fun getTitle(): String = getString(R.string.profile)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         realm = Realm.getDefaultInstance()
