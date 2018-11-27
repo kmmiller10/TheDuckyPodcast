@@ -42,7 +42,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         when (itemId) {
             R.id.nav_home -> pushFragmentSynchronous(HomeFragment(), true, HomeFragment.TAG)
             R.id.nav_dailies -> pushFragmentSynchronous(DailiesFragment(), true, DailiesFragment.TAG)
-            R.id.nav_weeklies -> pushFragmentSynchronous(DailiesFragment(), true, DailiesFragment.TAG)
+            R.id.nav_weeklies -> pushFragmentSynchronous(WeekliesFragment(), true, WeekliesFragment.TAG)
         }
     }
 

@@ -29,30 +29,30 @@ abstract class BaseFragment : Fragment() {
     }
 
     protected fun handleError(e: Exception) {
-        (activity as BaseActivity).handleError(e)
+        (activity as? BaseActivity)?.handleError(e)
     }
 
     protected fun showAlert(title: String, message: String) {
-        (activity as BaseActivity).showAlert(title, message)
+        (activity as? BaseActivity)?.showAlert(title, message)
     }
 
     protected fun showAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
-        (activity as BaseActivity).showAlert(title, message, positiveListener)
+        (activity as? BaseActivity)?.showAlert(title, message, positiveListener)
     }
 
     protected fun showAlert(title: String,
                             message: String,
                             positiveText: String,
                             positiveListener: DialogInterface.OnClickListener?) {
-        (activity as BaseActivity).showAlert(title, message, positiveText, positiveListener)
+        (activity as? BaseActivity)?.showAlert(title, message, positiveText, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String, message: String, positiveListener: DialogInterface.OnClickListener) {
-        (activity as BaseActivity).showCancelableAlert(title, message, positiveListener)
+        (activity as? BaseActivity)?.showCancelableAlert(title, message, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String, message: String, positiveText: String, positiveListener: DialogInterface.OnClickListener) {
-        (activity as BaseActivity).showCancelableAlert(title, message, positiveText, positiveListener)
+        (activity as? BaseActivity)?.showCancelableAlert(title, message, positiveText, positiveListener)
     }
 
     protected fun showCancelableAlert(title: String,
@@ -61,6 +61,6 @@ abstract class BaseFragment : Fragment() {
                             positiveListener: DialogInterface.OnClickListener?,
                             cancelText: String,
                             cancelListener: DialogInterface.OnClickListener?) {
-        (activity as BaseActivity).showCancelableAlert(title, message, positiveText, positiveListener, cancelText, cancelListener)
+        (activity as? BaseActivity)?.showCancelableAlert(title, message, positiveText, positiveListener, cancelText, cancelListener)
     }
 }

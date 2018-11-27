@@ -3,7 +3,7 @@ package me.kmmiller.theduckypodcast.utils
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BaseProgress
 
-class Progress(val activity: BaseActivity) {
+class Progress(private val activity: BaseActivity) {
     private var progressBar: BaseProgress? = null
 
     fun progress(message: String) {
