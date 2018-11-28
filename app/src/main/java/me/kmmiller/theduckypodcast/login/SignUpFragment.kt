@@ -14,7 +14,6 @@ import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.SignUpFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class SignUpFragment : BaseFragment() {
@@ -162,8 +161,7 @@ class SignUpFragment : BaseFragment() {
             else -> {
                 binding.signUpError.visibility = View.GONE
 
-                val progress = Progress(requireActivity() as BaseActivity)
-                progress.progress(getString(R.string.signing_up))
+                showProgress(getString(R.string.signing_up))
 
                 auth?.createUserWithEmailAndPassword(email, password)
                     ?.addOnSuccessListener {
@@ -171,7 +169,7 @@ class SignUpFragment : BaseFragment() {
 
                         if(auth?.currentUser == null) {
                             // Should never reach here, but just in case handle null user so user isn't stuck spinning
-                            progress.dismiss()
+                            dismissProgress()
                             showAlert(getString(R.string.error), getString(R.string.error_signing_up))
                         }
 
@@ -185,17 +183,17 @@ class SignUpFragment : BaseFragment() {
                                 .set(user.fromRealmModel())
                                 .addOnSuccessListener {
                                     Log.d(TAG, "Document successfully created")
-                                    (activity as? LoginActivity)?.logIn(progress)
+                                    (activity as? LoginActivity)?.logIn(getProgress())
                                 }
                                 .addOnFailureListener { e ->
                                     Log.e(TAG, "Failed to create document for user")
-                                    progress.dismiss()
+                                    dismissProgress()
                                     signUpErrorHandler(e)
                                 }
                         }
                     }
                     ?.addOnFailureListener {
-                        progress.dismiss()
+                        dismissProgress()
                         signUpErrorHandler(it)
                     }
             }

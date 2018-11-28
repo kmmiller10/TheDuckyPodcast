@@ -8,14 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findDailiesModel
 import me.kmmiller.theduckypodcast.databinding.DailiesFragmentBinding
 import me.kmmiller.theduckypodcast.models.DailiesModel
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
-import java.lang.Exception
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: DailiesFragmentBinding
@@ -40,25 +37,23 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
 
         realm = Realm.getDefaultInstance()
 
-        val progress = Progress(requireActivity() as BaseActivity)
-
         viewModel?.let {
             if(it.dailyId.isNotEmpty()) {
-                load(progress, it.dailyId)
+                load(it.dailyId)
             }
         }
 
         if(viewModel?.dailyId.nonNullString().isEmpty()) {
-            progress.progress(getString(R.string.loading))
+            showCancelableProgress(getString(R.string.loading))
         }
 
         fb = FirebaseFirestore.getInstance()
-        getDailyId(progress, fb) {
+        getDailyId(fb) {
             if(context != null) {
                 if (it != viewModel?.dailyId.nonNullString()) {
                     viewModel?.dailyId = it
 
-                    progress.progress(getString(R.string.loading))
+                    showCancelableProgress(getString(R.string.loading))
                     fb.collection("dailies")
                         .document(it)
                         .get()
@@ -68,14 +63,14 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                             realm?.executeTransaction { rm ->
                                 rm.copyToRealmOrUpdate(model)
                             }
-                            load(progress, it)
+                            load(it)
                         }
                         .addOnFailureListener { e ->
                             handleError(e)
-                            progress.dismiss()
+                            dismissProgress()
                         }
                 } else {
-                    progress.dismiss()
+                    dismissProgress()
                 }
             }
         }
@@ -87,7 +82,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         realm = null
     }
 
-    private fun load(progress: Progress, id: String) {
+    private fun load(id: String) {
         try {
             realm?.findDailiesModel(id)?.let {
                 binding.title.text = it.title
@@ -101,10 +96,10 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
             e.printStackTrace()
             Log.e(TAG, "Context probably null")
         }
-        progress.dismiss()
+        dismissProgress()
     }
 
-    private fun getDailyId(progress: Progress?, fb: FirebaseFirestore, onComplete: (String) -> Unit) {
+    private fun getDailyId( fb: FirebaseFirestore, onComplete: (String) -> Unit) {
         fb.collection("dailies")
             .document("get-daily-id")
             .get()
@@ -113,7 +108,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                 onComplete.invoke(id)
             }
             .addOnFailureListener {
-                progress?.dismiss()
+                dismissProgress()
                 handleError(it)
             }
     }
@@ -143,9 +138,8 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         val additionalComments = binding.additionalComments.text?.toString().nonNullString()
 
         fun save(dailyId: String) {
-            val progress = Progress(requireActivity() as MainActivity)
-            progress.progress(getString(R.string.saving))
-            if (validateAnswers(answers)) {
+            showProgress(getString(R.string.saving))
+            if(validateAnswers(answers)) {
                 auth?.uid?.let { userId ->
                     val submittableModel = DailiesModel.createSubmittableModel(dailyId, answers, additionalComments)
                     // Send the data to server after it has been validated, disable save and show results
@@ -160,21 +154,21 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                                     dailiesModel.isSubmitted = true
                                 }
                             }
-                            progress.dismiss()
+                            dismissProgress()
                         }
                         .addOnFailureListener { e ->
                             handleError(e)
-                            progress.dismiss()
+                            dismissProgress()
                         }
                 }
             } else {
-                progress.dismiss()
+                dismissProgress()
             }
         }
 
         val dailyId = viewModel?.dailyId
         if(dailyId == null) {
-            getDailyId(null, fb) {
+            getDailyId(fb) {
                 save(it)
             }
         } else {

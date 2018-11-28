@@ -5,13 +5,11 @@ import android.view.*
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.models.equalTo
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
@@ -123,8 +121,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
 
         // Validate
         if(stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase())) {
-            val progress = Progress(requireActivity() as BaseActivity)
-            progress.progress(getString(R.string.saving))
+            showProgress(getString(R.string.saving))
 
             val fb = FirebaseFirestore.getInstance()
             fb.collection("users").document(realmUser.id)
@@ -137,12 +134,12 @@ class ProfileFragment : BaseFragment(), EditableFragment {
                         realmUser.state = detachedUser.state
                     }
 
-                    progress.dismiss()
+                    dismissProgress()
                     resetProfile()
                     isEditing = false
                 }
                 .addOnFailureListener { e ->
-                    progress.dismiss()
+                    dismissProgress()
                     handleError(e)
                 }
         }

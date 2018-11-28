@@ -1,19 +1,33 @@
 package me.kmmiller.theduckypodcast.base
 
 import android.content.DialogInterface
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import me.kmmiller.theduckypodcast.main.MainViewModel
+import me.kmmiller.theduckypodcast.utils.ICancel
+import me.kmmiller.theduckypodcast.utils.Progress
 import java.lang.Exception
 
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment(), ICancel {
     protected var viewModel: MainViewModel? = null
         get() = (activity as? BaseActivity)?.viewModel
 
     protected var auth: FirebaseAuth? = null
         get() = (activity as? BaseActivity)?.auth
 
+    private lateinit var progress: Progress
+
     abstract fun getTitle(): String
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        activity?.let {
+            progress = Progress(it as BaseActivity)
+        }
+    }
 
     override fun onResume() {
         super.onResume()
@@ -62,5 +76,29 @@ abstract class BaseFragment : Fragment() {
                             cancelText: String,
                             cancelListener: DialogInterface.OnClickListener?) {
         (activity as? BaseActivity)?.showCancelableAlert(title, message, positiveText, positiveListener, cancelText, cancelListener)
+    }
+
+    protected fun getProgress(): Progress {
+        return progress
+    }
+
+    protected fun showProgress(message: String) {
+        if(context != null && !isDetached && !isRemoving) progress.progress(message)
+    }
+
+    protected fun showCancelableProgress(message: String) {
+        if(context != null && !isDetached && !isRemoving) progress.progress(message, this)
+    }
+
+    protected fun showCancelableProgress(message: String, canceler: ICancel) {
+        if(context != null && !isDetached && !isRemoving) progress.progress(message, canceler)
+    }
+
+    protected fun dismissProgress() {
+        if(context != null && !isDetached && !isRemoving) progress.dismiss()
+    }
+
+    override fun onCancel() {
+        // If anything needs to be done when a progress spinner is canceled, override this method in the inheriting class
     }
 }

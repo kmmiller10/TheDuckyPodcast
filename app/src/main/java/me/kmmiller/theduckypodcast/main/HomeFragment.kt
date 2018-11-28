@@ -7,12 +7,10 @@ import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findSeriesModel
 import me.kmmiller.theduckypodcast.databinding.HomeFragmentBinding
 import me.kmmiller.theduckypodcast.models.SeriesModel
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class HomeFragment : BaseFragment(), NavItem {
@@ -32,21 +30,20 @@ class HomeFragment : BaseFragment(), NavItem {
         realm = Realm.getDefaultInstance()
 
         // TODO: Hook up play button to podcast mp3 using MediaPlayer
-        val progress = Progress(requireActivity() as BaseActivity)
 
         viewModel?.let {
             if(it.seriesId.isNotEmpty()) {
-                load(progress, it.seriesId)
+                load(it.seriesId)
             }
         }
 
         if(viewModel?.seriesId.nonNullString().isEmpty()) {
-            progress.progress(getString(R.string.loading))
+            showCancelableProgress(getString(R.string.loading))
         }
 
-        getCurrentSeries(progress) {
+        getCurrentSeries {
             viewModel?.seriesId = it
-            load(progress, it)
+            load(it)
         }
     }
 
@@ -56,11 +53,11 @@ class HomeFragment : BaseFragment(), NavItem {
         realm = null
     }
 
-    private fun load(progress: Progress, id: String) {
+    private fun load(id: String) {
         realm?.findSeriesModel(id)?.let { model ->
             setSeriesDetails(model)
         }
-        progress.dismiss()
+        dismissProgress()
     }
 
     private fun setSeriesDetails(model: SeriesModel) {
@@ -70,7 +67,7 @@ class HomeFragment : BaseFragment(), NavItem {
         binding.expandedDescription.text = model.expandedDescription
     }
 
-    private fun getCurrentSeries(progress: Progress, onSuccess: (String) -> Unit) {
+    private fun getCurrentSeries(onSuccess: (String) -> Unit) {
         val fb = FirebaseFirestore.getInstance()
         fb.collection("series")
             .document("current-series")
@@ -83,7 +80,7 @@ class HomeFragment : BaseFragment(), NavItem {
                         // User already has series loaded, don't need to grab it again
                         onSuccess.invoke(seriesId)
                     } else {
-                        progress.progress(getString(R.string.loading))
+                        showCancelableProgress(getString(R.string.loading))
                         // New series, get and add to realm
                         fb.collection("series")
                             .document(seriesId)
@@ -100,12 +97,14 @@ class HomeFragment : BaseFragment(), NavItem {
                             }
                             .addOnFailureListener { e ->
                                 handleError(e)
+                                dismissProgress()
                             }
                     }
                 }
             }
             .addOnFailureListener {
                 handleError(it)
+                dismissProgress()
             }
     }
 

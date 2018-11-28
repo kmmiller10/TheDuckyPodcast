@@ -13,7 +13,6 @@ import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.LoginFragmentBinding
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class LoginFragment : BaseFragment() {
@@ -79,8 +78,7 @@ class LoginFragment : BaseFragment() {
     private fun doLogin() {
         (activity as BaseActivity).hideKeyboard()
 
-        val progress = Progress(requireActivity() as BaseActivity)
-        progress.progress(getString(R.string.logging_in))
+        showProgress(getString(R.string.logging_in))
 
         val email = binding.email.text.toString()
         val password = binding.password.text.toString()
@@ -96,10 +94,10 @@ class LoginFragment : BaseFragment() {
             }
             else -> auth?.signInWithEmailAndPassword(email, password)
                 ?.addOnCompleteListener {
-                    if (it.isSuccessful) (activity as? LoginActivity)?.logIn(progress)
+                    if (it.isSuccessful) (activity as? LoginActivity)?.logIn(getProgress())
                 }
                 ?.addOnFailureListener {
-                    progress.dismiss()
+                    dismissProgress()
                     handleError(it)
 
                     if(it is FirebaseAuthInvalidUserException || it is FirebaseAuthInvalidCredentialsException) {
