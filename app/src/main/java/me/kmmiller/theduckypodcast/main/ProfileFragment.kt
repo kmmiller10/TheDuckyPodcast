@@ -136,6 +136,7 @@ class ProfileFragment : BaseFragment(), EditableFragment {
 
                     dismissProgress()
                     resetProfile()
+                    onCancel() // Disables all fields
                     isEditing = false
                 }
                 .addOnFailureListener { e ->
