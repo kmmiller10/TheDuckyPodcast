@@ -53,6 +53,8 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
 
         savedInstanceState?.let {
             currentNavId = it.getInt(NAV_ID, R.id.nav_home)
+            adapter?.updateSelected(this, currentNavId)
+            adapter?.notifyDataSetChanged()
         }
 
         if(savedInstanceState == null && hasBottomNav) {

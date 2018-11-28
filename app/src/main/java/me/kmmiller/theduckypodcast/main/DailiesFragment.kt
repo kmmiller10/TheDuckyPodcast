@@ -81,6 +81,12 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        realm?.close()
+        realm = null
+    }
+
     private fun load(progress: Progress, id: String) {
         try {
             realm?.findDailiesModel(id)?.let {
@@ -193,12 +199,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm?.close()
-        realm = null
     }
 
     override fun getNavId(): Int = R.id.nav_home

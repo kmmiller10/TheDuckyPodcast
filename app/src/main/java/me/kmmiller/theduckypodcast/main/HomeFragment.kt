@@ -50,6 +50,12 @@ class HomeFragment : BaseFragment(), NavItem {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        realm?.close()
+        realm = null
+    }
+
     private fun load(progress: Progress, id: String) {
         realm?.findSeriesModel(id)?.let { model ->
             setSeriesDetails(model)
@@ -62,12 +68,6 @@ class HomeFragment : BaseFragment(), NavItem {
         binding.seriesNumber.text = String.format(getString(R.string.series_number), model.season)
         binding.description.text = model.description
         binding.expandedDescription.text = model.expandedDescription
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm?.close()
-        realm = null
     }
 
     private fun getCurrentSeries(progress: Progress, onSuccess: (String) -> Unit) {
