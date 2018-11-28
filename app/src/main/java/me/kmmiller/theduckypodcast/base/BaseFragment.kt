@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import io.realm.Realm
 import me.kmmiller.theduckypodcast.main.MainViewModel
 import me.kmmiller.theduckypodcast.utils.ICancel
 import me.kmmiller.theduckypodcast.utils.Progress
@@ -18,8 +19,14 @@ abstract class BaseFragment : Fragment(), ICancel {
         get() = (activity as? BaseActivity)?.auth
 
     private lateinit var progress: Progress
+    protected var realm: Realm? = null
 
     abstract fun getTitle(): String
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        realm = Realm.getDefaultInstance()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,6 +39,12 @@ abstract class BaseFragment : Fragment(), ICancel {
     override fun onResume() {
         super.onResume()
         activity?.title = getTitle()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        realm?.close()
+        realm = null
     }
 
     protected fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {

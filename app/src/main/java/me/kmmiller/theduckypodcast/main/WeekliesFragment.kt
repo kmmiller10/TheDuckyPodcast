@@ -3,7 +3,6 @@ package me.kmmiller.theduckypodcast.main
 import android.os.Bundle
 import android.view.*
 import com.google.firebase.firestore.FirebaseFirestore
-import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.WeekliesFragmentBinding
@@ -12,7 +11,6 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: WeekliesFragmentBinding
     private lateinit var fb: FirebaseFirestore
 
-    var realm: Realm? = null
     var menu: Menu? = null
 
     override fun getTitle(): String = getString(R.string.weeklies)
@@ -27,7 +25,6 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
 
         setHasOptionsMenu(true)
 
-        realm = Realm.getDefaultInstance()
         fb = FirebaseFirestore.getInstance()
     }
 
@@ -52,12 +49,6 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm?.close()
-        realm = null
     }
 
     override fun getNavId(): Int = R.id.nav_weeklies

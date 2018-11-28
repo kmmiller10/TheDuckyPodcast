@@ -3,7 +3,6 @@ package me.kmmiller.theduckypodcast.main
 import android.os.Bundle
 import android.view.*
 import com.google.firebase.firestore.FirebaseFirestore
-import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findUserById
@@ -15,17 +14,11 @@ import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
 class ProfileFragment : BaseFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
-    private lateinit var realm: Realm
 
     private var isEditing = false
     private var menu: Menu? = null
 
     override fun getTitle(): String = getString(R.string.profile)
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        realm = Realm.getDefaultInstance()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = ProfileFragmentBinding.inflate(inflater, container, false)
@@ -63,11 +56,6 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         setHasOptionsMenu(true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         outState.apply {
             putBoolean(IS_EDITING, isEditing)
@@ -81,9 +69,8 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     }
 
     private fun resetProfile() {
-        val realm = Realm.getDefaultInstance()
         auth?.currentUser?.let { authUser ->
-            val user = realm.findUserById(authUser.uid)
+            val user = realm?.findUserById(authUser.uid)
             user?.let {
                 binding.email.setText(user.email)
                 binding.age.setText(if(user.age == 0L) "" else user.age.toString())
@@ -106,21 +93,21 @@ class ProfileFragment : BaseFragment(), EditableFragment {
         val stateText = binding.usState.text?.toString().nonNullString()
 
         val authUser = auth?.currentUser ?: return // Get authenticated user from firebase
-        val realmUser = realm.findUserById(authUser.uid)?: return // Get local realm user
+        val realmUser = realm?.findUserById(authUser.uid)?: return // Get local realm user
 
-        val detachedUser = realm.copyFromRealm(realmUser) // Create a detached copy of realm user to manipulate
-        detachedUser.age = age
-        detachedUser.gender = gender
-        detachedUser.state = stateText
+        val detachedUser = realm?.copyFromRealm(realmUser) // Create a detached copy of realm user to manipulate
+        detachedUser?.age = age
+        detachedUser?.gender = gender
+        detachedUser?.state = stateText
 
-        if(realmUser.equalTo(detachedUser)) {
+        if(detachedUser != null && realmUser.equalTo(detachedUser)) {
             // No changes made, don't bother saving
             onCancel()
             return
         }
 
         // Validate
-        if(stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase())) {
+        if(detachedUser != null && (stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase()))) {
             showProgress(getString(R.string.saving))
 
             val fb = FirebaseFirestore.getInstance()
@@ -128,14 +115,13 @@ class ProfileFragment : BaseFragment(), EditableFragment {
                 .set(detachedUser.fromRealmModel())
                 .addOnSuccessListener {
                     // Update realm model
-                    realm.executeTransaction {
+                    realm?.executeTransaction {
                         realmUser.age = detachedUser.age
                         realmUser.gender = detachedUser.gender
                         realmUser.state = detachedUser.state
                     }
 
                     dismissProgress()
-                    resetProfile()
                     onCancel() // Disables all fields
                     isEditing = false
                 }

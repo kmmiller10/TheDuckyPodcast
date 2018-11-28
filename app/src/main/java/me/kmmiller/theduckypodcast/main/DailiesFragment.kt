@@ -6,7 +6,6 @@ import android.util.SparseArray
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
-import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findDailiesModel
@@ -18,7 +17,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: DailiesFragmentBinding
     private lateinit var fb: FirebaseFirestore
 
-    var realm: Realm? = null
     var menu: Menu? = null
 
     private var adapter: QuestionAnswerAdapter? = null
@@ -34,8 +32,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
-
-        realm = Realm.getDefaultInstance()
 
         viewModel?.let {
             if(it.dailyId.isNotEmpty()) {
@@ -74,12 +70,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm?.close()
-        realm = null
     }
 
     private fun load(id: String) {

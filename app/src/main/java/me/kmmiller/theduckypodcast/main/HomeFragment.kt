@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
-import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findSeriesModel
@@ -15,7 +14,6 @@ import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class HomeFragment : BaseFragment(), NavItem {
     private lateinit var binding: HomeFragmentBinding
-    var realm: Realm? = null
 
     override fun getTitle(): String = getString(R.string.home)
 
@@ -26,8 +24,6 @@ class HomeFragment : BaseFragment(), NavItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        realm = Realm.getDefaultInstance()
 
         // TODO: Hook up play button to podcast mp3 using MediaPlayer
 
@@ -45,12 +41,6 @@ class HomeFragment : BaseFragment(), NavItem {
             viewModel?.seriesId = it
             load(it)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm?.close()
-        realm = null
     }
 
     private fun load(id: String) {
