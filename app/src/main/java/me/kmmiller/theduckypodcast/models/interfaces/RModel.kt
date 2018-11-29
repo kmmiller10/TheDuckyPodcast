@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.models
+package me.kmmiller.theduckypodcast.models.interfaces
 
 import com.google.firebase.firestore.DocumentSnapshot
 

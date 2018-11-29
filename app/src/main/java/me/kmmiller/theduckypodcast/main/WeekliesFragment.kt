@@ -6,6 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.WeekliesFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.main.interfaces.SavableFragment
 
 class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: WeekliesFragmentBinding

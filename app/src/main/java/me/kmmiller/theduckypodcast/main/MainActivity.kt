@@ -12,6 +12,7 @@ import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.core.findAllDailies
 import me.kmmiller.theduckypodcast.login.LoginActivity
+import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true

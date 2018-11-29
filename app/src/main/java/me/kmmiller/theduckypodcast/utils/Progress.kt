@@ -2,6 +2,7 @@ package me.kmmiller.theduckypodcast.utils
 
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BaseProgress
+import me.kmmiller.theduckypodcast.main.interfaces.ICancel
 
 class Progress(private val activity: BaseActivity) {
     private var progressBar: BaseProgress? = null

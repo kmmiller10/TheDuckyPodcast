@@ -7,6 +7,7 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
+import me.kmmiller.theduckypodcast.models.interfaces.RModel
 import me.kmmiller.theduckypodcast.utils.getHashMap
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
@@ -71,7 +72,7 @@ open class DailiesModel : RealmObject(), RModel {
 
     companion object {
         @JvmStatic
-        fun createSubmittableModel(dailyId: String, answers: SparseArray<Pair<Int, String?>>, additionalComments: String): HashMap<String, Any> {
+        fun createSubmittableModel(dailyId: String, answers: SparseArray<ParcelableAnswer>, additionalComments: String): HashMap<String, Any> {
             val map = HashMap<String, Any>()
             map["dailyId"] = dailyId
             map["additionalComments"] = additionalComments
@@ -80,8 +81,8 @@ open class DailiesModel : RealmObject(), RModel {
             val inputs = ArrayList<String>()
             for(i in 0 until answers.size()) {
                 val answer = answers[i]
-                val position = answer.first
-                val input = answer.second.nonNullString()
+                val position = answer.answerPosition
+                val input = answer.otherInput.nonNullString()
 
                 answerPositions.add(position)
                 inputs.add(input)

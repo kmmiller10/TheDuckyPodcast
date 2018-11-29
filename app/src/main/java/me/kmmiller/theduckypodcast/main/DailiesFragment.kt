@@ -10,16 +10,20 @@ import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findDailiesModel
 import me.kmmiller.theduckypodcast.databinding.DailiesFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.IRestoreState
+import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.main.interfaces.SavableFragment
 import me.kmmiller.theduckypodcast.models.DailiesModel
+import me.kmmiller.theduckypodcast.models.ParcelableAnswer
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
-class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
+class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState {
     private lateinit var binding: DailiesFragmentBinding
     private lateinit var fb: FirebaseFirestore
 
-    var menu: Menu? = null
-
+    private var menu: Menu? = null
     private var adapter: QuestionAnswerAdapter? = null
+    private var restoredAnswers: SparseArray<ParcelableAnswer>? = null
 
     override fun getTitle(): String = getString(R.string.dailies)
 
@@ -70,6 +74,25 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
                 }
             }
         }
+
+        savedInstanceState?.let {
+            restoredAnswers = it.getSparseParcelableArray(CURRENT_ANSWERS)
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        val currentAnswers = adapter?.getAnswers()
+        if(currentAnswers != null) outState.putSparseParcelableArray(CURRENT_ANSWERS, currentAnswers)
+        super.onSaveInstanceState(outState)
+    }
+
+    override fun onInstanceRestored(position: Int) {
+        restoredAnswers?.let {
+            adapter?.let { adapter ->
+                adapter.setAnswers(it)
+                if(position == adapter.itemCount ) restoredAnswers = null
+            }
+        }
     }
 
     private fun load(id: String) {
@@ -77,7 +100,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
             realm?.findDailiesModel(id)?.let {
                 binding.title.text = it.title
 
-                adapter = QuestionAnswerAdapter(ArrayList(it.items))
+                adapter = QuestionAnswerAdapter(ArrayList(it.items), this)
                 binding.questionAnswerList.adapter = adapter
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())
                 binding.questionAnswerList.isNestedScrollingEnabled = false
@@ -103,12 +126,12 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
             }
     }
 
-    private fun validateAnswers(answers: SparseArray<Pair<Int, String?>>): Boolean {
+    private fun validateAnswers(answers: SparseArray<ParcelableAnswer>): Boolean {
         for(i in 0 until answers.size()) {
             val answer = answers.get(i)
 
-            val answerPosition = answer.first
-            val otherInput = answer.second
+            val answerPosition = answer.answerPosition
+            val otherInput = answer.otherInput
 
             if(answerPosition == -1) {
                 // -1 indicates that no answer was given for that question
@@ -189,5 +212,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment {
 
     companion object {
         const val TAG = "dailies_fragment"
+        const val CURRENT_ANSWERS = "current_answers"
     }
 }

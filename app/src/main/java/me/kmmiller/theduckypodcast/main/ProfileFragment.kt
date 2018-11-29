@@ -7,6 +7,7 @@ import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.EditableFragment
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.models.equalTo
 import me.kmmiller.theduckypodcast.utils.nonNullString
@@ -28,8 +29,11 @@ class ProfileFragment : BaseFragment(), EditableFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setHasOptionsMenu(true)
+
         binding.usState.onTextChangedListener {
             val text = binding.usState.text?.toString().nonNullString()
+
             binding.usStateError.visibility =
                     if(UserModel.stateAbbreviationsList.contains(text.toUpperCase()) || text.isEmpty())
                         View.GONE
@@ -52,8 +56,6 @@ class ProfileFragment : BaseFragment(), EditableFragment {
             // onCancel will disable all the fields and reset the profile to the realm model
             onCancel()
         }
-
-        setHasOptionsMenu(true)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

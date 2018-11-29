@@ -9,6 +9,7 @@ import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.core.findSeriesModel
 import me.kmmiller.theduckypodcast.databinding.HomeFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.models.SeriesModel
 import me.kmmiller.theduckypodcast.utils.nonNullString
 

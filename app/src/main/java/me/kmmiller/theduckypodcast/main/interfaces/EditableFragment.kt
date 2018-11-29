@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.interfaces
 
 interface EditableFragment {
     fun onEdit()

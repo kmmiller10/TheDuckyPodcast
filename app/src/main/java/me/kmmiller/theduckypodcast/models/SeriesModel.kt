@@ -6,6 +6,7 @@ import io.realm.RealmObject
 import io.realm.annotations.PrimaryKey
 import io.realm.annotations.RealmClass
 import io.realm.annotations.Required
+import me.kmmiller.theduckypodcast.models.interfaces.RModel
 import me.kmmiller.theduckypodcast.utils.getStringArrayList
 import me.kmmiller.theduckypodcast.utils.nonNullLong
 import me.kmmiller.theduckypodcast.utils.nonNullString

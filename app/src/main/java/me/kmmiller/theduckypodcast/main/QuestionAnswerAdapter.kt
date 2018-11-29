@@ -7,12 +7,15 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.recyclerview.widget.RecyclerView
 import me.kmmiller.theduckypodcast.databinding.QuestionAnswerBinding
-import me.kmmiller.theduckypodcast.models.QuestionAnswerModel
+import me.kmmiller.theduckypodcast.main.interfaces.AnswerListener
+import me.kmmiller.theduckypodcast.main.interfaces.IRestoreState
 import me.kmmiller.theduckypodcast.models.AnswerType
+import me.kmmiller.theduckypodcast.models.ParcelableAnswer
+import me.kmmiller.theduckypodcast.models.QuestionAnswerModel
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
-class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) : RecyclerView.Adapter<QuestionAnswerAdapter.QuestionAnswerViewHolder>() {
+class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, private val restoreListener: IRestoreState) : RecyclerView.Adapter<QuestionAnswerAdapter.QuestionAnswerViewHolder>() {
     private val listeners = ArrayList<AnswerListener>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestionAnswerViewHolder {
@@ -34,23 +37,34 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
         if(item.getAnswerType() == AnswerType.RADIO_BUTTON) {
             holder.addRadioAnswers(ArrayList(item.answers))
         }
-        listeners.add(holder as AnswerListener)
+
+        listeners.add(holder)
+        restoreListener.onInstanceRestored(position)
     }
 
     override fun getItemCount(): Int = items.size
 
     /**
-     * Returns SparseArray with index of the question, position of answer for the question,
+     * Returns SparseArray with its index corresponding to the question, position of answer for the question,
      * and additional input if it was an other option
      */
-    fun getAnswers(): SparseArray<Pair<Int, String?>> {
-        val answers = SparseArray<Pair<Int, String?>>()
+    fun getAnswers(): SparseArray<ParcelableAnswer> {
+        val answers = SparseArray<ParcelableAnswer>()
         var index = 0
         listeners.forEach {
-            answers.append(index, Pair(it.getAnswer(), it.getOtherInput()))
+            answers.append(index, ParcelableAnswer(it.getAnswer(), it.getOtherInput()))
             index++
         }
         return answers
+    }
+
+    fun setAnswers(answers: SparseArray<ParcelableAnswer>) {
+        var index = 0
+        listeners.forEach {
+            val answer = answers.valueAt(index)
+            it.setAnswer(answer.answerPosition, answer.otherInput)
+            index++
+        }
     }
 
     inner class QuestionAnswerViewHolder(private val binding: QuestionAnswerBinding) : RecyclerView.ViewHolder(binding.root), AnswerListener {
@@ -90,6 +104,14 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
             }
         }
 
+        override fun setAnswer(position: Int, input: String?) {
+            binding.radioAnswers.check(position)
+            input?.let {
+                binding.otherAnswer.setText(it)
+                binding.otherAnswer.visibility = View.VISIBLE
+            }
+        }
+
         override fun getAnswer(): Int {
             return binding.radioAnswers.checkedRadioButtonId // Returns -1 if none selected
         }
@@ -108,10 +130,5 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>) :
         private fun clearOtherAnswerError() {
             binding.otherAnswerError.visibility = View.GONE
         }
-    }
-
-    interface AnswerListener {
-        fun getAnswer(): Int
-        fun getOtherInput(): String?
     }
 }
