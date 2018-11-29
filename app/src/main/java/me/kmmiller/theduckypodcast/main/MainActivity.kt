@@ -10,10 +10,11 @@ import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
-import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.models.findAllUsers
+import me.kmmiller.theduckypodcast.models.findDailiesModel
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
@@ -49,7 +50,10 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override fun navItemSelected(itemId: Int) {
         when (itemId) {
             R.id.nav_home -> pushFragmentSynchronous(HomeFragment(), true, HomeFragment.TAG)
-            R.id.nav_dailies -> pushFragmentSynchronous(DailiesFragment(), true, DailiesFragment.TAG)
+            R.id.nav_dailies -> {
+                if(checkAnsweredStatus())
+                    pushFragmentSynchronous(DailiesResultsFragment(), true, DailiesResultsFragment.TAG) else pushFragmentSynchronous (DailiesFragment(), true, DailiesFragment.TAG)
+            }
             R.id.nav_weeklies -> pushFragmentSynchronous(WeekliesFragment(), true, WeekliesFragment.TAG)
         }
     }
@@ -73,6 +77,15 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
             else -> super.onBackPressed()
         }
+    }
+
+    private fun checkAnsweredStatus(): Boolean {
+        val realm = Realm.getDefaultInstance()
+        val dailyModel = realm?.findDailiesModel(viewModel.dailyId)
+        if(dailyModel != null && dailyModel.isSubmitted) {
+            return true
+        }
+        return false
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

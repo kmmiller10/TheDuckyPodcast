@@ -52,7 +52,8 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
         fb = FirebaseFirestore.getInstance()
         getDailyId(fb) {
             if(context != null) {
-                if (it != viewModel?.dailyId.nonNullString()) {
+                if(it != viewModel?.dailyId.nonNullString()) {
+                    // This is a new daily or it hasn't been loaded into the view model yet
                     viewModel?.dailyId = it
 
                     showCancelableProgress(getString(R.string.loading))
@@ -72,7 +73,9 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                             dismissProgress()
                         }
                 } else {
+                    // Already have this daily, just check for status
                     dismissProgress()
+                    checkAnsweredStatus()
                 }
             }
         }
@@ -81,6 +84,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
             restoredAnswers = it.getSparseParcelableArray(CURRENT_ANSWERS)
             binding.additionalComments.setText(it.getString(ADDITIONAL_COMMENTS, ""))
         }
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -110,9 +114,9 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                 binding.questionAnswerList.adapter = adapter
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())
                 binding.questionAnswerList.isNestedScrollingEnabled = false
-            }
 
-            checkAnsweredStatus()
+                checkAnsweredStatus()
+            }
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "Context probably null")
@@ -129,6 +133,14 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                 .addOnSuccessListener {
                     // User has already submitted this daily, show results
                     dismissProgress()
+
+                    val dailyModel = realm?.findDailiesModel(viewModel?.dailyId)
+                    if(dailyModel != null) {
+                        realm?.executeTransaction { rm ->
+                            dailyModel.isSubmitted = true
+                        }
+                    }
+
                     pushFragment(DailiesResultsFragment(), true, false, DailiesResultsFragment.TAG)
                 }
                 .addOnFailureListener { e ->
@@ -198,6 +210,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                                 }
                             }
                             dismissProgress()
+                            checkAnsweredStatus()
                         }
                         .addOnFailureListener { e ->
                             handleError(e)
