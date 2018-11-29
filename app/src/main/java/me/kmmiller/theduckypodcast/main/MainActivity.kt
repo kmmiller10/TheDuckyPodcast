@@ -16,6 +16,7 @@ import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
+    var menuItemToggle: Pair<Int, Boolean>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +71,11 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        menuItemToggle?.let { toggle ->
+            val itemId = toggle.first
+            val visibility = toggle.second
+            menu.findItem(itemId).isVisible = visibility
+        }
         return true
     }
 
@@ -91,11 +97,18 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         }
     }
 
+    fun hideMenuItem(itemId: Int) {
+        menuItemToggle = Pair(itemId, false)
+        invalidateOptionsMenu()
+    }
+
+    fun showMenuItem(itemId: Int) {
+        menuItemToggle = Pair(itemId, true)
+        invalidateOptionsMenu()
+    }
+
     override fun onAuthStateChanged(fbAuth: FirebaseAuth) {
-        if(fbAuth.currentUser == null) {
-            // TODO Reauth
-            logOut()
-        }
+        if(fbAuth.currentUser == null) logOut()
     }
 
     fun logOut() {

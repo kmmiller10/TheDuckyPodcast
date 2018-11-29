@@ -13,13 +13,14 @@ import me.kmmiller.theduckypodcast.models.equalTo
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
-class ProfileFragment : BaseFragment(), EditableFragment {
+class ProfileFragment : MainMenuFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
 
     private var isEditing = false
     private var menu: Menu? = null
 
     override fun getTitle(): String = getString(R.string.profile)
+    override fun getItemId(): Int = R.id.profile
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = ProfileFragmentBinding.inflate(inflater, container, false)
