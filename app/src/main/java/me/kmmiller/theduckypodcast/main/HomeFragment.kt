@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.core.findSeriesModel
+import me.kmmiller.theduckypodcast.models.findSeriesModel
 import me.kmmiller.theduckypodcast.databinding.HomeFragmentBinding
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.models.SeriesModel

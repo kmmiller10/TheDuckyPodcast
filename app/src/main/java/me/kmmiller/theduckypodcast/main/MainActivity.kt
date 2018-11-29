@@ -10,13 +10,16 @@ import io.realm.Realm
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
-import me.kmmiller.theduckypodcast.core.findAllDailies
+import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.models.findAllUsers
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
-    var menuItemToggle: Pair<Int, Boolean>? = null
+    private var menuItemToggle: Pair<Int, Boolean>? = null
+
+    override fun firstNavItem(): Int = R.id.nav_home
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +30,10 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         }
     }
 
-    override fun firstNavItem(): Int = R.id.nav_home
+    override fun onDestroy() {
+        super.onDestroy()
+        auth.removeAuthStateListener(this)
+    }
 
     override fun getNavItems(): ArrayList<BottomNavItemModel> {
         val navItems = ArrayList<BottomNavItemModel>()
@@ -118,6 +124,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             realm.findAllDailies().deleteAllFromRealm()
+            realm.findAllUsers().deleteAllFromRealm()
         }
         realm.close()
 
@@ -127,8 +134,5 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         startActivity(intent)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        auth.removeAuthStateListener(this)
-    }
+
 }

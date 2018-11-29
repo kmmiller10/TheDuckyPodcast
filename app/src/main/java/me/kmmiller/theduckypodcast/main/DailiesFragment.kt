@@ -6,15 +6,17 @@ import android.util.SparseArray
 import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.core.findDailiesModel
+import me.kmmiller.theduckypodcast.models.findDailiesModel
 import me.kmmiller.theduckypodcast.databinding.DailiesFragmentBinding
 import me.kmmiller.theduckypodcast.main.interfaces.IRestoreState
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.interfaces.SavableFragment
 import me.kmmiller.theduckypodcast.models.DailiesModel
 import me.kmmiller.theduckypodcast.models.ParcelableAnswer
+import me.kmmiller.theduckypodcast.models.findUserById
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState {
@@ -77,12 +79,16 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
 
         savedInstanceState?.let {
             restoredAnswers = it.getSparseParcelableArray(CURRENT_ANSWERS)
+            binding.additionalComments.setText(it.getString(ADDITIONAL_COMMENTS, ""))
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         val currentAnswers = adapter?.getAnswers()
         if(currentAnswers != null) outState.putSparseParcelableArray(CURRENT_ANSWERS, currentAnswers)
+
+        outState.putString(ADDITIONAL_COMMENTS, binding.additionalComments.text?.nonNullString())
+
         super.onSaveInstanceState(outState)
     }
 
@@ -105,11 +111,35 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                 binding.questionAnswerList.layoutManager = LinearLayoutManager(requireContext())
                 binding.questionAnswerList.isNestedScrollingEnabled = false
             }
+
+            checkAnsweredStatus()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, "Context probably null")
+            dismissProgress()
         }
-        dismissProgress()
+    }
+
+    private fun checkAnsweredStatus() {
+        // TODO rethink to allow for multiple dailies - cant link to the same id. Will require backend changes
+        realm?.findUserById(auth?.currentUser?.uid)?.let {
+            fb.collection("dailies-responses")
+                .document(it.id)
+                .get()
+                .addOnSuccessListener {
+                    // User has already submitted this daily, show results
+                    dismissProgress()
+                    pushFragment(DailiesResultsFragment(), true, false, DailiesResultsFragment.TAG)
+                }
+                .addOnFailureListener { e ->
+                    dismissProgress()
+                    if((e as FirebaseFirestoreException).code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                        // User has not completed this daily yet
+                    } else {
+                        handleError(e)
+                    }
+                }
+        }
     }
 
     private fun getDailyId( fb: FirebaseFirestore, onComplete: (String) -> Unit) {
@@ -213,5 +243,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
     companion object {
         const val TAG = "dailies_fragment"
         const val CURRENT_ANSWERS = "current_answers"
+        const val ADDITIONAL_COMMENTS = "additional_comments"
     }
 }
