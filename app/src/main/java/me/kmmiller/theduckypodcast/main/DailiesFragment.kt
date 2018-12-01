@@ -136,7 +136,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
 
                     val dailyModel = realm?.findDailiesModel(viewModel?.dailyId)
                     if(dailyModel != null) {
-                        realm?.executeTransaction { rm ->
+                        realm?.executeTransaction {
                             dailyModel.isSubmitted = true
                         }
                     }
@@ -196,11 +196,13 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
             showProgress(getString(R.string.saving))
             if(validateAnswers(answers)) {
                 auth?.uid?.let { userId ->
-                    val submittableModel = DailiesModel.createSubmittableModel(dailyId, answers, additionalComments)
+                    val submittableModel = DailiesModel.createSubmittableModel(userId, dailyId, answers, additionalComments)
                     // Send the data to server after it has been validated, disable save and show results
                     val fb = FirebaseFirestore.getInstance()
                     fb.collection("dailies-responses")
                         .document(userId)
+                        .collection(dailyId)
+                        .document(dailyId)
                         .set(submittableModel)
                         .addOnSuccessListener {
                             val dailiesModel = realm?.findDailiesModel(viewModel?.dailyId)

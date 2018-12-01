@@ -72,24 +72,24 @@ open class DailiesModel : RealmObject(), RModel {
 
     companion object {
         @JvmStatic
-        fun createSubmittableModel(dailyId: String, answers: SparseArray<ParcelableAnswer>, additionalComments: String): HashMap<String, Any> {
+        fun createSubmittableModel(userId: String, dailyId: String, answers: SparseArray<ParcelableAnswer>, additionalComments: String): HashMap<String, Any> {
             val map = HashMap<String, Any>()
-            map["dailyId"] = dailyId
             map["additionalComments"] = additionalComments
+            map["userId"] = userId
+            map["dailyId"] = dailyId
 
-            val answerPositions = ArrayList<Int>()
-            val inputs = ArrayList<String>()
+            val answersMap = HashMap<String, ArrayList<Any>>()
             for(i in 0 until answers.size()) {
                 val answer = answers[i]
-                val position = answer.answerPosition
-                val input = answer.otherInput.nonNullString()
 
-                answerPositions.add(position)
-                inputs.add(input)
+                val answerList = ArrayList<Any>()
+                // Add 1 to the answer position since the first value (at index 0) in the dailies questionAnswer field is the input type
+                answerList.add(if(answer.otherInput.nonNullString().isEmpty()) answer.answerPosition+1 else answer.otherInput.nonNullString())
+
+                answersMap[i.toString()] = answerList
             }
 
-            map["answers"] = answerPositions
-            map["inputs"] = inputs
+            map["answers"] = answersMap
             return map
         }
     }
