@@ -11,7 +11,6 @@ import me.kmmiller.theduckypodcast.main.interfaces.SavableFragment
 
 class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
     private lateinit var binding: WeekliesFragmentBinding
-    private lateinit var fb: FirebaseFirestore
 
     var menu: Menu? = null
 
@@ -26,8 +25,6 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
         super.onViewCreated(view, savedInstanceState)
 
         setHasOptionsMenu(true)
-
-        fb = FirebaseFirestore.getInstance()
     }
 
     override fun onSave() {

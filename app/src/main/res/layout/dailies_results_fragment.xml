@@ -3,20 +3,25 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/main_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background_light"
-            android:paddingStart="24dp"
-            android:paddingLeft="24dp"
-            android:paddingEnd="24dp"
-            android:paddingRight="24dp">
+    <androidx.core.widget.NestedScrollView android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/main_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="TODO"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                android:background="@color/background_light"
+                android:paddingStart="24dp"
+                android:paddingLeft="24dp"
+                android:paddingEnd="24dp"
+                android:paddingRight="24dp">
+
+            <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 </layout>

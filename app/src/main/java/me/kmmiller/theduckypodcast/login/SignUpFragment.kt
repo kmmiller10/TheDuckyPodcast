@@ -178,7 +178,6 @@ class SignUpFragment : BaseFragment() {
                             user.id = firebaseUser.uid
                             user.email = email
 
-                            val fb = FirebaseFirestore.getInstance()
                             fb.collection("users").document(user.id)
                                 .set(user.fromRealmModel())
                                 .addOnSuccessListener {

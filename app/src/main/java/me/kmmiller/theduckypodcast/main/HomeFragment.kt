@@ -59,7 +59,6 @@ class HomeFragment : BaseFragment(), NavItem {
     }
 
     private fun getCurrentSeries(onSuccess: (String) -> Unit) {
-        val fb = FirebaseFirestore.getInstance()
         fb.collection("series")
             .document("current-series")
             .get()

@@ -1,6 +1,5 @@
 package me.kmmiller.theduckypodcast.models
 
-import com.google.firebase.firestore.DocumentSnapshot
 import io.realm.RealmList
 import io.realm.RealmObject
 import io.realm.annotations.RealmClass

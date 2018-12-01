@@ -112,7 +112,6 @@ class ProfileFragment : MainMenuFragment(), EditableFragment {
         if(detachedUser != null && (stateText.isEmpty() || UserModel.stateAbbreviationsList.contains(stateText.toUpperCase()))) {
             showProgress(getString(R.string.saving))
 
-            val fb = FirebaseFirestore.getInstance()
             fb.collection("users").document(realmUser.id)
                 .set(detachedUser.fromRealmModel())
                 .addOnSuccessListener {

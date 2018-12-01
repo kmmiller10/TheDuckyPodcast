@@ -55,6 +55,7 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation "io.realm:realm-annotations:5.8.0"
     implementation "io.realm:realm-annotations-processor:5.8.0"
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     kapt "io.realm:realm-annotations:5.8.0"
     kapt "io.realm:realm-annotations-processor:5.8.0"
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:2.1.0'

@@ -21,7 +21,6 @@ import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState {
     private lateinit var binding: DailiesFragmentBinding
-    private lateinit var fb: FirebaseFirestore
 
     private var menu: Menu? = null
     private var adapter: QuestionAnswerAdapter? = null
@@ -49,7 +48,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
             showCancelableProgress(getString(R.string.loading))
         }
 
-        fb = FirebaseFirestore.getInstance()
         getDailyId(fb) {
             if(context != null) {
                 if(it != viewModel?.dailyId.nonNullString()) {
@@ -201,7 +199,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                 auth?.uid?.let { userId ->
                     val submittableModel = DailiesModel.createSubmittableModel(userId, dailyId, answers, additionalComments)
                     // Send the data to server after it has been validated, disable save and show results
-                    val fb = FirebaseFirestore.getInstance()
                     fb.collection("dailies-responses")
                         .document(userId)
                         .collection(dailyId)
