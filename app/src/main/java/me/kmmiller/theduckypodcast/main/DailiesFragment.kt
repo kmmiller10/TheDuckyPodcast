@@ -125,32 +125,35 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
     }
 
     private fun checkAnsweredStatus() {
-        // TODO rethink to allow for multiple dailies - cant link to the same id. Will require backend changes
-        realm?.findUserById(auth?.currentUser?.uid)?.let {
-            fb.collection("dailies-responses")
-                .document(it.id)
-                .get()
-                .addOnSuccessListener {
-                    // User has already submitted this daily, show results
-                    dismissProgress()
+        val dailyId = viewModel?.dailyId
+        if(dailyId != null) {
+            auth?.currentUser?.uid?.let {
+                fb.collection("dailies-responses/$it/$dailyId")
+                    .document(dailyId)
+                    .get()
+                    .addOnSuccessListener {
+                        // User has already submitted this daily, show results
+                        dismissProgress()
 
-                    val dailyModel = realm?.findDailiesModel(viewModel?.dailyId)
-                    if(dailyModel != null) {
-                        realm?.executeTransaction {
-                            dailyModel.isSubmitted = true
+                        val dailyModel = realm?.findDailiesModel(viewModel?.dailyId)
+                        if (dailyModel != null) {
+                            realm?.executeTransaction {
+                                dailyModel.isSubmitted = true
+                            }
+                        }
+
+                        pushFragment(DailiesResultsFragment(), true, false, DailiesResultsFragment.TAG)
+                    }
+                    .addOnFailureListener { e ->
+                        dismissProgress()
+                        if ((e as FirebaseFirestoreException).code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
+                            // User has not completed this daily yet
+                        } else {
+                            // Ran into some other error - perhaps no internet connection? Handle error like normal
+                            handleError(e)
                         }
                     }
-
-                    pushFragment(DailiesResultsFragment(), true, false, DailiesResultsFragment.TAG)
-                }
-                .addOnFailureListener { e ->
-                    dismissProgress()
-                    if((e as FirebaseFirestoreException).code == FirebaseFirestoreException.Code.PERMISSION_DENIED) {
-                        // User has not completed this daily yet
-                    } else {
-                        handleError(e)
-                    }
-                }
+            }
         }
     }
 
