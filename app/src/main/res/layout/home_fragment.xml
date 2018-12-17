@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools">
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/background_light">
@@ -89,6 +89,21 @@
                     app:layout_constraintTop_toBottomOf="@+id/description"
                     tools:text="Orci sagittis eu volutpat odio. Sodales neque sodales ut etiam sit ametnisl purus in. Vulputate eu scelerisque felis imperdiet proin fermentum leo. Parturient montes nascetur ridiculus mus mauris. Scelerisque in dictum non consectetur. Bibendum est ultricies integer quis auctor."/>
 
+            <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/research_links"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintTop_toBottomOf="@+id/expanded_description"/>
+
+            <View
+                    android:id="@+id/spacer"
+                    android:layout_width="0dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintTop_toBottomOf="@+id/research_links"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 </layout>

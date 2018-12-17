@@ -19,6 +19,7 @@
     <string name="other">Other</string>
     <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="provide_details">Provide details</string>
+    <string name="research_link_index">(%d)</string>
     <string name="results">Results</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>

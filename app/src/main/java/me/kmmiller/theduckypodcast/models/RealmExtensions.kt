@@ -18,6 +18,10 @@ fun Realm.findDailiesModel(id: String?): DailiesModel? {
     return where(DailiesModel::class.java).equalTo("id", id).findFirst()
 }
 
+fun Realm.findAllSeries(): RealmResults<SeriesModel> {
+    return where(SeriesModel::class.java).findAll()
+}
+
 fun Realm.findAllDailies(): RealmResults<DailiesModel> {
     return where(DailiesModel::class.java).findAll()
 }

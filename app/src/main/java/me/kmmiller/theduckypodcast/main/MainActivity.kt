@@ -13,6 +13,7 @@ import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.models.findAllDailies
+import me.kmmiller.theduckypodcast.models.findAllSeries
 import me.kmmiller.theduckypodcast.models.findAllUsers
 import me.kmmiller.theduckypodcast.models.findDailiesModel
 
@@ -127,20 +128,28 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     }
 
     override fun onAuthStateChanged(fbAuth: FirebaseAuth) {
+        // Detects firebase changes to login status and logs out if no longer logged into fb
         if(fbAuth.currentUser == null) logOut()
     }
 
     fun logOut() {
+        // Sign out of firebase
         auth.signOut()
         auth.removeAuthStateListener(this)
 
+        // Clear realm
         val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
             realm.findAllDailies().deleteAllFromRealm()
             realm.findAllUsers().deleteAllFromRealm()
+            realm.findAllSeries().deleteAllFromRealm()
         }
         realm.close()
 
+        // Clear view model
+        viewModel.clear()
+
+        // Go to login activity
         val intent = Intent(this, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK )

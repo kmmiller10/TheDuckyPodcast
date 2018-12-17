@@ -5,4 +5,9 @@ import androidx.lifecycle.ViewModel
 class MainViewModel : ViewModel() {
     var seriesId = ""
     var dailyId = ""
+
+    fun clear() {
+        seriesId = ""
+        dailyId = ""
+    }
 }
