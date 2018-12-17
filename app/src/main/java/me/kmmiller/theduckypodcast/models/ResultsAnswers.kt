@@ -15,7 +15,6 @@ open class ResultsAnswers : RealmObject(), RModel {
     var id: String = "" // Must set using dailyId
 
     var additionalComments = RealmList<String>()
-    var answerDescriptions = RealmList<String>()
     var answers = RealmList<ResultsQuestionAnswerModel>()
 
     override fun toRealmModel(document: DocumentSnapshot) {
@@ -32,12 +31,28 @@ open class ResultsAnswers : RealmObject(), RModel {
                     }
 
                     val answersMap = it["answers"] as? HashMap<String, HashMap<String, ArrayList<Any>>>
-                    if(answersMap != null) {
-                        for(questionAnswer in answersMap.entries) {
-                            val model = ResultsQuestionAnswerModel()
-                            model.question = questionAnswer.key
+                    val keyQuestionAnswers = it["keyQuestionAnswers"] as? HashMap<String, ArrayList<String>>
 
-                            val allAnswers = questionAnswer.value
+                    if(answersMap != null) {
+                        for(entry in answersMap.entries) {
+                            val model = ResultsQuestionAnswerModel()
+                            model.question = entry.key
+
+                            if(keyQuestionAnswers != null) {
+                                val answerSet = keyQuestionAnswers[model.question]
+                                if(answerSet != null) {
+                                    answerSet.removeAt(0) // First index is always the input type
+
+                                    if(answerSet.last() == "_input") {
+                                        // Remove the input field
+                                        answerSet.remove(answerSet.last())
+                                    }
+
+                                    model.answerDescriptions.addAll(answerSet)
+                                }
+                            }
+
+                            val allAnswers = entry.value
                             for(values in allAnswers.entries) {
                                 for(value in values.value) {
                                     if(value is Long) {

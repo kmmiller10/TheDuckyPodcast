@@ -7,9 +7,6 @@ import io.realm.annotations.RealmClass
 @RealmClass
 open class ResultsQuestionAnswerModel : RealmObject()  {
     var question = ""
-    var answers = RealmList<Long>()
-
-    fun isOtherAnswer(answer: Long): Boolean {
-        return answer == -1L
-    }
+    var answers = RealmList<Long>() // -1 == Other
+    var answerDescriptions = RealmList<String>()
 }

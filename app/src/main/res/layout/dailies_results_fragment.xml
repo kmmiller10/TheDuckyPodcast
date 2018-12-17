@@ -11,15 +11,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/background_light"
-                android:paddingStart="24dp"
-                android:paddingLeft="24dp"
-                android:paddingEnd="24dp"
-                android:paddingRight="24dp">
+                android:paddingStart="8dp"
+                android:paddingLeft="8dp"
+                android:paddingEnd="8dp"
+                android:paddingRight="8dp">
 
             <com.github.mikephil.charting.charts.BarChart
                     android:id="@+id/chart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="300dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
