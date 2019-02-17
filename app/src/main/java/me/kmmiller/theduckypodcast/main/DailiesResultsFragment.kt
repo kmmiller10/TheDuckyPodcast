@@ -4,9 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.DailiesResultsFragmentBinding
@@ -27,16 +30,18 @@ class DailiesResultsFragment : BaseFragment() {
 
         viewModel?.dailyId?.let { dailyId ->
             getCollectedResponses(dailyId) {
-                val chart = binding.chart
                 val answers = it.answers.firstOrNull()
 
                 if(answers != null) {
-                    val entries = ArrayList<BarEntry>()
 
+                    val entries = ArrayList<BarEntry>()
                     val answersMap = HashMap<Long, Float>()
                     var otherCount = 0f // Keep track of "other" separately so it can be appended to the end of the bar chart
+
                     for(answer in answers.answers) {
+
                         val value = answersMap[answer]
+
                         if(value != null) {
                             if(answer == -1L) {
                                 // Skip adding other to the map so it can be appended at the end instead of the first position
@@ -49,24 +54,54 @@ class DailiesResultsFragment : BaseFragment() {
                         }
                     }
 
+                    var maxValue = 0
                     var index = 0
                     answersMap.forEach { entry ->
+                        // Add the regular answers (not other)
                         entries.add(BarEntry(entry.key.toFloat(), entry.value))
+                        if(entry.value > maxValue) maxValue = entry.value.toInt()
                         index++
                     }
                     if(otherCount > 0f) {
                         // Now add other answers
                         entries.add(BarEntry(entries.size.toFloat().plus(1), otherCount))
+                        if(otherCount > maxValue) maxValue = otherCount.toInt()
                     }
 
                     val barDataSet = BarDataSet(entries, answers.question)
-
+                    barDataSet.axisDependency = YAxis.AxisDependency.LEFT
                     val barData = BarData(barDataSet)
                     barData.barWidth =.8f
 
-                    chart.data = barData
-                    chart.setFitBars(true)
-                    chart.invalidate()
+                    val xAxisTextValues = Array(answers.answerDescriptions.size) { i -> "${i+1}"}
+                    val xAxisFormatter = IAxisValueFormatter { value, _ -> xAxisTextValues[value.toInt() - 1] }
+
+                    val yAxisTextValues = Array(maxValue+1) { i -> "$i" }
+                    val yAxisFormatter = IAxisValueFormatter { value, _ -> yAxisTextValues[value.toInt()] }
+
+                    val chart = binding.chart
+                    chart.apply {
+                        xAxis.apply {
+                            granularity = 1f
+                            valueFormatter = xAxisFormatter
+                            position = XAxis.XAxisPosition.BOTTOM
+                            setDrawGridLines(true)
+                        }
+
+                        axisLeft.apply {
+                            granularity = 1f
+                            valueFormatter = yAxisFormatter
+                            setDrawGridLines(false)
+                            setDrawZeroLine(true)
+                            axisMinimum = 0f
+
+                        }
+                        axisRight.isEnabled = false
+
+                        data = barData
+                        setFitBars(true)
+                        invalidate()
+                    }
                 }
 
             }
