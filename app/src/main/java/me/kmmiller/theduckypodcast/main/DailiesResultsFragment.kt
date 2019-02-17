@@ -4,6 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
@@ -30,64 +35,66 @@ class DailiesResultsFragment : BaseFragment() {
 
         viewModel?.dailyId?.let { dailyId ->
             getCollectedResponses(dailyId) {
-                val answers = it.answers.firstOrNull()
 
-                if(answers != null) {
+                val charts = ArrayList<BarChart>(it.answers.size)
 
+                it.answers.forEach { answers ->
                     val entries = ArrayList<BarEntry>()
                     val answersMap = HashMap<Long, Float>()
                     var otherCount = 0f // Keep track of "other" separately so it can be appended to the end of the bar chart
 
                     for(answer in answers.answers) {
-
                         val value = answersMap[answer]
-
-                        if(value != null) {
-                            if(answer == -1L) {
-                                // Skip adding other to the map so it can be appended at the end instead of the first position
-                                otherCount++
-                            } else {
-                                answersMap[answer] = value.plus(1)
-                            }
-                        } else {
-                            answersMap[answer] = 1f
+                        when {
+                            answer < 0L -> otherCount++ // Skip adding other to the map so it can be appended at the end instead of the first position
+                            value != null -> answersMap[answer] = value.plus(1)
+                            else -> answersMap[answer] = 1f
                         }
                     }
 
                     var maxValue = 0
-                    var index = 0
-                    answersMap.forEach { entry ->
-                        // Add the regular answers (not other)
-                        entries.add(BarEntry(entry.key.toFloat(), entry.value))
-                        if(entry.value > maxValue) maxValue = entry.value.toInt()
-                        index++
-                    }
-                    if(otherCount > 0f) {
-                        // Now add other answers
-                        entries.add(BarEntry(entries.size.toFloat().plus(1), otherCount))
-                        if(otherCount > maxValue) maxValue = otherCount.toInt()
+                    for(i in 0 until answers.answerDescriptions.size) {
+                        if(i == answers.answerDescriptions.size - 1 && otherCount > 0) {
+                            // Last answer and other count > 0, so there are "other" responses to tally
+                            entries.add(BarEntry(i.toFloat(), otherCount))
+                            if(otherCount > maxValue) maxValue = otherCount.toInt()
+                        } else {
+                            val entryValue = answersMap[i.toLong()]
+                            if(entryValue != null) {
+                                if(entryValue > maxValue) maxValue = entryValue.toInt()
+                                entries.add(BarEntry(i.toFloat(), entryValue))
+                            } else {
+                                entries.add(BarEntry(i.toFloat(), 0f))
+                            }
+                        }
                     }
 
                     val barDataSet = BarDataSet(entries, answers.question)
                     barDataSet.axisDependency = YAxis.AxisDependency.LEFT
                     val barData = BarData(barDataSet)
-                    barData.barWidth =.8f
+                    barData.barWidth = .8f
 
-                    val xAxisTextValues = Array(answers.answerDescriptions.size) { i -> "${i+1}"}
-                    val xAxisFormatter = IAxisValueFormatter { value, _ -> xAxisTextValues[value.toInt() - 1] }
+                    val xAxisTextValues = Array(answers.answerDescriptions.size + 2) { i -> "(${i+1})" }
+                    val xAxisFormatter = IAxisValueFormatter { value, _ -> xAxisTextValues[value.toInt()] }
 
-                    val yAxisTextValues = Array(maxValue+1) { i -> "$i" }
+                    val yAxisTextValues = Array(maxValue + 2) { i -> "$i" }
                     val yAxisFormatter = IAxisValueFormatter { value, _ -> yAxisTextValues[value.toInt()] }
 
-                    val chart = binding.chart
+                    val chart = BarChart(requireContext())
                     chart.apply {
+
+                        // Set up x-axis
                         xAxis.apply {
                             granularity = 1f
                             valueFormatter = xAxisFormatter
                             position = XAxis.XAxisPosition.BOTTOM
                             setDrawGridLines(true)
+                            setFitBars(true)
+                            axisMinimum = 0f
+                            axisMaximum = answers.answerDescriptions.size.toFloat()
                         }
 
+                        // Set up y-axis
                         axisLeft.apply {
                             granularity = 1f
                             valueFormatter = yAxisFormatter
@@ -98,12 +105,31 @@ class DailiesResultsFragment : BaseFragment() {
                         }
                         axisRight.isEnabled = false
 
+                        // Set up legend
+                        val legendLabels = ArrayList<LegendEntry>(answers.answerDescriptions.size)
+                        answers.answerDescriptions.forEach { label ->
+                            val legendEntry = LegendEntry()
+                            legendEntry.label = label
+                            legendLabels.add(legendEntry)
+                        }
+                        legend.apply {
+                            isEnabled = true
+                            setDrawInside(false)
+                            verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                            horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+                            orientation = Legend.LegendOrientation.VERTICAL
+                            setCustom(legendLabels)
+                        }
+
                         data = barData
                         setFitBars(true)
-                        invalidate()
                     }
+
+                    charts.add(chart)
                 }
 
+                binding.chartList.adapter = BarChartAdapter(charts)
+                binding.chartList.layoutManager = LinearLayoutManager(requireContext())
             }
         }
 
