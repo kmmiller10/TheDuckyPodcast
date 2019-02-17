@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Legend
@@ -35,6 +34,7 @@ class DailiesResultsFragment : BaseFragment() {
 
         viewModel?.dailyId?.let { dailyId ->
             getCollectedResponses(dailyId) {
+
 
                 val charts = ArrayList<BarChart>(it.answers.size)
 
@@ -70,6 +70,7 @@ class DailiesResultsFragment : BaseFragment() {
                     }
 
                     val barDataSet = BarDataSet(entries, answers.question)
+                    barDataSet.setDrawValues(false)
                     barDataSet.axisDependency = YAxis.AxisDependency.LEFT
                     val barData = BarData(barDataSet)
                     barData.barWidth = .8f
@@ -88,7 +89,7 @@ class DailiesResultsFragment : BaseFragment() {
                             granularity = 1f
                             valueFormatter = xAxisFormatter
                             position = XAxis.XAxisPosition.BOTTOM
-                            setDrawGridLines(true)
+                            setDrawGridLines(false)
                             setFitBars(true)
                             axisMinimum = 0f
                             axisMaximum = answers.answerDescriptions.size.toFloat()
@@ -98,7 +99,7 @@ class DailiesResultsFragment : BaseFragment() {
                         axisLeft.apply {
                             granularity = 1f
                             valueFormatter = yAxisFormatter
-                            setDrawGridLines(false)
+                            setDrawGridLines(true)
                             setDrawZeroLine(true)
                             axisMinimum = 0f
 
@@ -106,11 +107,13 @@ class DailiesResultsFragment : BaseFragment() {
                         axisRight.isEnabled = false
 
                         // Set up legend
+                        var index = 0
                         val legendLabels = ArrayList<LegendEntry>(answers.answerDescriptions.size)
                         answers.answerDescriptions.forEach { label ->
                             val legendEntry = LegendEntry()
-                            legendEntry.label = label
+                            legendEntry.label = "(${index+1}) $label"
                             legendLabels.add(legendEntry)
+                            index++
                         }
                         legend.apply {
                             isEnabled = true
@@ -120,6 +123,8 @@ class DailiesResultsFragment : BaseFragment() {
                             orientation = Legend.LegendOrientation.VERTICAL
                             setCustom(legendLabels)
                         }
+
+                        description.isEnabled = false
 
                         data = barData
                         setFitBars(true)

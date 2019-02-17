@@ -107,6 +107,8 @@ fun BarChart.set(chart: BarChart) {
         yOffset = chart.legend.yOffset
     }
 
+    description.isEnabled = chart.description.isEnabled
+
     data = chart.barData
     setFitBars(true)
 }

@@ -30,8 +30,11 @@ open class ResultsAnswers : RealmObject(), RModel {
                         }
                     }
 
-                    val answersMap = it["answers"] as? HashMap<String, HashMap<String, ArrayList<Any>>>
-                    val keyQuestionAnswers = it["keyQuestionAnswers"] as? HashMap<String, ArrayList<String>>
+                    val unsortedAnswersMap = it["answers"] as? HashMap<String, HashMap<String, ArrayList<Any>>>
+                    val unsortedKeyQuestionAnswers = it["keyQuestionAnswers"] as? HashMap<String, ArrayList<String>>
+
+                    val answersMap = unsortedAnswersMap?.toSortedMap()
+                    val keyQuestionAnswers = unsortedKeyQuestionAnswers?.toSortedMap()
 
                     if(answersMap != null) {
                         for(entry in answersMap.entries) {
@@ -75,7 +78,5 @@ open class ResultsAnswers : RealmObject(), RModel {
 
     }
 
-    override fun fromRealmModel(): HashMap<String, Any> {
-        return HashMap()
-    }
+    override fun fromRealmModel(): HashMap<String, Any> = HashMap()
 }
