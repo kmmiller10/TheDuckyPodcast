@@ -7,6 +7,7 @@
     <string name="additional_comments_hint">Write any additional comments here</string>
     <string name="age">Age</string>
     <string name="answer_error">Please provide an answer for each question</string>
+    <string name="answer_keys">Answer keys</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
     <string name="edit">Edit</string>
     <string name="error">Error</string>
@@ -20,6 +21,7 @@
     <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="provide_details">Provide details</string>
     <string name="research_link_index">(%d)</string>
+    <string name="responses">Responses</string>
     <string name="results">Results</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>

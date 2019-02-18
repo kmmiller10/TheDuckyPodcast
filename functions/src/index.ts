@@ -55,6 +55,7 @@ exports.onDailySubmit = funcs.firestore
 				const answersMap: { [key: string]: { [key: string]: Array<string | number> } } = {};
 				
 				if(allDailyResponses == null) {
+					console.log("in == null");
 					// If null, then create the first results document for this daily
 					let index = 0;
 					for(const question in questions) {
