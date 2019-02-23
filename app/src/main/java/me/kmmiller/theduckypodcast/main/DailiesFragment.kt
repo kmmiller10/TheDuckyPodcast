@@ -26,6 +26,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
     private var restoredAnswers: SparseArray<ParcelableAnswer>? = null
 
     override fun getTitle(): String = getString(R.string.dailies)
+    override fun getNavId(): Int = R.id.nav_dailies
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DailiesFragmentBinding.inflate(inflater, container, false)
@@ -251,8 +252,6 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun getNavId(): Int = R.id.nav_home
 
     companion object {
         const val TAG = "dailies_fragment"

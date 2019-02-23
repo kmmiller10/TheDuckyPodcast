@@ -17,13 +17,15 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.DailiesResultsFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.models.ResultsAnswers
 import me.kmmiller.theduckypodcast.models.ResultsQuestionAnswerModel
 
-class DailiesResultsFragment : BaseFragment() {
+class DailiesResultsFragment : BaseFragment(), NavItem {
     private lateinit var binding: DailiesResultsFragmentBinding
 
     override fun getTitle(): String = getString(R.string.results)
+    override fun getNavId(): Int = R.id.nav_dailies
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DailiesResultsFragmentBinding.inflate(inflater, container, false)

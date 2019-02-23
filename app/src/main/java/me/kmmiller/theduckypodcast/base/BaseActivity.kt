@@ -69,7 +69,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     }
 
     override fun onBackPressed() {
-        if(supportFragmentManager.backStackEntryCount >= 1) {
+        if(supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
         } else {
             super.onBackPressed()
@@ -146,6 +146,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
             transaction.add(getFragContainerId(), frag, tag)
 
         transaction.commitNow()
+        if(supportFragmentManager.backStackEntryCount > 0) supportFragmentManager.popBackStack()
     }
 
     fun handleError(e: Exception) {

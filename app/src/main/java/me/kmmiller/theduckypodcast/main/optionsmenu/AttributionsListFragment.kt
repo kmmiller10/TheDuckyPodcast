@@ -37,7 +37,7 @@ class AttributionsListFragment : BaseMenuFragment() {
 
             binding.attributionsList.adapter = AttributionsAdapter(attributionModels) {
                 // On click, push the attribution fragment for this model
-                pushFragment(AttributionFragment.getInstance(it), true, false, AttributionFragment.TAG)
+                pushFragment(AttributionFragment.getInstance(it), false, true, AttributionFragment.TAG)
             }
             binding.attributionsList.layoutManager = LinearLayoutManager(requireContext())
         }

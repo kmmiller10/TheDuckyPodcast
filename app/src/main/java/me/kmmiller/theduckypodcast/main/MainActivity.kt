@@ -56,7 +56,9 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             R.id.nav_home -> pushFragmentSynchronous(HomeFragment(), true, HomeFragment.TAG)
             R.id.nav_dailies -> {
                 if(checkAnsweredStatus())
-                    pushFragmentSynchronous(DailiesResultsFragment(), true, DailiesResultsFragment.TAG) else pushFragmentSynchronous (DailiesFragment(), true, DailiesFragment.TAG)
+                    pushFragmentSynchronous(DailiesResultsFragment(), true, DailiesResultsFragment.TAG)
+                else
+                    pushFragmentSynchronous (DailiesFragment(), true, DailiesFragment.TAG)
             }
             R.id.nav_weeklies -> pushFragmentSynchronous(WeekliesFragment(), true, WeekliesFragment.TAG)
         }
@@ -77,6 +79,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         val frag = supportFragmentManager.fragments.firstOrNull()
         val pushNavFrag = frag != null && frag !is NavItem
         when {
+            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
             pushNavFrag -> navItemSelected(currentNavId)
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
             else -> super.onBackPressed()

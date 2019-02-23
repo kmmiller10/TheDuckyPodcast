@@ -15,6 +15,7 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
     var menu: Menu? = null
 
     override fun getTitle(): String = getString(R.string.weeklies)
+    override fun getNavId(): Int = R.id.nav_weeklies
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = WeekliesFragmentBinding.inflate(inflater, container, false)
@@ -49,8 +50,6 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    override fun getNavId(): Int = R.id.nav_weeklies
 
     companion object {
         const val TAG = "weeklies_fragment"
