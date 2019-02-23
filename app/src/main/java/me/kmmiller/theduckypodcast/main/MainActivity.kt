@@ -15,6 +15,7 @@ import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.AttributionsListFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
+import me.kmmiller.theduckypodcast.main.optionsmenu.SettingsFragment
 import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.models.findAllSeries
 import me.kmmiller.theduckypodcast.models.findAllUsers
@@ -112,7 +113,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
                 true
             }
             R.id.settings -> {
-                Log.d(TAG, "Settings clicked")
+                pushFragmentSynchronous(SettingsFragment(), true, SettingsFragment.TAG)
                 true
             }
             R.id.about -> {

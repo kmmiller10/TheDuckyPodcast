@@ -6,10 +6,8 @@ import android.view.ViewGroup
 import androidx.annotation.DrawableRes
 import androidx.annotation.IdRes
 import androidx.annotation.StringRes
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
-import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.databinding.BottomNavViewHolderBinding

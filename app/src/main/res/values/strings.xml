@@ -33,6 +33,12 @@
     <string name="submit">Submit</string>
     <string name="update_password">Update Password</string>
 
+    <!-- Colorblind Settings -->
+    <string name="colorblind_mode">Colorblind Mode</string>
+    <string name="deuteranomaly">Deuteranomaly</string>
+    <string name="protanomaly">Protanomaly</string>
+    <string name="tritanomoly">Tritanomoly</string>
+
     <!-- Navigation -->
     <string name="about">About</string>
     <string name="home">Home</string>

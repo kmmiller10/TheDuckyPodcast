@@ -14,10 +14,43 @@
     <color name="chartThird">#104570</color>
     <color name="chartFourth">#006064</color> <!-- Same as colorPrimary -->
     <color name="chartFifth">#1FF957</color>
-    <color name="chartSixth">#479f64</color>
+    <color name="chartSixth">#479F64</color>
     <color name="chartSeventh">#335F23</color>
     <color name="chartEighth">#003700</color> <!-- Same as colorAccentVeryDark -->
     <color name="chartNinth">#1D2203</color>
+
+    <!-- Deuteranomaly color blindness palette -->
+    <color name="chartFirst_D">#9BE4CE</color>
+    <color name="chartSecond_D">#0F967D</color>
+    <color name="chartThird_D">#063A50</color>
+    <color name="chartFourth_D">#0A0740</color>
+    <color name="chartFifth_D">#1B6DEA</color>
+    <color name="chartSixth_D">#B3DA0E</color>
+    <color name="chartSeventh_D">#736200</color>
+    <color name="chartEighth_D">#044A20</color>
+    <color name="chartNinth_D">#2B1B03</color>
+
+    <!-- Protanomaly color blindness palette -->
+    <color name="chartFirst_P">#A0CDF3</color>
+    <color name="chartSecond_P">#154F73</color>
+    <color name="chartThird_P">#10064E</color>
+    <color name="chartFourth_P">#691070</color>
+    <color name="chartFifth_P">#1FF97E</color>
+    <color name="chartSixth_P">#C5B70A</color>
+    <color name="chartSeventh_P">#597300</color>
+    <color name="chartEighth_P">#044A20</color>
+    <color name="chartNinth_P">#2B1B03</color>
+
+    <!-- Tritanomoly color blindness palette -->
+    <color name="chartFirst_T">#9BE4BD</color>
+    <color name="chartSecond_T">#089878</color>
+    <color name="chartThird_T">#063C52</color>
+    <color name="chartFourth_T">#0A0740</color>
+    <color name="chartFifth_T">#E6DE08</color>
+    <color name="chartSixth_T">#FF6601</color>
+    <color name="chartSeventh_T">#BF0101</color>
+    <color name="chartEighth_T">#420309</color>
+    <color name="chartNinth_T">#6F4A31</color>
 
     <color name="background_light">#edefef</color>
     <color name="dark_gray">#343434</color>
