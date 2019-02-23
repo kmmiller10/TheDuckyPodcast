@@ -13,6 +13,7 @@ import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
+import me.kmmiller.theduckypodcast.main.optionsmenu.AttributionsListFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
 import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.models.findAllSeries
@@ -113,6 +114,10 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             }
             R.id.about -> {
                 pushFragmentSynchronous(AboutFragment(), true, AboutFragment.TAG)
+                true
+            }
+            R.id.attributions -> {
+                pushFragmentSynchronous(AttributionsListFragment(), true, AttributionsListFragment.TAG)
                 true
             }
             R.id.log_out -> {

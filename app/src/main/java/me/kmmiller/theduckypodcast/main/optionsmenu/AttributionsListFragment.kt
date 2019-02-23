@@ -6,17 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.databinding.AttributionsFragmentBinding
+import me.kmmiller.theduckypodcast.databinding.AttributionsListFragmentBinding
 import me.kmmiller.theduckypodcast.models.AttributionModel
 
-class AttributionsFragment : BaseMenuFragment() {
-    private lateinit var binding: AttributionsFragmentBinding
+class AttributionsListFragment : BaseMenuFragment() {
+    private lateinit var binding: AttributionsListFragmentBinding
 
     override fun getTitle(): String = getString(R.string.attributions)
-    override fun getItemId(): Int = R.id.about
+    override fun getItemId(): Int = R.id.attributions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = AttributionsFragmentBinding.inflate(inflater, container, false)
+        binding = AttributionsListFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -30,17 +30,20 @@ class AttributionsFragment : BaseMenuFragment() {
 
             // Parse the licenses into models
             assets.forEach {
-                val model = AttributionModel()
-                model.parseFromFile(requireActivity(), it)
+                val model = AttributionModel(it)
+                model.parseNameAndType(requireActivity())
                 attributionModels.add(model)
             }
 
-            binding.attributionsList.adapter = AttributionsAdapter(attributionModels)
+            binding.attributionsList.adapter = AttributionsAdapter(attributionModels) {
+                // On click, push the attribution fragment for this model
+                pushFragment(AttributionFragment.getInstance(it), true, false, AttributionFragment.TAG)
+            }
             binding.attributionsList.layoutManager = LinearLayoutManager(requireContext())
         }
     }
 
     companion object {
-        const val TAG = "attributions_frag"
+        const val TAG = "attr_list_frag"
     }
 }

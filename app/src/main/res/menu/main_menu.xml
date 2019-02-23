@@ -16,6 +16,11 @@
             app:showAsAction="never" />
 
     <item
+            android:id="@+id/attributions"
+            android:title="@string/attributions"
+            app:showAsAction="never" />
+
+    <item
             android:id="@+id/log_out"
             android:title="@string/log_out"
             app:showAsAction="never" />

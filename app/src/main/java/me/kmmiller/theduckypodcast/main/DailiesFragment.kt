@@ -9,14 +9,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.models.findDailiesModel
 import me.kmmiller.theduckypodcast.databinding.DailiesFragmentBinding
 import me.kmmiller.theduckypodcast.main.interfaces.IRestoreState
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.interfaces.SavableFragment
 import me.kmmiller.theduckypodcast.models.DailiesModel
 import me.kmmiller.theduckypodcast.models.ParcelableAnswer
-import me.kmmiller.theduckypodcast.models.findUserById
+import me.kmmiller.theduckypodcast.models.findDailiesModel
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState {

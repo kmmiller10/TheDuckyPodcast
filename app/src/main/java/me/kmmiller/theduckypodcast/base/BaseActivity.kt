@@ -134,7 +134,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     }
 
     /**
-     * Synchronously pushes a fragment, i.e. the transaction is committed immediately. addToBackStack cannot be use
+     * Synchronously pushes a fragment, i.e. the transaction is committed immediately. addToBackStack cannot be used
      * when committing synchronously
      */
     fun pushFragmentSynchronous(frag: Fragment, replace: Boolean, tag: String) {

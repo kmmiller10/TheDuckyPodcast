@@ -9,16 +9,6 @@
             android:background="@color/background_light"
             android:padding="24dp">
 
-        <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/attributions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button"
-                android:text="@string/attributions"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="parent"/>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
