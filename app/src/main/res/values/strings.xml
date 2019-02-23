@@ -7,7 +7,7 @@
     <string name="additional_comments_hint">Write any additional comments here</string>
     <string name="age">Age</string>
     <string name="answer_error">Please provide an answer for each question</string>
-    <string name="answer_keys">Answer keys</string>
+    <string name="answers">Answers</string>
     <string name="attributions">Attributions</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
     <string name="edit">Edit</string>

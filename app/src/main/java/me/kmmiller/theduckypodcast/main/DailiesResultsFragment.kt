@@ -79,6 +79,7 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
                     val entryValue = answersMap[i.toLong() + 1]
                     if(entryValue != null) {
                         if(entryValue > maxValue) maxValue = entryValue.toInt()
+                        val entry = BarEntry(i.toFloat() + 1f, entryValue)
                         entries.add(BarEntry(i.toFloat() + 1f, entryValue))
                     } else {
                         entries.add(BarEntry(i.toFloat() + 1f, 0f))
@@ -100,13 +101,22 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
     private fun makeChart(entries: ArrayList<BarEntry>, answers: ResultsQuestionAnswerModel, maxValue: Int): BarChart {
         val barDataSet = BarDataSet(entries, answers.question)
         barDataSet.setDrawValues(false)
-        val colors = mutableListOf(ContextCompat.getColor(requireContext(), R.color.colorAccentDark),
-            ContextCompat.getColor(requireContext(), R.color.colorAccentVeryDark))
+        val colors = mutableListOf(ContextCompat.getColor(requireContext(), R.color.chartFirst),
+            ContextCompat.getColor(requireContext(), R.color.chartSecond),
+            ContextCompat.getColor(requireContext(), R.color.chartThird),
+            ContextCompat.getColor(requireContext(), R.color.chartFourth),
+            ContextCompat.getColor(requireContext(), R.color.chartFifth),
+            ContextCompat.getColor(requireContext(), R.color.chartSixth),
+            ContextCompat.getColor(requireContext(), R.color.chartSeventh),
+            ContextCompat.getColor(requireContext(), R.color.chartEighth),
+            ContextCompat.getColor(requireContext(), R.color.chartNinth),
+            ContextCompat.getColor(requireContext(), R.color.chartTenth))
         barDataSet.colors = colors
+        barDataSet.isHighlightEnabled = false
         val barData = BarData(barDataSet)
         barData.barWidth = .8f
 
-        val xAxisTextValues = Array(answers.answerDescriptions.size + 2) { i -> "($i)" }
+        val xAxisTextValues = Array(answers.answerDescriptions.size + 2) { "" }
         val xAxisFormatter = IAxisValueFormatter { value, _ -> xAxisTextValues[value.toInt()] }
 
         val yAxisTextValues = Array(maxValue + 2) { i -> "$i" }
@@ -139,7 +149,11 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
             val legendLabels = ArrayList<LegendEntry>(answers.answerDescriptions.size)
             answers.answerDescriptions.forEach { label ->
                 val legendEntry = LegendEntry()
-                legendEntry.label = "(${index+1}) $label"
+                legendEntry.label = label
+                legendEntry.form = Legend.LegendForm.CIRCLE
+                legendEntry.formSize = 12f
+                legendEntry.formColor = colors[index]
+
                 legendLabels.add(legendEntry)
                 index++
             }
