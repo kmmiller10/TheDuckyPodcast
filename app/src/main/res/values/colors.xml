@@ -13,12 +13,11 @@
     <color name="chartSecond">#3588A8</color>
     <color name="chartThird">#104570</color>
     <color name="chartFourth">#006064</color> <!-- Same as colorPrimary -->
-    <color name="chartFifth">#00363A</color> <!-- Same as colorPrimaryDark -->
-    <color name="chartSixth">#1FF957</color>
-    <color name="chartSeventh">#479f64</color>
-    <color name="chartEighth">#4F7E33</color>
-    <color name="chartNinth">#003700</color> <!-- Same as colorAccentVeryDark -->
-    <color name="chartTenth">#1D2203</color>
+    <color name="chartFifth">#1FF957</color>
+    <color name="chartSixth">#479f64</color>
+    <color name="chartSeventh">#4F7E33</color>
+    <color name="chartEighth">#003700</color> <!-- Same as colorAccentVeryDark -->
+    <color name="chartNinth">#1D2203</color>
 
     <color name="background_light">#edefef</color>
     <color name="dark_gray">#343434</color>

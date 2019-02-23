@@ -109,8 +109,7 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
             ContextCompat.getColor(requireContext(), R.color.chartSixth),
             ContextCompat.getColor(requireContext(), R.color.chartSeventh),
             ContextCompat.getColor(requireContext(), R.color.chartEighth),
-            ContextCompat.getColor(requireContext(), R.color.chartNinth),
-            ContextCompat.getColor(requireContext(), R.color.chartTenth))
+            ContextCompat.getColor(requireContext(), R.color.chartNinth))
         barDataSet.colors = colors
         barDataSet.isHighlightEnabled = false
         val barData = BarData(barDataSet)
