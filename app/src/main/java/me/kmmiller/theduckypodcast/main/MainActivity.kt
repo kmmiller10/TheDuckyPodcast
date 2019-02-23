@@ -12,6 +12,8 @@ import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
+import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
 import me.kmmiller.theduckypodcast.models.findAllDailies
 import me.kmmiller.theduckypodcast.models.findAllSeries
 import me.kmmiller.theduckypodcast.models.findAllUsers
@@ -106,7 +108,11 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
                 true
             }
             R.id.settings -> {
-                Log.d("MainActivity", "Settings clicked")
+                Log.d(TAG, "Settings clicked")
+                true
+            }
+            R.id.about -> {
+                pushFragmentSynchronous(AboutFragment(), true, AboutFragment.TAG)
                 true
             }
             R.id.log_out -> {
@@ -132,7 +138,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         if(fbAuth.currentUser == null) logOut()
     }
 
-    fun logOut() {
+    private fun logOut() {
         // Sign out of firebase
         auth.signOut()
         auth.removeAuthStateListener(this)
@@ -156,5 +162,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         startActivity(intent)
     }
 
-
+    companion object {
+        const val TAG = "MainActivity"
+    }
 }

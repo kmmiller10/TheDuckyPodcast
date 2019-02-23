@@ -1,8 +1,7 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.optionsmenu
 
 import android.os.Bundle
 import android.view.*
-import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.models.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
@@ -12,7 +11,7 @@ import me.kmmiller.theduckypodcast.models.equalTo
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
-class ProfileFragment : MainMenuFragment(), EditableFragment {
+class ProfileFragment : BaseMenuFragment(), EditableFragment {
     private lateinit var binding: ProfileFragmentBinding
 
     private var isEditing = false

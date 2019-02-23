@@ -1,9 +1,10 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.optionsmenu
 
 import android.os.Bundle
 import me.kmmiller.theduckypodcast.base.BaseFragment
+import me.kmmiller.theduckypodcast.main.MainActivity
 
-abstract class MainMenuFragment : BaseFragment() {
+abstract class BaseMenuFragment : BaseFragment() {
     abstract fun getItemId(): Int
 
     override fun onCreate(savedInstanceState: Bundle?) {
