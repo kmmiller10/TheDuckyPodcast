@@ -4,10 +4,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.github.mikephil.charting.charts.BarChart
+import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.databinding.BarChartViewHolderBinding
+import me.kmmiller.theduckypodcast.models.ResultChartData
 import me.kmmiller.theduckypodcast.utils.set
 
-class BarChartAdapter(private val items: ArrayList<BarChart>, private val titles: ArrayList<String>) : RecyclerView.Adapter<BarChartAdapter.BarChartViewHolder>() {
+class BarChartAdapter(private val items: ArrayList<ResultChartData>) : RecyclerView.Adapter<BarChartAdapter.BarChartViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BarChartViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return BarChartViewHolder(BarChartViewHolderBinding.inflate(inflater, parent, false))
@@ -15,8 +17,9 @@ class BarChartAdapter(private val items: ArrayList<BarChart>, private val titles
 
     override fun onBindViewHolder(holder: BarChartViewHolder, position: Int) {
         val item = items[position]
-        holder.setChart(item)
-        holder.setTitle(titles[position])
+        holder.setChart(item.chart)
+        holder.setTitle(item.title)
+        holder.setTotalResponseCount(item.totalResponseCount)
     }
 
     override fun getItemCount(): Int = items.size
@@ -28,6 +31,10 @@ class BarChartAdapter(private val items: ArrayList<BarChart>, private val titles
 
         fun setChart(chart: BarChart) {
             binding.chart.set(chart)
+        }
+
+        fun setTotalResponseCount(totalResponseCount: Int) {
+            binding.yAxisLabel.text = String.format(binding.root.context.getString(R.string.responses), totalResponseCount)
         }
     }
 }

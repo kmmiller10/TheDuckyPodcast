@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.main.BarChartAdapter
+import me.kmmiller.theduckypodcast.models.ResultChartData
 import me.kmmiller.theduckypodcast.models.ResultsAnswers
 import me.kmmiller.theduckypodcast.models.ResultsQuestionAnswerModel
 import me.kmmiller.theduckypodcast.utils.ColorblindPreferences
@@ -37,8 +38,7 @@ abstract class BaseResultsFragment : BaseFragment() {
     }
 
     protected fun getChartsAdapter(resultsAnswers: ResultsAnswers): BarChartAdapter {
-        val titles = ArrayList<String>()
-        val charts = ArrayList<BarChart>(resultsAnswers.answers.size)
+        val charts = ArrayList<ResultChartData>(resultsAnswers.answers.size)
 
         resultsAnswers.answers.forEach { answers ->
             val entries = ArrayList<BarEntry>()
@@ -54,15 +54,20 @@ abstract class BaseResultsFragment : BaseFragment() {
                 }
             }
 
+            var totalResponseCount = 0f
             var maxValue = 0
             for(i in 0 until answers.answerDescriptions.size) {
                 if(i == answers.answerDescriptions.size - 1 && otherCount > 0) {
+                    totalResponseCount += otherCount
+
                     // Last answer and other count > 0, so there are "other" responses to tally
                     entries.add(BarEntry(i.toFloat() + 1f, otherCount))
                     if(otherCount > maxValue) maxValue = otherCount.toInt()
                 } else {
                     val entryValue = answersMap[i.toLong() + 1]
                     if(entryValue != null) {
+                        totalResponseCount += entryValue
+
                         if(entryValue > maxValue) maxValue = entryValue.toInt()
                         entries.add(BarEntry(i.toFloat() + 1f, entryValue))
                     } else {
@@ -71,13 +76,11 @@ abstract class BaseResultsFragment : BaseFragment() {
                 }
             }
 
-            titles.add(answers.question)
-
             val chart = makeChart(entries, answers, maxValue)
-            charts.add(chart)
+            charts.add(ResultChartData(answers.question, chart, totalResponseCount.toInt()))
         }
 
-        return BarChartAdapter(charts, titles)
+        return BarChartAdapter(charts)
     }
 
     private fun makeChart(entries: ArrayList<BarEntry>, answers: ResultsQuestionAnswerModel, maxValue: Int): BarChart {

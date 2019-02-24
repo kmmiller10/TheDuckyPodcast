@@ -32,8 +32,8 @@
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/y_axis_label"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
                 android:gravity="center_horizontal"
                 android:rotation="-90"
                 android:text="@string/responses"
