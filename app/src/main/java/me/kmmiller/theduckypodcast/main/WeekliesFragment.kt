@@ -122,7 +122,7 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment, IRestoreState 
         }
     }
 
-    private fun checkAnsweredStatus() {
+    private fun checkAnsweredStatus(isNewSubmission: Boolean = false) {
         val weeklyId = viewModel?.weeklyId
         if(weeklyId != null) {
             auth?.currentUser?.uid?.let {
@@ -140,7 +140,7 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment, IRestoreState 
                             }
                         }
 
-                        pushFragment(WeekliesResultsFragment(), true, false, TAG)
+                        pushFragment(WeekliesResultsFragment.getInstance(isNewSubmission), true, false, TAG)
                     }
                     .addOnFailureListener { e ->
                         dismissProgress()
@@ -212,7 +212,7 @@ class WeekliesFragment: BaseFragment(), NavItem, SavableFragment, IRestoreState 
                                 }
                             }
                             dismissProgress()
-                            checkAnsweredStatus()
+                            checkAnsweredStatus(true)
                         }
                         .addOnFailureListener { e ->
                             handleError(e)

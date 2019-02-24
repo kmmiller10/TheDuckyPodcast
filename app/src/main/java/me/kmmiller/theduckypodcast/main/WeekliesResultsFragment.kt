@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseResultsFragment
 import me.kmmiller.theduckypodcast.databinding.WeekliesResultsFragmentBinding
@@ -24,6 +25,11 @@ class WeekliesResultsFragment : BaseResultsFragment(), NavItem {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(isNewSubmission()) {
+            Snackbar.make(binding.root, getString(R.string.new_submission_info), Snackbar.LENGTH_LONG).show()
+            arguments?.putBoolean(NEW_SUBMISSION, false) // Toggle the value off so the user doesn't get the snackbar on rotation
+        }
 
         onRefresh()
 
@@ -47,7 +53,19 @@ class WeekliesResultsFragment : BaseResultsFragment(), NavItem {
         binding.chartList.layoutManager = LinearLayoutManager(requireContext())
     }
 
+    private fun isNewSubmission(): Boolean = arguments?.getBoolean(NEW_SUBMISSION, false) ?: false
+
     companion object {
         const val TAG = "weeklies_results_frag"
+        private const val NEW_SUBMISSION = "new_submission"
+
+        @JvmStatic
+        fun getInstance(isNewSubmission: Boolean): WeekliesResultsFragment {
+            val frag = WeekliesResultsFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(NEW_SUBMISSION, isNewSubmission)
+            frag.arguments = bundle
+            return frag
+        }
     }
 }

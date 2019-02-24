@@ -122,7 +122,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
         }
     }
 
-    private fun checkAnsweredStatus() {
+    private fun checkAnsweredStatus(isNewSubmission: Boolean = false) {
         val dailyId = viewModel?.dailyId
         if(dailyId != null) {
             auth?.currentUser?.uid?.let {
@@ -140,7 +140,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                             }
                         }
 
-                        pushFragment(DailiesResultsFragment(), true, false, DailiesResultsFragment.TAG)
+                        pushFragment(DailiesResultsFragment.getInstance(isNewSubmission), true, false, DailiesResultsFragment.TAG)
                     }
                     .addOnFailureListener { e ->
                         dismissProgress()
@@ -212,7 +212,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                                 }
                             }
                             dismissProgress()
-                            checkAnsweredStatus()
+                            checkAnsweredStatus(true)
                         }
                         .addOnFailureListener { e ->
                             handleError(e)
