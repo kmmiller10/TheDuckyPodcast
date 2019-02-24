@@ -9,6 +9,7 @@
     <string name="answer_error">Please provide an answer for each question</string>
     <string name="answers">Answers</string>
     <string name="attributions">Attributions</string>
+    <string name="current_password">Current Password</string>
     <string name="daily_results">Daily Results</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
     <string name="edit">Edit</string>
@@ -19,8 +20,10 @@
     <string name="gender">Gender</string>
     <string name="home_title">This month\'s challenge</string>
     <string name="loading">Loading…</string>
+    <string name="new_password">New Password</string>
     <string name="new_submission_info">New submissions may take up to 1 minute to propagate. Swipe down to refresh results</string>
     <string name="other">Other</string>
+    <string name="password_incorrect">Password is not correct</string>
     <string name="profile_edit_instructions">Information provided is used to help analyze data collected from surveys. Leave the field blank if you would prefer not to respond.</string>
     <string name="provide_details">Provide details</string>
     <string name="research_link_index">(%d)</string>
@@ -33,6 +36,7 @@
     <string name="state_error">Must be a valid U.S. state</string>
     <string name="submit">Submit</string>
     <string name="update_password">Update Password</string>
+    <string name="updating">Updating…</string>
     <string name="weekly_results">Weekly Results</string>
     <string name="weekly_questionnaire">Weekly Questionnaire:</string>
 

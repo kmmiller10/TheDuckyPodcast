@@ -1,9 +1,11 @@
 package me.kmmiller.theduckypodcast.base
 
+import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -13,6 +15,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.google.firebase.firestore.FirebaseFirestoreException
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.ui.BottomNavAdapter
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
@@ -20,9 +23,6 @@ import me.kmmiller.theduckypodcast.base.ui.BottomNavRecyclerView
 import me.kmmiller.theduckypodcast.core.CoreApplication
 import me.kmmiller.theduckypodcast.main.MainViewModel
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
-import android.app.Activity
-import android.view.inputmethod.InputMethodManager
-import com.google.firebase.firestore.FirebaseFirestoreException
 
 
 abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAdapterListener {

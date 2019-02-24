@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.firestore.FirebaseFirestore
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.SignUpFragmentBinding
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
+import me.kmmiller.theduckypodcast.utils.validatePassword
 
 class SignUpFragment : BaseFragment() {
     private lateinit var binding: SignUpFragmentBinding
@@ -119,28 +119,18 @@ class SignUpFragment : BaseFragment() {
         val password = binding.password.text.toString()
         val confirmPassword = binding.confirmPassword.text.toString()
 
-        return when {
-            password != confirmPassword -> {
-                binding.passwordsDoNotMatch.visibility = View.VISIBLE
-                false
-            }
-            password.length < 7 -> {
-                binding.signUpError.text = getString(R.string.password_minimum_characters)
-                binding.signUpError.visibility = View.VISIBLE
-                false
-            }
-            password.toLowerCase() == password -> {
-                binding.signUpError.text = getString(R.string.password_one_capital)
-                binding.signUpError.visibility = View.VISIBLE
-                false
-            }
-            !password.contains(Regex(".*\\d+.*")) -> {
-                binding.signUpError.text = getString(R.string.password_one_number)
-                binding.signUpError.visibility = View.VISIBLE
-                false
-            }
-            else -> true
+        val errorString = password.validatePassword(requireActivity(), confirmPassword)
+
+        if(errorString.isEmpty()) return true
+
+        if(errorString == getString(R.string.passwords_do_not_match)) {
+            binding.passwordsDoNotMatch.visibility = View.VISIBLE
+        } else {
+            binding.signUpError.visibility = View.VISIBLE
+            binding.signUpError.text = errorString
         }
+
+        return false
     }
 
     private fun signUp() {
@@ -206,12 +196,10 @@ class SignUpFragment : BaseFragment() {
         e.printStackTrace()
 
         val title = getString(R.string.error)
-        if(e is FirebaseNetworkException) {
-            showAlert(title, getString(R.string.error_no_connection))
-        } else if(e is FirebaseAuthUserCollisionException) {
-            showAlert(title, getString(R.string.email_already_exists))
-        } else {
-            showAlert(title, getString(R.string.error_signing_up))
+        when (e) {
+            is FirebaseNetworkException -> showAlert(title, getString(R.string.error_no_connection))
+            is FirebaseAuthUserCollisionException -> showAlert(title, getString(R.string.email_already_exists))
+            else -> showAlert(title, getString(R.string.error_signing_up))
         }
     }
 

@@ -12,6 +12,7 @@ import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
+import me.kmmiller.theduckypodcast.main.interfaces.ReturnToFragListener
 import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.AttributionsListFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
@@ -67,9 +68,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
      */
     override fun onNavItemSelected(itemId: Int) {
         val frag = supportFragmentManager.fragments.firstOrNull()
-        if(frag != null && frag !is NavItem && itemId == currentNavId) {
-            navItemSelected(itemId)
-        }
+        if(frag != null && frag !is NavItem && itemId == currentNavId) navItemSelected(itemId)
         super.onNavItemSelected(itemId)
     }
 
@@ -77,7 +76,12 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         val frag = supportFragmentManager.fragments.firstOrNull()
         val pushNavFrag = frag != null && frag !is NavItem
         when {
-            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
+            supportFragmentManager.backStackEntryCount > 0 -> {
+                supportFragmentManager.popBackStack()
+                supportFragmentManager.fragments
+                    .filter { it is ReturnToFragListener}
+                    .forEach { (it as ReturnToFragListener).onReturnToFrag() }
+            }
             pushNavFrag -> navItemSelected(currentNavId)
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
             else -> super.onBackPressed()
@@ -144,7 +148,7 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         if(fbAuth.currentUser == null) logOut()
     }
 
-    private fun logOut() {
+    fun logOut() {
         // Sign out of firebase
         auth.signOut()
         auth.removeAuthStateListener(this)

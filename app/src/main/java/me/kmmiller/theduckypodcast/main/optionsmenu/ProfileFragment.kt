@@ -5,13 +5,14 @@ import android.view.*
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.models.findUserById
 import me.kmmiller.theduckypodcast.databinding.ProfileFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.ReturnToFragListener
 import me.kmmiller.theduckypodcast.main.interfaces.EditableFragment
 import me.kmmiller.theduckypodcast.models.UserModel
 import me.kmmiller.theduckypodcast.models.equalTo
 import me.kmmiller.theduckypodcast.utils.nonNullString
 import me.kmmiller.theduckypodcast.utils.onTextChangedListener
 
-class ProfileFragment : BaseMenuFragment(), EditableFragment {
+class ProfileFragment : BaseMenuFragment(), EditableFragment, ReturnToFragListener {
     private lateinit var binding: ProfileFragmentBinding
 
     private var isEditing = false
@@ -55,6 +56,11 @@ class ProfileFragment : BaseMenuFragment(), EditableFragment {
             // onCancel will disable all the fields and reset the profile to the realm model
             onCancel()
         }
+
+        binding.updatePassword.setOnClickListener {
+            setHasOptionsMenu(false)
+            pushFragment(UpdatePasswordFragment(), false, true, UpdatePasswordFragment.TAG)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -67,6 +73,11 @@ class ProfileFragment : BaseMenuFragment(), EditableFragment {
             }
             super.onSaveInstanceState(outState)
         }
+    }
+
+    override fun onReturnToFrag() {
+        activity?.title = getTitle()
+        setHasOptionsMenu(true)
     }
 
     private fun resetProfile() {

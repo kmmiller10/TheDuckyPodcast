@@ -1,11 +1,13 @@
 package me.kmmiller.theduckypodcast.utils
 
+import android.app.Activity
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import com.github.mikephil.charting.charts.BarChart
 import com.google.firebase.firestore.DocumentSnapshot
+import me.kmmiller.theduckypodcast.R
 import java.lang.Exception
 
 fun DocumentSnapshot?.getStringArrayList(element: String) : ArrayList<String> {
@@ -111,4 +113,22 @@ fun BarChart.set(chart: BarChart) {
 
     data = chart.barData
     setFitBars(true)
+}
+
+fun String.validatePassword(activity: Activity, confirmPassword: String) : String {
+    return when {
+        this != confirmPassword -> {
+            activity.getString(R.string.passwords_do_not_match)
+        }
+        this.length < 7 -> {
+            activity.getString(R.string.password_minimum_characters)
+        }
+        this.toLowerCase() == this -> {
+            activity.getString(R.string.password_one_capital)
+        }
+        !this.contains(Regex(".*\\d+.*")) -> {
+            activity.getString(R.string.password_one_number)
+        }
+        else -> ""
+    }
 }
