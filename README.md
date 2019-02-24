@@ -10,7 +10,7 @@ Listeners of the podcast can participate in the challenge along with the host by
 License
 -------
 
-    Copyright 2018 Kevin Miller
+    Copyright 2018-2019 Kevin Miller
     
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
