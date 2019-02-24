@@ -1,11 +1,9 @@
 package me.kmmiller.theduckypodcast.main
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Legend
@@ -17,20 +15,20 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
-import me.kmmiller.theduckypodcast.databinding.DailiesResultsFragmentBinding
+import me.kmmiller.theduckypodcast.databinding.WeekliesResultsFragmentBinding
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.models.ResultsAnswers
 import me.kmmiller.theduckypodcast.models.ResultsQuestionAnswerModel
 import me.kmmiller.theduckypodcast.utils.ColorblindPreferences
 
-class DailiesResultsFragment : BaseFragment(), NavItem {
-    private lateinit var binding: DailiesResultsFragmentBinding
+class WeekliesResultsFragment : BaseFragment(), NavItem {
+    private lateinit var binding: WeekliesResultsFragmentBinding
 
-    override fun getTitle(): String = getString(R.string.daily_results)
-    override fun getNavId(): Int = R.id.nav_dailies
+    override fun getTitle(): String = getString(R.string.weekly_results)
+    override fun getNavId(): Int = R.id.nav_weeklies
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = DailiesResultsFragmentBinding.inflate(inflater, container, false)
+        binding = WeekliesResultsFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -45,21 +43,22 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
         }
     }
 
+
     private fun onRefresh() {
-        viewModel?.dailyId?.let { dailyId ->
-            getCollectedResponses(dailyId) {
+        viewModel?.weeklyId?.let { weeklyId ->
+            getCollectedResponses(weeklyId) {
                 drawAllCharts(it)
             }
         }
     }
 
-    private fun getCollectedResponses(dailyId: String, onSuccess: (model: ResultsAnswers) -> Unit) {
-        fb.collection("dailies-responses")
+    private fun getCollectedResponses(weeklyId: String, onSuccess: (model: ResultsAnswers) -> Unit) {
+        fb.collection("weeklies-responses")
             .document("collected-responses")
             .get()
             .addOnSuccessListener { doc ->
                 val model = ResultsAnswers()
-                model.id = dailyId
+                model.id = weeklyId
                 model.toRealmModel(doc)
                 realm?.executeTransaction { rm ->
                     rm.copyToRealmOrUpdate(model)
@@ -119,7 +118,10 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
 
     private fun makeChart(entries: ArrayList<BarEntry>, answers: ResultsQuestionAnswerModel, maxValue: Int): BarChart {
         val barDataSet = BarDataSet(entries, answers.question)
-        val colors = getCbChartColors(requireContext(), ColorblindPreferences.getCbMode(requireActivity()))
+        val colors = DailiesResultsFragment.getCbChartColors(
+            requireContext(),
+            ColorblindPreferences.getCbMode(requireActivity())
+        )
         barDataSet.setDrawValues(false)
         barDataSet.colors = colors
         barDataSet.isHighlightEnabled = false
@@ -186,56 +188,6 @@ class DailiesResultsFragment : BaseFragment(), NavItem {
     }
 
     companion object {
-        const val TAG = "dailies_results_frag"
-
-        @JvmStatic
-        fun getCbChartColors(context: Context, cbMode: ColorblindPreferences.ColorblindMode): List<Int> {
-            return when(cbMode) {
-                ColorblindPreferences.ColorblindMode.OFF -> {
-                    mutableListOf(ContextCompat.getColor(context, R.color.chartFirst),
-                        ContextCompat.getColor(context, R.color.chartSecond),
-                        ContextCompat.getColor(context, R.color.chartThird),
-                        ContextCompat.getColor(context, R.color.chartFourth),
-                        ContextCompat.getColor(context, R.color.chartFifth),
-                        ContextCompat.getColor(context, R.color.chartSixth),
-                        ContextCompat.getColor(context, R.color.chartSeventh),
-                        ContextCompat.getColor(context, R.color.chartEighth),
-                        ContextCompat.getColor(context, R.color.chartNinth))
-                }
-                ColorblindPreferences.ColorblindMode.DEUTERANOMALY -> {
-                    mutableListOf(ContextCompat.getColor(context, R.color.chartFirst_D),
-                        ContextCompat.getColor(context, R.color.chartSecond_D),
-                        ContextCompat.getColor(context, R.color.chartThird_D),
-                        ContextCompat.getColor(context, R.color.chartFourth_D),
-                        ContextCompat.getColor(context, R.color.chartFifth_D),
-                        ContextCompat.getColor(context, R.color.chartSixth_D),
-                        ContextCompat.getColor(context, R.color.chartSeventh_D),
-                        ContextCompat.getColor(context, R.color.chartEighth_D),
-                        ContextCompat.getColor(context, R.color.chartNinth_D))
-                }
-                ColorblindPreferences.ColorblindMode.PROTANOMALY -> {
-                    mutableListOf(ContextCompat.getColor(context, R.color.chartFirst_P),
-                        ContextCompat.getColor(context, R.color.chartSecond_P),
-                        ContextCompat.getColor(context, R.color.chartThird_P),
-                        ContextCompat.getColor(context, R.color.chartFourth_P),
-                        ContextCompat.getColor(context, R.color.chartFifth_P),
-                        ContextCompat.getColor(context, R.color.chartSixth_P),
-                        ContextCompat.getColor(context, R.color.chartSeventh_P),
-                        ContextCompat.getColor(context, R.color.chartEighth_P),
-                        ContextCompat.getColor(context, R.color.chartNinth_P))
-                }
-                ColorblindPreferences.ColorblindMode.TRITANOMOLY -> {
-                    mutableListOf(ContextCompat.getColor(context, R.color.chartFirst_T),
-                        ContextCompat.getColor(context, R.color.chartSecond_T),
-                        ContextCompat.getColor(context, R.color.chartThird_T),
-                        ContextCompat.getColor(context, R.color.chartFourth_T),
-                        ContextCompat.getColor(context, R.color.chartFifth_T),
-                        ContextCompat.getColor(context, R.color.chartSixth_T),
-                        ContextCompat.getColor(context, R.color.chartSeventh_T),
-                        ContextCompat.getColor(context, R.color.chartEighth_T),
-                        ContextCompat.getColor(context, R.color.chartNinth_T))
-                }
-            }
-        }
+        const val TAG = "weeklies_results_frag"
     }
 }

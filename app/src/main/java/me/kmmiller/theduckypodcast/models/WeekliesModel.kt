@@ -12,7 +12,7 @@ import me.kmmiller.theduckypodcast.utils.getHashMap
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 @RealmClass
-open class DailiesModel : RealmObject(), RModel {
+open class WeekliesModel: RealmObject(), RModel {
     @Required
     @PrimaryKey
     var id: String = ""
@@ -70,11 +70,11 @@ open class DailiesModel : RealmObject(), RModel {
 
     companion object {
         @JvmStatic
-        fun createSubmittableModel(userId: String, dailyId: String, answers: SparseArray<ParcelableAnswer>, additionalComments: String): HashMap<String, Any> {
+        fun createSubmittableModel(userId: String, weeklyId: String, answers: SparseArray<ParcelableAnswer>, additionalComments: String): HashMap<String, Any> {
             val map = HashMap<String, Any>()
             map["additionalComments"] = additionalComments
             map["userId"] = userId
-            map["dailyId"] = dailyId
+            map["weeklyId"] = weeklyId
 
             val answersMap = HashMap<String, ArrayList<Any>>()
             for(i in 0 until answers.size()) {

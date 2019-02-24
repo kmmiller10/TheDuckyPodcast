@@ -9,6 +9,7 @@
     <string name="answer_error">Please provide an answer for each question</string>
     <string name="answers">Answers</string>
     <string name="attributions">Attributions</string>
+    <string name="daily_results">Daily Results</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
     <string name="edit">Edit</string>
     <string name="error">Error</string>
@@ -23,7 +24,6 @@
     <string name="provide_details">Provide details</string>
     <string name="research_link_index">(%d)</string>
     <string name="responses">Responses</string>
-    <string name="results">Results</string>
     <string name="save">Save</string>
     <string name="saving">Saving…</string>
     <string name="series">Series</string>
@@ -32,6 +32,8 @@
     <string name="state_error">Must be a valid U.S. state</string>
     <string name="submit">Submit</string>
     <string name="update_password">Update Password</string>
+    <string name="weekly_results">Weekly Results</string>
+    <string name="weekly_questionnaire">Weekly Questionnaire:</string>
 
     <!-- Colorblind Settings -->
     <string name="colorblind_mode">Colorblind Mode</string>

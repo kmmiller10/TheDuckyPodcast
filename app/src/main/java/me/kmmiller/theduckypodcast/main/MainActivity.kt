@@ -16,10 +16,7 @@ import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.AttributionsListFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.SettingsFragment
-import me.kmmiller.theduckypodcast.models.findAllDailies
-import me.kmmiller.theduckypodcast.models.findAllSeries
-import me.kmmiller.theduckypodcast.models.findAllUsers
-import me.kmmiller.theduckypodcast.models.findDailiesModel
+import me.kmmiller.theduckypodcast.models.*
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
@@ -155,9 +152,10 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
         // Clear realm
         val realm = Realm.getDefaultInstance()
         realm.executeTransaction {
-            realm.findAllDailies().deleteAllFromRealm()
-            realm.findAllUsers().deleteAllFromRealm()
             realm.findAllSeries().deleteAllFromRealm()
+            realm.findAllDailies().deleteAllFromRealm()
+            realm.findAllWeeklies().deleteAllFromRealm()
+            realm.findAllUsers().deleteAllFromRealm()
         }
         realm.close()
 

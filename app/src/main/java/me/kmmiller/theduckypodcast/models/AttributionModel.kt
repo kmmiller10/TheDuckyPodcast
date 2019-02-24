@@ -38,7 +38,7 @@ class AttributionModel(val fileName: String) {
             var line = reader.readLine()
             while(line != null) {
                 line = reader.readLine()
-                licenseBuilder.append(line).append('\n')
+                if(line != null) licenseBuilder.append(line).append('\n')
             }
             license = licenseBuilder.toString().replace('\t', ' ') // Replace tabs with spaces
 

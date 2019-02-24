@@ -55,7 +55,6 @@ exports.onDailySubmit = funcs.firestore
 				const answersMap: { [key: string]: { [key: string]: Array<string | number> } } = {};
 				
 				if(allDailyResponses == null) {
-					console.log("in == null");
 					// If null, then create the first results document for this daily
 					let index = 0;
 					for(const question in questions) {
@@ -107,6 +106,100 @@ exports.onDailySubmit = funcs.firestore
 					
 					firestore.doc('dailies-responses/collected-responses').set({
 						[dailyId]: dailyResults
+					});
+				}			
+			});
+		});
+	});
+	
+// When a user submits a weeklies document, merge the results into the master results sheet
+exports.onWeeklySubmit = funcs.firestore
+	.document('weeklies-responses/{userId}/{weeklyId}/{id}')
+	.onCreate((snap, context) => {
+		// Get the user's responses
+		const response = snap.data();
+	
+		const userId = response.userId;
+		const weeklyId = response.weeklyId;
+		const userAnswers = response.answers; // { [key: string]: Array<string | number> }
+		
+		// Grab the weekly questionnaire to assemble the collected results
+		firestore.doc('weeklies/'+weeklyId).get().then(wDoc => {
+			const weeklyDoc = wDoc.data();
+			
+			// Get the master list of all collected results
+			firestore.doc('weeklies-responses/collected-responses').get().then(crDoc => {
+				const masterDoc = crDoc.data();
+				const allWeeklyResponses = masterDoc[weeklyId];
+				
+				// Sort the questions - they don't come in order
+				const questionsUnsorted = Object.keys(weeklyDoc.questionAnswers);
+				const questions = questionsUnsorted.sort((n1,n2) =>{
+					if(n1 > n2) {
+						return 1;
+					}
+					if(n1 < n2) {
+						return -1;
+					}
+					return 0;
+				});
+				
+				// This is the object to be submitted
+				const weeklyResults: { [key: string]: { [key: string]: { [key: string]: Array<string | number> } | string } } = {};
+				const answersMap: { [key: string]: { [key: string]: Array<string | number> } } = {};
+				
+				if(allWeeklyResponses == null) {
+					// If null, then create the first results document for this weekly
+					let index = 0;
+					for(const question in questions) {
+						const answers: { [key: string]: Array<string | number> } = {};
+						
+						// Add user answer
+						const answer = userAnswers[(index.toString())];
+						
+						answers[userId] = answer;
+						
+						answersMap[questions[index]] = answers;
+						index = index + 1;
+					}
+					
+					// Create first additional comments map
+					const additionalComments: { [key: string]: string } = {};
+					additionalComments[userId] = response.additionalComments;
+					
+					// Create weekly results for this user
+					weeklyResults.additionalComments = additionalComments;
+					weeklyResults.keyQuestionAnswers = weeklyDoc.questionAnswers; // Only need to include on creation of first results doc
+					weeklyResults.answers = answersMap;
+			
+					firestore.doc('weeklies-responses/collected-responses').set({
+						[weeklyId]: weeklyResults
+					});
+				} else {
+					// Otherwise, collect current results and append this user's results to them
+					let index = 0;
+					for(const question in questions) {
+						// Get current answers array
+						const answers = allWeeklyResponses.answers[questions[index]];
+						
+						// Append users answer
+						const answer = userAnswers[(index.toString())];
+						answers[userId] = answer;
+						
+						answersMap[questions[index]] = answers;
+						index = index + 1;
+					}
+					
+					// Append user's additional comments to the current list of additional comments
+					const currentComments = allWeeklyResponses.additionalComments;
+					currentComments[userId] = response.additionalComments;
+
+					weeklyResults.additionalComments = currentComments;
+					weeklyResults.keyQuestionAnswers = allWeeklyResponses.keyQuestionAnswers;
+					weeklyResults.answers = answersMap;
+					
+					firestore.doc('weeklies-responses/collected-responses').set({
+						[weeklyId]: weeklyResults
 					});
 				}			
 			});
