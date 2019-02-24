@@ -50,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/password"
                     android:layout_marginTop="16dp"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/email"/>
 
             <!-- Passwords need inputType="textPassword" which is bugged if singleLine=true. Don't use custom view

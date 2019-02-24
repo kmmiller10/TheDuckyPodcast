@@ -60,6 +60,7 @@
     <string name="email_already_exists">Email already exists</string>
     <string name="email_empty_error">Email cannot be empty</string>
     <string name="email_invalid_error">Must be a valid email</string>
+    <string name="email_sent_successful">Email sent successfully</string>
     <string name="error_logging_in">There was an error logging in. Check that your credentials are correct or try again in a few minutes</string>
     <string name="error_signing_up">There was an error signing up. Try again in a few minutes</string>
     <string name="forgot_password">Forgot Password</string>
@@ -73,6 +74,9 @@
     <string name="password_minimum_characters">Password must be at least 7 characters</string>
     <string name="password_one_capital">Password must contain at least 1 capital letter</string>
     <string name="password_one_number">Password must contain at least 1 number</string>
+    <string name="password_reset">Password Reset</string>
+    <string name="sending">Sending…</string>
+    <string name="send_password_reset">Send reset email</string>
     <string name="sign_up">Sign Up</string>
     <string name="signing_up">Registering Account…</string>
     <string name="log_out">Log Out</string>

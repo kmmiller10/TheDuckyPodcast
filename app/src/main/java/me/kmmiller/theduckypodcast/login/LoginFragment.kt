@@ -67,11 +67,12 @@ class LoginFragment : BaseFragment() {
         }
 
         binding.forgotPassword.setOnClickListener {
-            Snackbar.make(binding.root, "Not implemented yet", Snackbar.LENGTH_LONG)
+            val email = binding.email.text.toString()
+            pushFragment(ForgotPasswordFragment.getInstance(email), true, true, ForgotPasswordFragment.TAG)
         }
 
         binding.signUp.setOnClickListener {
-            signUp()
+            pushFragment(SignUpFragment(), true, true, SignUpFragment.TAG)
         }
     }
 
@@ -106,10 +107,6 @@ class LoginFragment : BaseFragment() {
                     }
                 }
         }
-    }
-
-    private fun signUp() {
-        pushFragment(SignUpFragment(), true, true, SignUpFragment.TAG)
     }
 
     companion object {
