@@ -29,9 +29,13 @@ class DailiesResultsFragment : BaseResultsFragment(), NavItem {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(isNewSubmission()) {
+        if(isNewSubmission() && shouldShowPropagationMsg()) {
+            // New submissions can take a while to propagate to the server and back, so the users responses won't be immediately
+            // reflected in the charts. Show the user a Snackbar message the first 2 times they submit so they are aware that they
+            // need to wait then swipe to refresh the charts
             Snackbar.make(binding.root, getString(R.string.new_submission_info), Snackbar.LENGTH_LONG).show()
             arguments?.putBoolean(NEW_SUBMISSION, false) // Toggle the value off so the user doesn't get the snackbar on rotation
+            incrementPropagationMsgCount() // Increment the count to indicate that the user has seen the message
         }
 
         onRefresh()
@@ -41,6 +45,7 @@ class DailiesResultsFragment : BaseResultsFragment(), NavItem {
             onRefresh()
         }
 
+        // Display the colorblind mode setting above the charts
         binding.cbModeLabel.text = when(ColorblindPreferences.getCbMode(requireActivity())) {
             ColorblindPreferences.ColorblindMode.OFF -> String.format(getString(R.string.cb_mode_label), getString(R.string.off))
             ColorblindPreferences.ColorblindMode.DEUTERANOMALY -> String.format(getString(R.string.cb_mode_label), getString(R.string.deuteranomaly))
@@ -55,6 +60,7 @@ class DailiesResultsFragment : BaseResultsFragment(), NavItem {
             ColorblindPreferences.ColorblindMode.TRITANOMOLY -> ResourcesCompat.getDrawable(resources, R.drawable.ic_cb_eye_t, null)
         })
 
+        // When the colorblind mode labels are clicked, bring user to settings
         binding.cbModeLabel.setOnClickListener { onCbModeClicked() }
         binding.eyeMode.setOnClickListener { onCbModeClicked() }
     }
