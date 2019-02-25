@@ -45,6 +45,8 @@
     <string name="deuteranomaly">Deuteranomaly</string>
     <string name="protanomaly">Protanomaly</string>
     <string name="tritanomoly">Tritanomoly</string>
+    <string name="cb_mode_label">Colorblind mode: %s</string>
+    <string name="off">Off</string>
 
     <!-- Navigation -->
     <string name="about">About</string>

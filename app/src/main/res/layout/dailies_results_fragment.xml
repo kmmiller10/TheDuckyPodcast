@@ -10,11 +10,40 @@
 
         <androidx.core.widget.NestedScrollView android:layout_width="match_parent" android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/chart_list"
+            <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_constraintTop_toTopOf="parent"/>
+                    android:background="@color/background_light">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/cb_mode_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="end"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginEnd="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="@string/cb_mode_label"/>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/eye_mode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="7dp"
+                        app:srcCompat="@drawable/ic_cb_eye_off"
+                        app:layout_constraintEnd_toStartOf="@+id/cb_mode_label"
+                        app:layout_constraintTop_toTopOf="@+id/cb_mode_label"
+                        app:layout_constraintBottom_toBottomOf="@+id/cb_mode_label"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/chart_list"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        app:layout_constraintTop_toBottomOf="@id/cb_mode_label"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>
 
