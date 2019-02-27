@@ -118,10 +118,11 @@ fun BarChart.set(chart: BarChart) {
 
 fun PieChart.set(chart: PieChart) {
     transparentCircleRadius = chart.transparentCircleRadius
-    description.isEnabled = chart.isEnabled
     isRotationEnabled = chart.isRotationEnabled
     data = chart.data
     holeRadius = chart.holeRadius
+
+    description.isEnabled = chart.description.isEnabled
 
     // Set up legend
     legend.apply {
