@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.surveys
 
 import android.os.Bundle
 import android.util.Log
@@ -140,7 +140,12 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                             }
                         }
 
-                        pushFragment(DailiesResultsFragment.getInstance(isNewSubmission), true, false, DailiesResultsFragment.TAG)
+                        pushFragment(
+                            DailiesResultsFragment.getInstance(
+                                isNewSubmission
+                            ), true, false,
+                            DailiesResultsFragment.TAG
+                        )
                     }
                     .addOnFailureListener { e ->
                         dismissProgress()

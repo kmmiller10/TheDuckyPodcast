@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.surveys
 
 import android.util.SparseArray
 import android.view.LayoutInflater

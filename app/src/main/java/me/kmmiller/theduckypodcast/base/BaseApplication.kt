@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.core
+package me.kmmiller.theduckypodcast.base
 
 import android.app.Application
 import com.google.firebase.FirebaseApp
@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 
 
-class CoreApplication : Application() {
+class BaseApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()

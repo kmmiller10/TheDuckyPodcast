@@ -2,7 +2,6 @@ package me.kmmiller.theduckypodcast.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.google.firebase.auth.FirebaseAuth
@@ -17,6 +16,9 @@ import me.kmmiller.theduckypodcast.main.optionsmenu.AboutFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.AttributionsListFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.ProfileFragment
 import me.kmmiller.theduckypodcast.main.optionsmenu.SettingsFragment
+import me.kmmiller.theduckypodcast.main.surveys.DailiesFragment
+import me.kmmiller.theduckypodcast.main.surveys.DailiesResultsFragment
+import me.kmmiller.theduckypodcast.main.surveys.WeekliesFragment
 import me.kmmiller.theduckypodcast.models.*
 
 class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {

@@ -20,7 +20,6 @@ import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.ui.BottomNavAdapter
 import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.base.ui.BottomNavRecyclerView
-import me.kmmiller.theduckypodcast.core.CoreApplication
 import me.kmmiller.theduckypodcast.main.MainViewModel
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
@@ -39,7 +38,7 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        auth = (application as CoreApplication).getFirebaseAuthInstance()
+        auth = (application as BaseApplication).getFirebaseAuthInstance()
 
         setContentView(R.layout.base_activity)
         bottomNavRecyclerView = findViewById(R.id.bottom_nav)
