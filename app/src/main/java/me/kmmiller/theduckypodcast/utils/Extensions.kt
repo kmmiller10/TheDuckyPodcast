@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
 import com.google.firebase.firestore.DocumentSnapshot
 import me.kmmiller.theduckypodcast.R
 import java.lang.Exception
@@ -113,6 +114,25 @@ fun BarChart.set(chart: BarChart) {
 
     data = chart.barData
     setFitBars(true)
+}
+
+fun PieChart.set(chart: PieChart) {
+    transparentCircleRadius = chart.transparentCircleRadius
+    description.isEnabled = chart.isEnabled
+    isRotationEnabled = chart.isRotationEnabled
+    data = chart.data
+    holeRadius = chart.holeRadius
+
+    // Set up legend
+    legend.apply {
+        isEnabled = true
+        setDrawInside(chart.legend.isDrawInsideEnabled)
+        verticalAlignment = chart.legend.verticalAlignment
+        horizontalAlignment = chart.legend.horizontalAlignment
+        orientation = chart.legend.orientation
+        setCustom(chart.legend.entries)
+        yOffset = chart.legend.yOffset
+    }
 }
 
 fun String.validatePassword(activity: Activity, confirmPassword: String) : String {

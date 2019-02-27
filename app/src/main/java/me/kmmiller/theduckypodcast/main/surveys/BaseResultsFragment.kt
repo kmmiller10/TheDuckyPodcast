@@ -1,23 +1,19 @@
-package me.kmmiller.theduckypodcast.base
+package me.kmmiller.theduckypodcast.main.surveys
 
 import android.content.Context
 import android.preference.PreferenceManager
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.LegendEntry
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.main.BarChartAdapter
-import me.kmmiller.theduckypodcast.models.ResultChartData
-import me.kmmiller.theduckypodcast.models.ResultsAnswers
-import me.kmmiller.theduckypodcast.models.ResultsQuestionAnswerModel
+import me.kmmiller.theduckypodcast.base.BaseFragment
+import me.kmmiller.theduckypodcast.models.*
 import me.kmmiller.theduckypodcast.utils.ColorblindPreferences
-import java.lang.Exception
 
 abstract class BaseResultsFragment : BaseFragment() {
 
@@ -39,11 +35,13 @@ abstract class BaseResultsFragment : BaseFragment() {
             }
     }
 
-    protected fun getChartsAdapter(resultsAnswers: ResultsAnswers): BarChartAdapter {
-        val charts = ArrayList<ResultChartData>(resultsAnswers.answers.size)
+    protected fun getChartsAdapter(resultsAnswers: ResultsAnswers): ChartAdapter {
+        val charts = ArrayList<BaseChartData>(resultsAnswers.answers.size)
 
         resultsAnswers.answers.forEach { answers ->
-            val entries = ArrayList<BarEntry>()
+            val type = if(answers.answerDescriptions.size > 3) BaseChartData.Type.BAR else BaseChartData.Type.PIE
+            val barEntries = ArrayList<BarEntry>()
+            val pieEntries = ArrayList<PieEntry>()
             val answersMap = HashMap<Long, Float>()
             var otherCount = 0f // Keep track of "other" separately so it can be appended to the end of the bar chart
 
@@ -63,32 +61,54 @@ abstract class BaseResultsFragment : BaseFragment() {
                     totalResponseCount += otherCount
 
                     // Last answer and other count > 0, so there are "other" responses to tally up
-                    entries.add(BarEntry(i.toFloat() + 1f, otherCount))
+                    when(type) {
+                        BaseChartData.Type.BAR ->  barEntries.add(BarEntry(i.toFloat() + 1f, otherCount))
+                        BaseChartData.Type.PIE -> pieEntries.add(PieEntry(otherCount))
+                    }
                     if(otherCount > maxValue) maxValue = otherCount.toInt()
                 } else {
                     val entryValue = answersMap[i.toLong() + 1]
                     if(entryValue != null) {
-                        // There were responses for this answer so need to grab it and create a bar chart entry
+                        // There were responses for this answer so need to grab it and create an entry
                         totalResponseCount += entryValue
 
+                        when(type) {
+                            BaseChartData.Type.BAR ->  barEntries.add(BarEntry(i.toFloat() + 1f, entryValue))
+                            BaseChartData.Type.PIE -> pieEntries.add(PieEntry(entryValue))
+                        }
+
                         if(entryValue > maxValue) maxValue = entryValue.toInt()
-                        entries.add(BarEntry(i.toFloat() + 1f, entryValue))
                     } else {
-                        // No responses for this answer, just add a bar chart entry with value 0
-                        entries.add(BarEntry(i.toFloat() + 1f, 0f))
+                        // No responses for this answer, just add an entry with value 0
+                        when(type) {
+                            BaseChartData.Type.BAR ->  barEntries.add(BarEntry(i.toFloat() + 1f, 0f))
+                            BaseChartData.Type.PIE -> pieEntries.add(PieEntry(0f))
+                        }
                     }
                 }
             }
 
-            val chart = makeChart(entries, answers, maxValue)
-            charts.add(ResultChartData(answers.question, chart, totalResponseCount.toInt()))
+            when(type) {
+                BaseChartData.Type.BAR -> {
+                    val chart = makeBarChart(barEntries, answers, maxValue)
+                    charts.add(BarChartData(answers.question, totalResponseCount.toInt(), chart))
+                }
+                BaseChartData.Type.PIE -> {
+                    val chart = makePieChart(pieEntries, answers)
+                    charts.add(PieChartData(answers.question, totalResponseCount.toInt(), chart))
+                }
+            }
+
         }
 
-        return BarChartAdapter(charts)
+        return ChartAdapter(charts)
     }
 
-    private fun makeChart(entries: ArrayList<BarEntry>, answers: ResultsQuestionAnswerModel, maxValue: Int): BarChart {
-        val colors = getCbChartColors(requireContext(), ColorblindPreferences.getCbMode(requireActivity())) // Get colors based on colorblind settings
+    private fun makeBarChart(entries: ArrayList<BarEntry>, answers: ResultsQuestionAnswerModel, maxValue: Int): BarChart {
+        val colors = getCbChartColors(
+            requireContext(),
+            ColorblindPreferences.getCbMode(requireActivity())
+        ) // Get colors based on colorblind settings
         val barDataSet = BarDataSet(entries, answers.question)
         barDataSet.setDrawValues(false)
         barDataSet.colors = colors
@@ -166,12 +186,58 @@ abstract class BaseResultsFragment : BaseFragment() {
         return chart
     }
 
+    private fun makePieChart(entries: ArrayList<PieEntry>, answers: ResultsQuestionAnswerModel): PieChart {
+        val colors = getCbChartColors(requireContext(), ColorblindPreferences.getCbMode(requireActivity())) // Get colors based on colorblind settings
+        val pieDataSet = PieDataSet(entries, answers.question)
+        pieDataSet.setDrawValues(false)
+        pieDataSet.colors = colors
+        pieDataSet.isHighlightEnabled = false
+
+        val pieData = PieData(pieDataSet)
+
+        val chart = PieChart(requireContext())
+        chart.apply {
+            // Set up legend
+            var index = 0
+            val legendLabels = ArrayList<LegendEntry>(answers.answerDescriptions.size)
+            answers.answerDescriptions.forEach { label ->
+                val legendEntry = LegendEntry()
+                legendEntry.label = label
+                legendEntry.form = Legend.LegendForm.CIRCLE // Use colored circles as the key
+                legendEntry.formSize = 12f
+                legendEntry.formColor = colors[index]
+
+                legendLabels.add(legendEntry)
+                index++
+            }
+            legend.apply {
+                // Draw legend on top right (outside of chart so it doesn't overlap data
+                isEnabled = true
+                setDrawInside(false)
+                verticalAlignment = Legend.LegendVerticalAlignment.TOP
+                horizontalAlignment = Legend.LegendHorizontalAlignment.RIGHT
+                orientation = Legend.LegendOrientation.VERTICAL
+                setCustom(legendLabels)
+            }
+
+            description.isEnabled = false
+            holeRadius = 0f
+            transparentCircleRadius = 0f
+            isRotationEnabled = false
+
+            data = pieData
+        }
+
+        return chart
+    }
+
     /**
      * Only want to show message warning user of propagation delays twice. Returns how many times the message has been seen
      */
     protected fun shouldShowPropagationMsg(): Boolean {
         try {
-            val msgShownCount = PreferenceManager.getDefaultSharedPreferences(requireActivity()).getInt(PROPAGATION_MSG_COUNT, 0)
+            val msgShownCount = PreferenceManager.getDefaultSharedPreferences(requireActivity()).getInt(
+                PROPAGATION_MSG_COUNT, 0)
             return msgShownCount < 2
         } catch(e: Exception) {
             // Context probably null

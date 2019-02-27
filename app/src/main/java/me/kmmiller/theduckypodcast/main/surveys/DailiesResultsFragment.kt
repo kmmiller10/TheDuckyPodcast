@@ -1,4 +1,4 @@
-package me.kmmiller.theduckypodcast.main
+package me.kmmiller.theduckypodcast.main.surveys
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import me.kmmiller.theduckypodcast.R
-import me.kmmiller.theduckypodcast.base.BaseResultsFragment
 import me.kmmiller.theduckypodcast.databinding.DailiesResultsFragmentBinding
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.optionsmenu.SettingsFragment
