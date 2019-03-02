@@ -81,8 +81,13 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
             supportFragmentManager.backStackEntryCount > 0 -> {
                 supportFragmentManager.popBackStack()
                 supportFragmentManager.fragments
-                    .filter { it is ReturnToFragListener}
+                    .filter { it is ReturnToFragListener }
                     .forEach { (it as ReturnToFragListener).onReturnToFrag() }
+
+                if(supportFragmentManager.backStackEntryCount > 0) {
+                    supportActionBar?.setDisplayHomeAsUpEnabled(false)
+                    supportActionBar?.setDisplayShowHomeEnabled(false)
+                }
             }
             pushNavFrag -> navItemSelected(currentNavId)
             currentNavId != R.id.nav_home -> updateSelected(R.id.nav_home)
@@ -110,29 +115,29 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+        when(item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
             R.id.profile -> {
                 pushFragmentSynchronous(ProfileFragment(), true, ProfileFragment.TAG)
-                true
             }
             R.id.settings -> {
                 pushFragmentSynchronous(SettingsFragment(), true, SettingsFragment.TAG)
-                true
             }
             R.id.about -> {
                 pushFragmentSynchronous(AboutFragment(), true, AboutFragment.TAG)
-                true
             }
             R.id.attributions -> {
                 pushFragmentSynchronous(AttributionsListFragment(), true, AttributionsListFragment.TAG)
-                true
             }
             R.id.log_out -> {
                 logOut()
-                true
             }
-            else -> super.onOptionsItemSelected(item)
+            else ->  return super.onOptionsItemSelected(item)
         }
+
+        return true
     }
 
     fun hideMenuItem(itemId: Int) {

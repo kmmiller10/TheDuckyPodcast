@@ -6,13 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.databinding.AttributionFragmentBinding
+import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.AttributionModel
 import me.kmmiller.theduckypodcast.utils.nonNullString
 
 class AttributionFragment : BaseMenuFragment() {
     private lateinit var binding: AttributionFragmentBinding
+    var attributionTitle = ""
 
-    override fun getTitle(): String = getString(R.string.attributions)
+    override fun getTitle(): String = if(attributionTitle.isBlank()) getString(R.string.attributions) else attributionTitle
     override fun getItemId(): Int = R.id.attributions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -22,7 +24,16 @@ class AttributionFragment : BaseMenuFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as? MainActivity)?.apply {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setDisplayShowHomeEnabled(true)
+            }
+        }
+
         val attribution = getArgAttrModel()
+        attributionTitle = attribution.name
         binding.attributionName.text = attribution.name
         binding.licenseType.text = attribution.licenseType
         binding.license.text = attribution.license

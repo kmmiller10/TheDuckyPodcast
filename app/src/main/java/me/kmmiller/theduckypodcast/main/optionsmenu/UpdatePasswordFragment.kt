@@ -28,6 +28,12 @@ class UpdatePasswordFragment : BaseMenuFragment(), SavableFragment {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        (activity as? MainActivity)?.apply {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportActionBar?.setDisplayHomeAsUpEnabled(true)
+                supportActionBar?.setDisplayShowHomeEnabled(true)
+            }
+        }
         setHasOptionsMenu(true)
 
         binding.currentPassword.setOnEditorActionListener { _, action, _ ->

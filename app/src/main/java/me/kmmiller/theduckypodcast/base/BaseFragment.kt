@@ -9,6 +9,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
 import me.kmmiller.theduckypodcast.main.MainViewModel
 import me.kmmiller.theduckypodcast.main.interfaces.ICancel
+import me.kmmiller.theduckypodcast.main.interfaces.ReturnToFragListener
 import me.kmmiller.theduckypodcast.utils.Progress
 import java.lang.Exception
 

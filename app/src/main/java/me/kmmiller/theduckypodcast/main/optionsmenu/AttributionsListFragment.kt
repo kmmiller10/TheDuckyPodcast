@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.databinding.AttributionsListFragmentBinding
+import me.kmmiller.theduckypodcast.main.interfaces.ReturnToFragListener
 import me.kmmiller.theduckypodcast.models.AttributionModel
 
-class AttributionsListFragment : BaseMenuFragment() {
+class AttributionsListFragment : BaseMenuFragment(), ReturnToFragListener {
     private lateinit var binding: AttributionsListFragmentBinding
 
     override fun getTitle(): String = getString(R.string.attributions)
@@ -41,6 +42,10 @@ class AttributionsListFragment : BaseMenuFragment() {
             }
             binding.attributionsList.layoutManager = LinearLayoutManager(requireContext())
         }
+    }
+
+    override fun onReturnToFrag() {
+        activity?.title = getTitle()
     }
 
     companion object {

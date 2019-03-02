@@ -92,6 +92,9 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     abstract fun getNavItems(): ArrayList<BottomNavItemModel>
 
     override fun onNavItemSelected(itemId: Int) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
+
         if(currentNavId != itemId) {
             currentNavId = itemId
             adapter?.notifyDataSetChanged()
@@ -122,6 +125,9 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
     fun pushFragment(frag: Fragment, replace: Boolean, addToBackStack: Boolean, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
 
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
+
         if(replace)
             transaction.replace(getFragContainerId(), frag, tag)
         else
@@ -138,6 +144,9 @@ abstract class BaseActivity : AppCompatActivity(), BottomNavAdapter.BottomNavAda
      */
     fun pushFragmentSynchronous(frag: Fragment, replace: Boolean, tag: String) {
         val transaction = supportFragmentManager.beginTransaction()
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowHomeEnabled(false)
 
         if(replace)
             transaction.replace(getFragContainerId(), frag, tag)
