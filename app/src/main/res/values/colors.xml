@@ -9,6 +9,9 @@
     <color name="colorAccentDark">#003d00</color>
     <color name="colorAccentVeryDark">#003700</color>
 
+    <color name="lightGradientAccent_1">#2B87EFB4</color>
+    <color name="lightGradientAccent_2">#23AFFF90</color>
+
     <color name="chartFirst">#65C5EF</color>
     <color name="chartSecond">#3588A8</color>
     <color name="chartThird">#104570</color>

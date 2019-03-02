@@ -6,7 +6,7 @@
             android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/background_light"
+            android:background="@drawable/light_gradient_background"
             android:paddingTop="12dp">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -34,7 +34,7 @@
 
         <View android:id="@+id/divider"
               android:layout_width="match_parent"
-              android:layout_height="1dp"
+              android:layout_height="2dp"
               android:background="@color/colorAccentDark"
               android:layout_marginTop="12dp"
               app:layout_constraintTop_toBottomOf="@+id/license_type"/>
