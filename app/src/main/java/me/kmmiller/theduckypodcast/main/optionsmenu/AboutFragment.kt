@@ -1,11 +1,13 @@
 package me.kmmiller.theduckypodcast.main.optionsmenu
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.databinding.AboutFragmentBinding
+
 
 class AboutFragment : BaseMenuFragment() {
     private lateinit var binding: AboutFragmentBinding
@@ -20,6 +22,13 @@ class AboutFragment : BaseMenuFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        try {
+            val version = context?.packageManager?.getPackageInfo(requireActivity().packageName, 0)?.versionName
+            if(version != null) binding.buildVersion.text = String.format(getString(R.string.build_version), version)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
     }
 
     companion object {

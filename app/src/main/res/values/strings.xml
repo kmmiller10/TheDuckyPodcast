@@ -2,6 +2,7 @@
     <string name="app_name">TheDuckyPodcast</string>
 
     <!-- General -->
+    <string name="about_description">Every month, the host of The Ducky Podcast (along with guests) participates in an Intentional Living challenge aimed at fostering a positive lifestyle and improving oneself through simple daily practices. In each episode, the host and guest(s) discuss their progress throughout the challenge, as well as difficulties faced, positive and negative outcomes, and an analysis of the results collected from the broader group of participants.\n\nListeners of the podcast can participate in the challenge along with the host by answering brief questionnaires on a daily and weekly basis in the app. The app also contains information about the current series challenge, links to scientific research related to the series, and upon completion of a questionnaire, live results collected from all participants. Users can choose to modify their profile to include more detailed information to help identify more interesting results.\n\nThe Ducky Podcast is currently in its trial phase, and the app is in development.</string>
     <string name="additional_comments">Additional Comments</string>
     <string name="additional_comments_description">If you would like to provide any extra details, or if you feel that there is something the questions did not address, please note it below</string>
     <string name="additional_comments_hint">Write any additional comments here</string>
@@ -9,6 +10,8 @@
     <string name="answer_error">Please provide an answer for each question</string>
     <string name="answers">Answers</string>
     <string name="attributions">Attributions</string>
+    <string name="build_version">Version %s</string>
+    <string name="copyright">Copyright 2018–2019</string>
     <string name="current_password">Current Password</string>
     <string name="daily_results">Daily Results</string>
     <string name="daily_questionnaire">Daily Questionnaire:</string>
