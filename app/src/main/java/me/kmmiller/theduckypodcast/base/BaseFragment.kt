@@ -14,10 +14,10 @@ import me.kmmiller.theduckypodcast.utils.Progress
 import java.lang.Exception
 
 abstract class BaseFragment : Fragment(), ICancel {
-    protected var viewModel: MainViewModel? = null
+    protected val viewModel: MainViewModel?
         get() = (activity as? BaseActivity)?.viewModel
 
-    protected var auth: FirebaseAuth? = null
+    protected val auth: FirebaseAuth?
         get() = (activity as? BaseActivity)?.auth
 
     private lateinit var progress: Progress
