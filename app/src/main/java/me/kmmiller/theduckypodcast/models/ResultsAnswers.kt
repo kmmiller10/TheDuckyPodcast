@@ -44,6 +44,9 @@ open class ResultsAnswers : RealmObject(), RModel {
                             if(keyQuestionAnswers != null) {
                                 val answerSet = keyQuestionAnswers[model.question]
                                 if(answerSet != null) {
+                                    answerSet.firstOrNull()?.let { type ->
+                                        model.type = AnswerType.fromFirebaseType(type).type
+                                    }
                                     answerSet.removeAt(0) // First index is always the input type
 
                                     if(answerSet.last() == "_input") {
@@ -51,7 +54,15 @@ open class ResultsAnswers : RealmObject(), RModel {
                                         answerSet.remove(answerSet.last())
                                     }
 
-                                    model.answerDescriptions.addAll(answerSet)
+                                    if(model.type == AnswerType.RATING.type) {
+                                        // Rating only has one value specifying the maximum rating, so create array of descriptions
+                                        answerSet.firstOrNull()?.let { rating ->
+                                            val ratingAry = Array(rating.toInt()) { intRating -> (intRating + 1).toString() }
+                                            model.answerDescriptions.addAll(ratingAry)
+                                        }
+                                    } else {
+                                        model.answerDescriptions.addAll(answerSet)
+                                    }
                                 }
                             }
 
