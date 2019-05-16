@@ -4,7 +4,8 @@ enum class AnswerType (val type: Int) {
     RADIO_BUTTON(0),
     CHECK_BOX(1),
     EDIT_TEXT(2),
-    NONE(3);
+    RATING(3),
+    NONE(4);
 
     companion object {
         fun fromFirebaseType(type: String): AnswerType {
@@ -12,6 +13,7 @@ enum class AnswerType (val type: Int) {
                 "_radio" -> RADIO_BUTTON
                 "_check" -> CHECK_BOX
                 "_input" -> EDIT_TEXT
+                "_rating" -> RATING
                 else -> NONE
             }
         }
@@ -20,6 +22,7 @@ enum class AnswerType (val type: Int) {
             0 -> RADIO_BUTTON
             1 -> CHECK_BOX
             2 -> EDIT_TEXT
+            3 -> RATING
             else -> NONE
         }
 
@@ -27,7 +30,8 @@ enum class AnswerType (val type: Int) {
             RADIO_BUTTON -> 0
             CHECK_BOX -> 1
             EDIT_TEXT -> 2
-            NONE -> 3
+            RATING -> 3
+            NONE -> 4
         }
     }
 }

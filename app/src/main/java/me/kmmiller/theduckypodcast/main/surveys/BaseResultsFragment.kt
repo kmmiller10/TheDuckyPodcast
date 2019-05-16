@@ -109,6 +109,7 @@ abstract class BaseResultsFragment : BaseFragment() {
             requireContext(),
             ColorblindPreferences.getCbMode(requireActivity())
         ) // Get colors based on colorblind settings
+
         val barDataSet = BarDataSet(entries, answers.question)
         barDataSet.setDrawValues(false)
         barDataSet.colors = colors

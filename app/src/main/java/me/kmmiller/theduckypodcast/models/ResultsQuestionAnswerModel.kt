@@ -9,4 +9,5 @@ open class ResultsQuestionAnswerModel : RealmObject()  {
     var question = ""
     var answers = RealmList<Long>() // -1 == Other
     var answerDescriptions = RealmList<String>()
+    var type = 0
 }

@@ -1,5 +1,6 @@
 package me.kmmiller.theduckypodcast.main.surveys
 
+import android.util.Log
 import android.util.SparseArray
 import android.view.LayoutInflater
 import android.view.View
@@ -20,7 +21,7 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuestionAnswerViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        return QuestionAnswerViewHolder(QuestionAnswerBinding.inflate(inflater, parent, false))
+        return QuestionAnswerViewHolder(QuestionAnswerBinding.inflate(inflater, parent, false), AnswerType.getType(viewType))
     }
 
     override fun onBindViewHolder(holder: QuestionAnswerViewHolder, position: Int) {
@@ -34,13 +35,22 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
 
         holder.addQuestion(item.question)
 
-        if(item.getAnswerType() == AnswerType.RADIO_BUTTON) {
-            holder.addRadioAnswers(ArrayList(item.answers))
+        when(item.getAnswerType()) {
+            AnswerType.RADIO_BUTTON -> holder.addRadioAnswers(ArrayList(item.answers))
+            AnswerType.RATING -> {
+                val ratingCount = item.answers.first()
+                ratingCount?.let {
+                    holder.setRatingCount(it.toInt())
+                }
+            }
+            else -> Log.w(TAG, "TODO")// TODO - Handle other answer types
         }
 
         listeners.add(holder)
         restoreListener.onInstanceRestored(position)
     }
+
+    override fun getItemViewType(position: Int): Int = items[position].getAnswerType().type
 
     override fun getItemCount(): Int = items.size
 
@@ -67,10 +77,24 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
         }
     }
 
-    inner class QuestionAnswerViewHolder(private val binding: QuestionAnswerBinding) : RecyclerView.ViewHolder(binding.root), AnswerListener {
+    inner class QuestionAnswerViewHolder(private val binding: QuestionAnswerBinding, private val answerType: AnswerType) : RecyclerView.ViewHolder(binding.root), AnswerListener {
         private val context = itemView.context
         private var hasOtherField = false
         private var count = 0
+
+        init {
+            when(answerType) {
+                AnswerType.RADIO_BUTTON -> {
+                    binding.radioAnswers.visibility = View.VISIBLE
+                    binding.ratingBar.visibility = View.GONE
+                }
+                AnswerType.RATING -> {
+                    binding.ratingBar.visibility = View.VISIBLE
+                    binding.radioAnswers.visibility = View.GONE
+                }
+                else -> {} // TODO
+            }
+        }
 
         fun hideDiv() {
             binding.div.visibility = View.GONE
@@ -85,27 +109,45 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
         }
 
         fun addRadioAnswers(answers: ArrayList<String>) {
-            count = answers.size
-            answers.forEach {answer ->
-                val radioButton = AppCompatRadioButton(context)
-                radioButton.id = answers.indexOf(answer)
-                radioButton.text = answer
+            if(answerType == AnswerType.RADIO_BUTTON) {
+                count = answers.size
+                answers.forEach { answer ->
+                    val radioButton = AppCompatRadioButton(context)
+                    radioButton.id = answers.indexOf(answer)
+                    radioButton.text = answer
 
-                radioButton.setOnClickListener {
-                    binding.otherAnswer.visibility = if(answers.last() == answer && hasOtherField) View.VISIBLE else View.GONE
-                    clearOtherAnswerError()
+                    radioButton.setOnClickListener {
+                        binding.otherAnswer.visibility =
+                            if (answers.last() == answer && hasOtherField) View.VISIBLE else View.GONE
+                        clearOtherAnswerError()
+                    }
+
+                    binding.otherAnswer.onTextChangedListener {
+                        clearOtherAnswerError()
+                    }
+
+                    binding.radioAnswers.addView(radioButton)
                 }
+            } else {
+                Log.e(TAG, "Tried to add radio buttons to a non-radio button question")
+            }
+        }
 
-                binding.otherAnswer.onTextChangedListener {
-                    clearOtherAnswerError()
-                }
-
-                binding.radioAnswers.addView(radioButton)
+        fun setRatingCount(count: Int) {
+            if(answerType == AnswerType.RATING) {
+                binding.ratingBar.numStars = count
+            } else {
+                Log.e(TAG, "Tried to set rating count to a non-rating question")
             }
         }
 
         override fun setAnswer(position: Int, input: String?) {
-            binding.radioAnswers.check(position)
+            when(answerType) {
+                AnswerType.RADIO_BUTTON -> binding.radioAnswers.check(position)
+                AnswerType.RATING -> binding.ratingBar.rating = position.toFloat()
+                else -> {} // TODO
+            }
+
             input?.let {
                 binding.otherAnswer.setText(it)
                 binding.otherAnswer.visibility = View.VISIBLE
@@ -113,7 +155,11 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
         }
 
         override fun getAnswer(): Int {
-            return binding.radioAnswers.checkedRadioButtonId // Returns -1 if none selected
+            return when(answerType) {
+                AnswerType.RADIO_BUTTON -> binding.radioAnswers.checkedRadioButtonId // Returns -1 if none selected
+                AnswerType.RATING -> binding.ratingBar.rating.toInt()
+                else -> return -1 // TODO
+            }
         }
 
         override fun getOtherInput(): String? {
@@ -130,5 +176,9 @@ class QuestionAnswerAdapter(private val items: ArrayList<QuestionAnswerModel>, p
         private fun clearOtherAnswerError() {
             binding.otherAnswerError.visibility = View.GONE
         }
+    }
+
+    companion object {
+        const val TAG = "q_and_a_adapter"
     }
 }

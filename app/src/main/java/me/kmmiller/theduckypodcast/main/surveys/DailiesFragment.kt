@@ -7,6 +7,7 @@ import android.view.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import me.kmmiller.theduckypodcast.BuildConfig
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseFragment
 import me.kmmiller.theduckypodcast.databinding.DailiesFragmentBinding
@@ -161,17 +162,31 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
     }
 
     private fun getDailyId( fb: FirebaseFirestore, onComplete: (String) -> Unit) {
-        fb.collection("dailies")
-            .document("get-daily-id")
-            .get()
-            .addOnSuccessListener {
-                val id = it.get("id").nonNullString()
-                onComplete.invoke(id)
-            }
-            .addOnFailureListener {
-                dismissProgress()
-                handleError(it)
-            }
+        if(BuildConfig.DEBUG) {
+            fb.collection("dailies")
+                .document("get-beta-daily-id")
+                .get()
+                .addOnSuccessListener {
+                    val id = it.get("id").nonNullString()
+                    onComplete.invoke(id)
+                }
+                .addOnFailureListener {
+                    dismissProgress()
+                    handleError(it)
+                }
+        } else {
+            fb.collection("dailies")
+                .document("get-daily-id")
+                .get()
+                .addOnSuccessListener {
+                    val id = it.get("id").nonNullString()
+                    onComplete.invoke(id)
+                }
+                .addOnFailureListener {
+                    dismissProgress()
+                    handleError(it)
+                }
+        }
     }
 
     private fun validateAnswers(answers: SparseArray<ParcelableAnswer>): Boolean {
