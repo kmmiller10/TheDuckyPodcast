@@ -162,19 +162,19 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
     }
 
     private fun getDailyId( fb: FirebaseFirestore, onComplete: (String) -> Unit) {
-        if(BuildConfig.DEBUG) {
-            fb.collection("dailies")
-                .document("get-beta-daily-id")
-                .get()
-                .addOnSuccessListener {
-                    val id = it.get("id").nonNullString()
-                    onComplete.invoke(id)
-                }
-                .addOnFailureListener {
-                    dismissProgress()
-                    handleError(it)
-                }
-        } else {
+//        if(BuildConfig.DEBUG) {
+//            fb.collection("dailies")
+//                .document("get-beta-daily-id")
+//                .get()
+//                .addOnSuccessListener {
+//                    val id = it.get("id").nonNullString()
+//                    onComplete.invoke(id)
+//                }
+//                .addOnFailureListener {
+//                    dismissProgress()
+//                    handleError(it)
+//                }
+//        } else {
             fb.collection("dailies")
                 .document("get-daily-id")
                 .get()
@@ -186,7 +186,7 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
                     dismissProgress()
                     handleError(it)
                 }
-        }
+//        }
     }
 
     private fun validateAnswers(answers: SparseArray<ParcelableAnswer>): Boolean {
