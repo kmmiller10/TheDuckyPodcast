@@ -42,7 +42,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/radio_answers"/>
 
-        <me.kmmiller.theduckypodcast.base.ui.BaseEditText
+        <me.kmmiller.baseui.views.BorderedEditText
                 android:id="@+id/other_answer"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

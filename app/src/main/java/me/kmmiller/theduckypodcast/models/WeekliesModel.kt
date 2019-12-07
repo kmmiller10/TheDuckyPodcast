@@ -36,20 +36,7 @@ open class WeekliesModel: RealmObject(), RModel {
 
             // The first value is always the answer type
             val firebaseAnswerType = answers.firstOrNull() ?: continue
-            when(AnswerType.fromFirebaseType(firebaseAnswerType)) {
-                AnswerType.RADIO_BUTTON -> {
-                    model.setAnswerType(AnswerType.RADIO_BUTTON)
-                }
-                AnswerType.CHECK_BOX -> {
-                    // TODO Not implemented yet
-                }
-                AnswerType.EDIT_TEXT -> {
-                    // TODO Not implemented yet
-                }
-                AnswerType.NONE -> {
-                    // Should never reach here
-                }
-            }
+            model.setAnswerType(AnswerType.fromFirebaseType(firebaseAnswerType))
             answers.removeAt(0)
 
             // The last value will be _input if there is an other field
@@ -81,7 +68,7 @@ open class WeekliesModel: RealmObject(), RModel {
                 val answer = answers[i]
 
                 val answerList = ArrayList<Any>()
-                // Add 1 to the answer position since the first value (at index 0) in the dailies questionAnswer field is the input type
+                // Add 1 to the answer position since the first value (at index 0) in the weeklies questionAnswer field is the input type
                 answerList.add(if(answer.otherInput.nonNullString().isEmpty()) answer.answerPosition+1 else answer.otherInput.nonNullString())
 
                 answersMap[i.toString()] = answerList

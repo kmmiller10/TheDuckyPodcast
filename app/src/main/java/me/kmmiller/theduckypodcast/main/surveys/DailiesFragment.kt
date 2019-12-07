@@ -18,6 +18,8 @@ import me.kmmiller.theduckypodcast.models.DailiesModel
 import me.kmmiller.theduckypodcast.models.ParcelableAnswer
 import me.kmmiller.theduckypodcast.models.findDailiesModel
 import me.kmmiller.theduckypodcast.utils.nonNullString
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState {
     private lateinit var binding: DailiesFragmentBinding
@@ -262,11 +264,11 @@ class DailiesFragment : BaseFragment(), NavItem, SavableFragment, IRestoreState 
 
     override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.save).title = getString(R.string.submit).toUpperCase()
+        menu.findItem(R.id.save).title = getString(R.string.submit).toUpperCase(Locale.getDefault())
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item != null && item.itemId == R.id.save) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.save) {
             onSave()
             return true
         }

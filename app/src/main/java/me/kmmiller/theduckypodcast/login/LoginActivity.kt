@@ -2,17 +2,18 @@ package me.kmmiller.theduckypodcast.login
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import io.realm.Realm
+import me.kmmiller.baseui.navigation.BottomNavItemModel
+import me.kmmiller.baseui.views.Progress
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
-import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
-import me.kmmiller.theduckypodcast.utils.Progress
 import me.kmmiller.theduckypodcast.main.MainActivity
 import me.kmmiller.theduckypodcast.models.UserModel
 
 class LoginActivity : BaseActivity() {
-    val progress = Progress(this)
+    private val progress = Progress(this)
     override var hasBottomNav: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,7 +25,11 @@ class LoginActivity : BaseActivity() {
         } else {
             // In case the user logged out while not connected to internet, always force logout when pushing the login frag
             auth.signOut()
-            pushFragment(LoginFragment(), true, false, LoginFragment.TAG)
+            pushFragment(LoginFragment(),
+                replace = true,
+                addToBackStack = false,
+                tag = LoginFragment.TAG
+            )
         }
     }
 
@@ -71,9 +76,8 @@ class LoginActivity : BaseActivity() {
     }
 
     // Not applicable for this activity
-    override fun firstNavItem(): Int = 0
-    // Not applicable for this activity
+    override fun defaultNavItem(): Int = 0
     override fun getNavItems(): ArrayList<BottomNavItemModel> = ArrayList()
-    // Not applicable for this activity
     override fun navItemSelected(itemId: Int) {}
+    override fun getHighlightColor(): Int = ContextCompat.getColor(this, R.color.colorPrimary)
 }

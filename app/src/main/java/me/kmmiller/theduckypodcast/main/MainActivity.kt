@@ -4,11 +4,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.content.ContextCompat
 import com.google.firebase.auth.FirebaseAuth
 import io.realm.Realm
+import me.kmmiller.baseui.navigation.BottomNavItemModel
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
-import me.kmmiller.theduckypodcast.base.ui.BottomNavItemModel
 import me.kmmiller.theduckypodcast.login.LoginActivity
 import me.kmmiller.theduckypodcast.main.interfaces.NavItem
 import me.kmmiller.theduckypodcast.main.interfaces.ReturnToFragListener
@@ -25,7 +26,8 @@ class MainActivity : BaseActivity(), FirebaseAuth.AuthStateListener {
     override var hasBottomNav: Boolean = true
     private var menuItemToggle: Pair<Int, Boolean>? = null
 
-    override fun firstNavItem(): Int = R.id.nav_home
+    override fun defaultNavItem(): Int = R.id.nav_home
+    override fun getHighlightColor(): Int = ContextCompat.getColor(this, R.color.colorPrimary)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

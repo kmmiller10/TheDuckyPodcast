@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import me.kmmiller.baseui.hideKeyboard
 import me.kmmiller.theduckypodcast.BuildConfig
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
@@ -77,7 +78,7 @@ class LoginFragment : BaseFragment() {
     }
 
     private fun doLogin() {
-        (activity as BaseActivity).hideKeyboard()
+        requireContext().hideKeyboard()
 
         showProgress(getString(R.string.logging_in))
 

@@ -158,11 +158,11 @@ class ProfileFragment : BaseMenuFragment(), EditableFragment, ReturnToFragListen
         this.menu = menu
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?) {
+    override fun onPrepareOptionsMenu(menu: Menu) {
         super.onPrepareOptionsMenu(menu)
-        menu?.findItem(R.id.edit)?.isVisible = !isEditing
-        menu?.findItem(R.id.save)?.isVisible = isEditing
-        menu?.findItem(R.id.cancel)?.isVisible = isEditing
+        menu.findItem(R.id.edit)?.isVisible = !isEditing
+        menu.findItem(R.id.save)?.isVisible = isEditing
+        menu.findItem(R.id.cancel)?.isVisible = isEditing
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

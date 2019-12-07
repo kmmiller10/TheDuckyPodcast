@@ -23,7 +23,7 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintStart_toStartOf="parent"/>
 
-            <me.kmmiller.theduckypodcast.base.ui.BaseEditText
+            <me.kmmiller.baseui.views.BorderedEditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/email"
                     app:layout_constraintStart_toStartOf="parent"/>
 
-            <me.kmmiller.theduckypodcast.base.ui.BaseEditText
+            <me.kmmiller.baseui.views.BorderedEditText
                     android:id="@+id/age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -98,7 +98,7 @@
                     app:layout_constraintBottom_toBottomOf="@+id/gender_label"
                     app:layout_constraintStart_toEndOf="@+id/gender"/>
 
-            <me.kmmiller.theduckypodcast.base.ui.BaseEditText
+            <me.kmmiller.baseui.views.BorderedEditText
                     android:id="@+id/us_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

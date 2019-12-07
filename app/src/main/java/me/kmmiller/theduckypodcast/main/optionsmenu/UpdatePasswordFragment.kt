@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import com.google.firebase.auth.EmailAuthProvider
+import me.kmmiller.baseui.hideKeyboard
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.databinding.UpdatePasswordFragmentBinding
@@ -86,7 +87,7 @@ class UpdatePasswordFragment : BaseMenuFragment(), SavableFragment {
     }
 
     private fun clearFocus() {
-        (activity as BaseActivity).hideKeyboard()
+        requireContext().hideKeyboard()
     }
 
     private fun validatePassword(): Boolean {
@@ -154,8 +155,8 @@ class UpdatePasswordFragment : BaseMenuFragment(), SavableFragment {
         inflater.inflate(R.menu.savable_menu, menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if(item != null && item.itemId == R.id.save) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId == R.id.save) {
             onSave()
             return true
         }

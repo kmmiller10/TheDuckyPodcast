@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import me.kmmiller.baseui.hideKeyboard
 import me.kmmiller.theduckypodcast.R
 import me.kmmiller.theduckypodcast.base.BaseActivity
 import me.kmmiller.theduckypodcast.base.BaseFragment
@@ -95,7 +96,7 @@ class SignUpFragment : BaseFragment() {
     }
 
     private fun clearFocus() {
-        (activity as BaseActivity).hideKeyboard()
+        requireContext().hideKeyboard()
     }
 
     private fun validateEmail(): Boolean {
