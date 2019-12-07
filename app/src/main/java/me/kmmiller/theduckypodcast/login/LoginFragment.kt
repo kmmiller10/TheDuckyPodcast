@@ -31,8 +31,8 @@ class LoginFragment : BaseFragment() {
         setUiListeners()
 
         if(BuildConfig.DEBUG) {
-            binding.email.setText("kmille1014+22319@gmail.com")
-            binding.password.setText("Mobile1.")
+            binding.email.setText("")
+            binding.password.setText("")
         }
     }
 
